@@ -1,0 +1,82 @@
+﻿<Page x:Class="QL_Nha_sach.Pages.LoginPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:QL_Nha_sach.Pages"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="800"
+      Title="LoginPage">
+
+    <!--<Page.Resources> -->
+        <!-- Zoom animation for role card
+            <Storyboard x:Key="ZoomRevealStoryboard">
+            <DoubleAnimation Storyboard.TargetName="RoleCard"
+                             Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleX)"
+                             To="3" Duration="0:0:0.5"/>
+            <DoubleAnimation Storyboard.TargetName="RoleCard"
+                             Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleY)"
+                             To="3" Duration="0:0:0.5"/>
+        </Storyboard> -->
+
+        <!-- Fade in login form 
+        <Storyboard x:Key="FadeInLoginForm">
+            <DoubleAnimation Storyboard.TargetName="LoginForm"
+                     Storyboard.TargetProperty="Opacity"
+                     From="0" To="1" Duration="0:0:0.5"/>
+            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="LoginForm"
+                                   Storyboard.TargetProperty="IsHitTestVisible">
+                <DiscreteObjectKeyFrame KeyTime="0:0:0.5" Value="True"/>
+            </ObjectAnimationUsingKeyFrames>
+        </Storyboard>
+    </Page.Resources>
+
+    <Grid Background="#f0f0f0"> -->
+        <!-- Role card
+        <Border x:Name="RoleCard"
+                Width="150" Height="100"
+                Background="LightBlue"
+                CornerRadius="8"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                RenderTransformOrigin="0.5,0.5">
+            <Border.RenderTransform>
+                <ScaleTransform ScaleX="1" ScaleY="1"/>
+            </Border.RenderTransform>
+            <TextBlock Text="Manager" 
+                       HorizontalAlignment="Center" 
+                       VerticalAlignment="Center"
+                       FontWeight="Bold"/>
+            <Border.Triggers>
+                <EventTrigger RoutedEvent="MouseLeftButtonDown">
+                    <BeginStoryboard Storyboard="{StaticResource ZoomRevealStoryboard}"/>
+                    <BeginStoryboard Storyboard="{StaticResource FadeInLoginForm}"/>
+                </EventTrigger>
+            </Border.Triggers>
+        </Border>
+-->
+        <!-- Login form (initially hidden by opacity) -->
+    <Border x:Name="LoginForm"
+                Background="White" CornerRadius="8" Padding="20" Width="400"
+                HorizontalAlignment="Center" VerticalAlignment="Center">
+                <!--Opacity="0"
+                IsHitTestVisible="False">-->
+            <StackPanel>
+                <TextBlock Text="Login" FontSize="20" FontWeight="Bold" Margin="0,0,0,20"/>
+
+                <TextBlock Text="Username" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                <TextBox Text="{Binding Username, UpdateSourceTrigger=PropertyChanged}" 
+                         Height="30" Padding="5"/>
+
+                <TextBlock Text="Password" FontWeight="SemiBold" Margin="10,10,0,5"/>
+                <PasswordBox x:Name="PasswordBox" Height="30" Padding="5"/>
+
+                <Button Content="Login"
+                        Command="{Binding LoginCommand}"
+                        CommandParameter="{Binding ElementName=PasswordBox}"
+                        Background="#3498db" Foreground="White"
+                        FontWeight="Bold" Margin="0,20,0,0" Height="40"/>
+            </StackPanel>
+        </Border>
+    <!--</Grid>-->
+</Page>

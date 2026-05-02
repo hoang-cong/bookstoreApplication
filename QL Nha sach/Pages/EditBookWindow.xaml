@@ -1,0 +1,132 @@
+﻿<Window x:Class="QL_Nha_sach.Pages.EditBookWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:QL_Nha_sach.Pages"
+        mc:Ignorable="d"
+        Title="EditBookWindow" Height="450" Width="800">
+    <Grid Margin="30">
+        <Border Background="White" CornerRadius="8" Padding="20" 
+                BorderBrush="#ddd" BorderThickness="1" >
+            <StackPanel>
+                <TextBlock Text="Edit Book Details" 
+                           FontSize="24" FontWeight="Bold" 
+                           Foreground="#333" Margin="0,0,0,20"/>
+
+                <!-- Title & ISBN -->
+                <Grid Margin="0,0,0,15">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="20"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Grid.Column="0">
+                        <TextBlock Text="Book Title" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                        <TextBox Text="{Binding EditableBook.Title}" Padding="5" Height="30"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="2">
+                        <TextBlock Text="ISBN Number" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                        <TextBox Text="{Binding EditableBook.ISBN}" Padding="5" Height="30"/>
+                    </StackPanel>
+                </Grid>
+
+                <!-- Author, Genre, Publisher, Status -->
+                <Grid Margin="0,0,0,15">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="20"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Grid.Column="0">
+                        <TextBlock Text="Author" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                        <ListBox ItemsSource="{Binding Authors}"
+                             DisplayMemberPath="AuthorName"
+                             SelectionMode="Multiple"
+                             Height="100"
+                             SelectionChanged="AuthorsListBox_SelectionChanged"/>
+                    </StackPanel>
+                    <StackPanel Grid.Column="2">
+                        <TextBlock Text="Genre" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                        <ListBox ItemsSource="{Binding Genres}"
+                             DisplayMemberPath="GenreName"
+                             SelectionMode="Multiple"
+                             Height="100"
+                             SelectionChanged="GenresListBox_SelectionChanged"/>
+                    </StackPanel>
+                </Grid>
+
+                <Grid Margin="0,0,0,15">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="20"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Grid.Column="0">
+                        <TextBlock Text="Publisher" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                        <ComboBox ItemsSource="{Binding Publishers}"
+                                  DisplayMemberPath="PublisherName"
+                                  SelectedValuePath="PublisherId"
+                                  SelectedValue="{Binding EditableBook.PublisherId}"
+                                  Height="30"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="2">
+                        <TextBlock Text="Book Status" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                        <ComboBox ItemsSource="{Binding BookStatuses}"
+                                  DisplayMemberPath="StatusName"
+                                  SelectedValuePath="BookStatusId"
+                                  SelectedValue="{Binding EditableBook.BookStatusId}"
+                                  Height="30"/>
+                    </StackPanel>
+                </Grid>
+
+                <!-- Price & Stock -->
+                <Grid Margin="0,0,0,20">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="20"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Grid.Column="0">
+                        <TextBlock Text="Price ($)" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                        <TextBox Text="{Binding EditableBook.Price}" Padding="5" Height="30"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="2">
+                        <TextBlock Text="Stock" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                        <TextBox Text="{Binding EditableBook.Stock}" Padding="5" Height="30"/>
+                    </StackPanel>
+                </Grid>
+
+                <!-- Save Button -->
+                <Button Content="Save Changes"
+                        Command="{Binding SaveCommand}"
+                        Background="#27ae60" Foreground="White"
+                        FontWeight="Bold" Padding="10"
+                        Cursor="Hand" Height="40">
+                    <Button.Resources>
+                        <Style TargetType="Button">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border Background="{TemplateBinding Background}" 
+                                                CornerRadius="5">
+                                            <ContentPresenter HorizontalAlignment="Center" 
+                                                              VerticalAlignment="Center"/>
+                                        </Border>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </Button.Resources>
+                </Button>
+            </StackPanel>
+        </Border>
+    </Grid>
+</Window>
