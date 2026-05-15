@@ -38,9 +38,9 @@ namespace QL_Nha_sach.ViewModels
             if (!context.Users.Any())
             {
                 context.Users.AddRange(
-                    new User { Username = "admin", Password = "123", FullName = "Admin User", RoleId = 1 },
-                    new User { Username = "staff", Password = "123", FullName = "Staff User", RoleId = 2 },
-                    new User { Username = "stocker", Password = "123", FullName = "Stocker User", RoleId = 3 }
+                    new User { Username = "admin", Password = "123", FullName = "Admin User", PhoneNumber = "0912995866", EmailAddress = "admin@gmail.com", RoleId = 1 },
+                    new User { Username = "staff", Password = "123", FullName = "Staff User", PhoneNumber = "0874933256", EmailAddress = "staff@gmail.com", RoleId = 2 },
+                    new User { Username = "stocker", Password = "123", FullName = "Stocker User", PhoneNumber = "0376988321", EmailAddress = "stocker@gmail.com", RoleId = 3 }
                 );
                 context.SaveChanges();
             }

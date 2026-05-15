@@ -120,6 +120,7 @@ namespace QL_Nha_sach.Migrations
                         .Annotation("Sqlite:Autoincrement", true),
                     ISBN = table.Column<string>(type: "TEXT", nullable: false),
                     Title = table.Column<string>(type: "TEXT", nullable: false),
+                    CoverImageUrl = table.Column<string>(type: "TEXT", nullable: true),
                     PublisherId = table.Column<int>(type: "INTEGER", nullable: false),
                     Price = table.Column<decimal>(type: "TEXT", nullable: false),
                     Stock = table.Column<int>(type: "INTEGER", nullable: false),
@@ -151,6 +152,8 @@ namespace QL_Nha_sach.Migrations
                     FullName = table.Column<string>(type: "TEXT", nullable: false),
                     Username = table.Column<string>(type: "TEXT", nullable: false),
                     Password = table.Column<string>(type: "TEXT", nullable: false),
+                    PhoneNumber = table.Column<string>(type: "TEXT", nullable: false),
+                    EmailAddress = table.Column<string>(type: "TEXT", nullable: false),
                     RoleId = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>

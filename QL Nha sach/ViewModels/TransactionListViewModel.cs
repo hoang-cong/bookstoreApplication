@@ -40,6 +40,8 @@ namespace QL_Nha_sach.ViewModels
 
         public ICommand OpenInvoiceDetailCommand { get; }
         public ICommand OpenImportDetailCommand { get; }
+        public ICommand DeleteInvoiceCommand { get; }
+        public ICommand DeleteImportCommand { get; }
 
         public event Action<Page> NavigateRequested;
 
@@ -67,15 +69,16 @@ namespace QL_Nha_sach.ViewModels
             );
 
             OpenInvoiceDetailCommand = new RelayCommand(ExecuteViewInvoiceDetail);
-
             OpenImportDetailCommand = new RelayCommand(ExecuteViewImportDetail);
+            DeleteInvoiceCommand = new RelayCommand(ExecuteDeleteInvoice, _ => SelectedInvoice != null);
+            DeleteImportCommand = new RelayCommand(ExecuteDeleteImport, _ => SelectedImport != null);
         }
 
         private void ExecuteViewInvoiceDetail(object parameter)
         {
             if (SelectedInvoice == null)
             {
-                MessageBox.Show("Please select an invoice to see detail.");
+                ShowMessage("Please select an invoice to see detail.", true);
                 return;
             }
 
@@ -85,14 +88,48 @@ namespace QL_Nha_sach.ViewModels
 
         private void ExecuteViewImportDetail(object parameter)
         {
-            if (SelectedInvoice == null)
+            if (SelectedImport == null)
             {
-                MessageBox.Show("Please select an import to see detail.");
+                ShowMessage("Please select an import to see detail.", true);
                 return;
             }
 
-            var vm = new ImportDetailViewModel(_session, _factory, SelectedInvoice.InvoiceId);
+            var vm = new ImportDetailViewModel(_session, _factory, SelectedImport.ImportId);
             NavigateRequested?.Invoke(new ImportDetailPage(vm));
+        }
+
+        private void ExecuteDeleteInvoice(object parameter)
+        {
+            if (SelectedInvoice == null) return;
+            using var context = _factory.CreateDbContext();
+            var invoice = context.Invoices
+                                 .Include(i => i.InvoiceDetails)
+                                 .FirstOrDefault(i => i.InvoiceId == SelectedInvoice.InvoiceId);
+            if (invoice != null)
+            {
+                context.InvoiceDetails.RemoveRange(invoice.InvoiceDetails);
+                context.Invoices.Remove(invoice);
+                context.SaveChanges();
+                Invoices.Remove(SelectedInvoice);
+                ShowMessage("Invoice deleted successfully.", false);
+            }
+        }
+
+        private void ExecuteDeleteImport(object parameter)
+        {
+            if (SelectedImport == null) return;
+            using var context = _factory.CreateDbContext();
+            var import = context.Imports
+                                 .Include(im => im.ImportDetails)
+                                 .FirstOrDefault(im => im.ImportId == SelectedImport.ImportId);
+            if (import != null)
+            {
+                context.ImportDetails.RemoveRange(import.ImportDetails);
+                context.Imports.Remove(import);
+                context.SaveChanges();
+                Imports.Remove(SelectedImport);
+                ShowMessage("Import deleted successfully.", false);
+            }
         }
     }
 }

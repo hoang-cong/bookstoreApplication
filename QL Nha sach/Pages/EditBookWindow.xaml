@@ -4,129 +4,107 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:QL_Nha_sach.Pages"
+        xmlns:controls="clr-namespace:QL_Nha_sach.Controls"
+		SizeToContent="WidthAndHeight"
         mc:Ignorable="d"
         Title="EditBookWindow" Height="450" Width="800">
-    <Grid Margin="30">
-        <Border Background="White" CornerRadius="8" Padding="20" 
-                BorderBrush="#ddd" BorderThickness="1" >
-            <StackPanel>
-                <TextBlock Text="Edit Book Details" 
-                           FontSize="24" FontWeight="Bold" 
-                           Foreground="#333" Margin="0,0,0,20"/>
 
-                <!-- Title & ISBN -->
-                <Grid Margin="0,0,0,15">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="20"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
+	<Grid Background="#F3F4F6">
+		<!-- Page background -->
+		<Border Background="White" CornerRadius="12" Margin="40" Padding="32" MaxWidth="900" VerticalAlignment="Center">
+			<StackPanel>
+				<!-- Title -->
+				<TextBlock Text="Edit Book Details" FontSize="24" FontWeight="Bold" Foreground="#111827" Margin="0,0,0,24"/>
 
-                    <StackPanel Grid.Column="0">
-                        <TextBlock Text="Book Title" FontWeight="SemiBold" Margin="0,0,0,5"/>
-                        <TextBox Text="{Binding EditableBook.Title}" Padding="5" Height="30"/>
-                    </StackPanel>
+				<!-- Row 1: Title & ISBN -->
+				<Grid Margin="0,0,0,20">
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="*"/>
+						<ColumnDefinition Width="24"/>
+						<ColumnDefinition Width="*"/>
+					</Grid.ColumnDefinitions>
 
-                    <StackPanel Grid.Column="2">
-                        <TextBlock Text="ISBN Number" FontWeight="SemiBold" Margin="0,0,0,5"/>
-                        <TextBox Text="{Binding EditableBook.ISBN}" Padding="5" Height="30"/>
-                    </StackPanel>
-                </Grid>
+					<StackPanel Grid.Column="0">
+						<TextBlock Text="Book Title" Foreground="#4B5563" FontSize="13" FontWeight="Medium" Margin="0,0,0,6"/>
+						<TextBox Text="{Binding EditableBook.Title}" Height="38" VerticalContentAlignment="Center" Padding="10,0"/>
+					</StackPanel>
 
-                <!-- Author, Genre, Publisher, Status -->
-                <Grid Margin="0,0,0,15">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="20"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
+					<StackPanel Grid.Column="2">
+						<TextBlock Text="ISBN Number" Foreground="#4B5563" FontSize="13" FontWeight="Medium" Margin="0,0,0,6"/>
+						<TextBox Text="{Binding EditableBook.ISBN}" Height="38" VerticalContentAlignment="Center" Padding="10,0"/>
+					</StackPanel>
+				</Grid>
 
-                    <StackPanel Grid.Column="0">
-                        <TextBlock Text="Author" FontWeight="SemiBold" Margin="0,0,0,5"/>
-                        <ListBox ItemsSource="{Binding Authors}"
-                             DisplayMemberPath="AuthorName"
-                             SelectionMode="Multiple"
-                             Height="100"
-                             SelectionChanged="AuthorsListBox_SelectionChanged"/>
-                    </StackPanel>
-                    <StackPanel Grid.Column="2">
-                        <TextBlock Text="Genre" FontWeight="SemiBold" Margin="0,0,0,5"/>
-                        <ListBox ItemsSource="{Binding Genres}"
-                             DisplayMemberPath="GenreName"
-                             SelectionMode="Multiple"
-                             Height="100"
-                             SelectionChanged="GenresListBox_SelectionChanged"/>
-                    </StackPanel>
-                </Grid>
+				<!-- Row 2: Author & Genre (Multi-select Lists) -->
+				<Grid Margin="0,0,0,20">
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="*"/>
+						<ColumnDefinition Width="24"/>
+						<ColumnDefinition Width="*"/>
+					</Grid.ColumnDefinitions>
 
-                <Grid Margin="0,0,0,15">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="20"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
+					<StackPanel Grid.Column="0">
+						<TextBlock Text="Author(s)" Foreground="#4B5563" FontSize="13" FontWeight="Medium" Margin="0,0,0,6"/>
+						<Border BorderThickness="1" BorderBrush="#D1D5DB" CornerRadius="6">
+							<ListBox ItemsSource="{Binding Authors}" DisplayMemberPath="AuthorName" SelectionMode="Multiple" Height="120" BorderThickness="0" SelectionChanged="AuthorsListBox_SelectionChanged"/>
+						</Border>
+					</StackPanel>
 
-                    <StackPanel Grid.Column="0">
-                        <TextBlock Text="Publisher" FontWeight="SemiBold" Margin="0,0,0,5"/>
-                        <ComboBox ItemsSource="{Binding Publishers}"
-                                  DisplayMemberPath="PublisherName"
-                                  SelectedValuePath="PublisherId"
-                                  SelectedValue="{Binding EditableBook.PublisherId}"
-                                  Height="30"/>
-                    </StackPanel>
+					<StackPanel Grid.Column="2">
+						<TextBlock Text="Genre(s)" Foreground="#4B5563" FontSize="13" FontWeight="Medium" Margin="0,0,0,6"/>
+						<Border BorderThickness="1" BorderBrush="#D1D5DB" CornerRadius="6">
+							<ListBox ItemsSource="{Binding Genres}" DisplayMemberPath="GenreName" SelectionMode="Multiple" Height="120" BorderThickness="0" SelectionChanged="GenresListBox_SelectionChanged"/>
+						</Border>
+					</StackPanel>
+				</Grid>
 
-                    <StackPanel Grid.Column="2">
-                        <TextBlock Text="Book Status" FontWeight="SemiBold" Margin="0,0,0,5"/>
-                        <ComboBox ItemsSource="{Binding BookStatuses}"
-                                  DisplayMemberPath="StatusName"
-                                  SelectedValuePath="BookStatusId"
-                                  SelectedValue="{Binding EditableBook.BookStatusId}"
-                                  Height="30"/>
-                    </StackPanel>
-                </Grid>
+				<!-- Row 3: Publisher & Status -->
+				<Grid Margin="0,0,0,20">
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="*"/>
+						<ColumnDefinition Width="24"/>
+						<ColumnDefinition Width="*"/>
+					</Grid.ColumnDefinitions>
 
-                <!-- Price & Stock -->
-                <Grid Margin="0,0,0,20">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="20"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
+					<StackPanel Grid.Column="0">
+						<TextBlock Text="Publisher" Foreground="#4B5563" FontSize="13" FontWeight="Medium" Margin="0,0,0,6"/>
+						<ComboBox ItemsSource="{Binding Publishers}" DisplayMemberPath="PublisherName" SelectedValuePath="PublisherId" SelectedValue="{Binding EditableBook.PublisherId}" Height="38" VerticalContentAlignment="Center"/>
+					</StackPanel>
 
-                    <StackPanel Grid.Column="0">
-                        <TextBlock Text="Price ($)" FontWeight="SemiBold" Margin="0,0,0,5"/>
-                        <TextBox Text="{Binding EditableBook.Price}" Padding="5" Height="30"/>
-                    </StackPanel>
+					<StackPanel Grid.Column="2">
+						<TextBlock Text="Book Status" Foreground="#4B5563" FontSize="13" FontWeight="Medium" Margin="0,0,0,6"/>
+						<ComboBox ItemsSource="{Binding BookStatuses}" DisplayMemberPath="StatusName" SelectedValuePath="BookStatusId" SelectedValue="{Binding EditableBook.BookStatusId}" Height="38" VerticalContentAlignment="Center"/>
+					</StackPanel>
+				</Grid>
 
-                    <StackPanel Grid.Column="2">
-                        <TextBlock Text="Stock" FontWeight="SemiBold" Margin="0,0,0,5"/>
-                        <TextBox Text="{Binding EditableBook.Stock}" Padding="5" Height="30"/>
-                    </StackPanel>
-                </Grid>
+				<!-- Row 4: Price & Stock -->
+				<Grid Margin="0,0,0,32">
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="*"/>
+						<ColumnDefinition Width="24"/>
+						<ColumnDefinition Width="*"/>
+					</Grid.ColumnDefinitions>
 
-                <!-- Save Button -->
-                <Button Content="Save Changes"
-                        Command="{Binding SaveCommand}"
-                        Background="#27ae60" Foreground="White"
-                        FontWeight="Bold" Padding="10"
-                        Cursor="Hand" Height="40">
-                    <Button.Resources>
-                        <Style TargetType="Button">
-                            <Setter Property="Template">
-                                <Setter.Value>
-                                    <ControlTemplate TargetType="Button">
-                                        <Border Background="{TemplateBinding Background}" 
-                                                CornerRadius="5">
-                                            <ContentPresenter HorizontalAlignment="Center" 
-                                                              VerticalAlignment="Center"/>
-                                        </Border>
-                                    </ControlTemplate>
-                                </Setter.Value>
-                            </Setter>
-                        </Style>
-                    </Button.Resources>
-                </Button>
-            </StackPanel>
-        </Border>
-    </Grid>
+					<StackPanel Grid.Column="0">
+						<TextBlock Text="Price ($)" Foreground="#4B5563" FontSize="13" FontWeight="Medium" Margin="0,0,0,6"/>
+						<TextBox Text="{Binding EditableBook.Price}" Height="38" VerticalContentAlignment="Center" Padding="10,0"/>
+					</StackPanel>
+
+					<StackPanel Grid.Column="2">
+						<TextBlock Text="Initial Stock" Foreground="#4B5563" FontSize="13" FontWeight="Medium" Margin="0,0,0,6"/>
+						<TextBox Text="{Binding EditableBook.Stock}" Height="38" VerticalContentAlignment="Center" Padding="10,0"/>
+					</StackPanel>
+				</Grid>
+
+				<!-- Save Button Row -->
+				<Grid>
+					<Button Content="Save Changes" Command="{Binding SaveCommand}" HorizontalAlignment="Left"
+							Background="Green" Foreground="White" FontWeight="SemiBold" Padding="24,12">
+					</Button>
+				</Grid>
+			</StackPanel>
+		</Border>
+
+		<controls:MessageBanner HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,20,0,0" Panel.ZIndex="100"/>
+	</Grid>
 </Window>

@@ -4,23 +4,217 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:QL_Nha_sach.Pages"
+	  xmlns:controls="clr-namespace:QL_Nha_sach.Controls"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
       Title="StockerHomePage">
 
-    <Grid>
-        <StackPanel>
-            <Button Content="Import Books" Command="{Binding ImportBooksCommand}"/>
-            <Button Content="Import List" Command="{Binding OpenImportListCommand}"/>
-            <Button Content="Logout" FontWeight="Bold" Click="LogoutButton_Click"/>
-        </StackPanel>
+	<Page.Resources>
+		<ResourceDictionary>
+			<ResourceDictionary.MergedDictionaries>
+				<ResourceDictionary Source="/Controls/SharedStyles.xaml"/>
+			</ResourceDictionary.MergedDictionaries>
+		</ResourceDictionary>
+	</Page.Resources>
 
-        <StackPanel x:Name="SessionContext" Orientation="Horizontal" Margin="0,0,0,10">
-            <TextBlock Text="Logged in as:" VerticalAlignment="Center" Margin="0,0,10,0"/>
-            <TextBlock Text="{Binding FullName}" VerticalAlignment="Center" FontWeight="Bold"/>
-            <TextBlock Text=" (" VerticalAlignment="Center"/>
-            <TextBlock Text="{Binding RoleName}" VerticalAlignment="Center"/>
-            <TextBlock Text=")" VerticalAlignment="Center"/>
-        </StackPanel>
-    </Grid>
+	<Grid Background="#E6E7E8">
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="*"/>
+			<ColumnDefinition Width="4*"/>
+		</Grid.ColumnDefinitions>
+
+		<!-- Sidebar -->
+		<Border Grid.Column="0" Background="White" CornerRadius="10" Margin="10,15,5,20" Padding="20">
+			<Viewbox Stretch="Uniform" VerticalAlignment="Top">
+				<StackPanel>
+					<TextBlock Text="Bookstore" FontSize="30" FontWeight="SemiBold" Foreground="#222" Padding="10"/>
+					<Button Content="📚    Import Books" Command="{Binding ImportBooksCommand}" Height="80" Padding="10" HorizontalContentAlignment="Left" Style="{StaticResource NavigateButton}"/>
+					<Button Content="👤    Import List" Command="{Binding OpenImportListCommand}" Height="80" Padding="10" HorizontalContentAlignment="Left" Style="{StaticResource NavigateButton}"/>
+					<Rectangle Height="1" Fill="#E0E0E0"/>
+					<Button Content="⚙️    Settings" Command="{Binding OpenSettingsCommand}" Height="80" Padding="10" HorizontalContentAlignment="Left" Style="{StaticResource NavigateButton}"/>
+					<Button Content="Logout" Click="LogoutButton_Click" BorderThickness="0" Height="80" FontSize="26" Background="White" Foreground="Red" FontWeight="SemiBold" Padding="10" HorizontalContentAlignment="Left"/>
+				</StackPanel>
+			</Viewbox>
+		</Border>
+
+		<!-- Main Content -->
+		<Grid Grid.Column="1" Background="#E6E7E8" Margin="5">
+			<Grid.RowDefinitions>
+				<RowDefinition Height="*"/>
+				<!-- Search bar -->
+				<RowDefinition Height="3*"/>
+				<!-- Dashboard cards -->
+				<RowDefinition Height="5*"/>
+				<!-- New Books -->
+			</Grid.RowDefinitions>
+
+			<!-- Search -->
+			<Border Grid.Row="0" Background="White" Margin="5,10,10,10" CornerRadius="20" Padding="10">
+				<Viewbox Stretch="Uniform" HorizontalAlignment="Left">
+					<Border Background="LightGray" Margin="10" CornerRadius="40" Height="80" VerticalAlignment="Center" HorizontalAlignment="Left">
+						<Grid Margin="15,0">
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="Auto"/>
+								<ColumnDefinition Width="*"/>
+							</Grid.ColumnDefinitions>
+
+							<TextBlock Text="🔍" FontSize="30" Foreground="#9CA3AF" VerticalAlignment="Center" Margin="0,0,10,0"/>
+							<TextBox Grid.Column="1" Width="1200" Background="Transparent" BorderThickness="0" VerticalContentAlignment="Center" FontSize="30" Foreground="#1F2937"/>
+						</Grid>
+					</Border>
+				</Viewbox>
+			</Border>
+
+			<!-- Dashboard Cards -->
+			<Grid Grid.Row="1" Margin="5,10,10,10">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="*" />
+					<ColumnDefinition Width="*" />
+				</Grid.ColumnDefinitions>
+
+				<Grid.RowDefinitions>
+					<RowDefinition Height="*" />
+				</Grid.RowDefinitions>
+
+				<!-- Stocks -->
+				<Border Grid.Column="0" Background="White" BorderThickness="0" CornerRadius="12" Margin="0,0,15,0">
+					<Grid Margin="20,20,20,0">
+						<Grid.RowDefinitions>
+							<RowDefinition Height="Auto" />
+							<!-- Header -->
+							<RowDefinition Height="*"    />
+							<!-- Content -->
+							<RowDefinition Height="Auto" />
+							<!-- Footer/Action  -->
+						</Grid.RowDefinitions>
+
+						<TextBlock Grid.Row="0" Text="Inventory" FontSize="18" FontWeight="SemiBold" Foreground="Black" Margin="0,0,0,15"/>
+
+						<ItemsControl Grid.Row="1" ItemsSource="{Binding Promotions}">
+							<ItemsControl.ItemTemplate>
+								<DataTemplate>
+									<Viewbox Stretch="Uniform" HorizontalAlignment="Center">
+										<StackPanel>
+											<Grid Margin="0,12">
+												<Grid.ColumnDefinitions>
+													<ColumnDefinition Width="*" />
+													<ColumnDefinition Width="Auto" />
+													<ColumnDefinition Width="Auto" />
+												</Grid.ColumnDefinitions>
+
+												<StackPanel Grid.Column="0" VerticalAlignment="Center">
+													<TextBlock Text="{Binding PromotionName}" FontSize="18" FontWeight="SemiBold" Foreground="#1C1C1E"/>
+												</StackPanel>
+
+												<Border Grid.Column="1" Background="#F2F2F7" CornerRadius="6" Padding="10,6" Margin="30,0" VerticalAlignment="Center">
+													<StackPanel Orientation="Horizontal">
+														<TextBlock Text="📅" Margin="0,0,8,0" FontSize="12" VerticalAlignment="Center"/>
+														<TextBlock Text="{Binding StartDate, StringFormat=\{0:MMM dd\}}" FontSize="13" Foreground="#3A3A3C" FontWeight="Medium"/>
+														<TextBlock Text=" – " FontSize="13" Foreground="#8E8E93"/>
+														<TextBlock Text="{Binding EndDate, StringFormat={}{0:MMM dd, yyyy}}" FontSize="13" Foreground="#3A3A3C" FontWeight="Medium"/>
+													</StackPanel>
+												</Border>
+
+												<Border Grid.Column="2" Background="#E8F5E9" Padding="12,6" CornerRadius="8" VerticalAlignment="Center">
+													<TextBlock Text="{Binding Discount, StringFormat={}{0}% OFF}" Foreground="#2E7D32" FontWeight="Bold" FontSize="14"/>
+												</Border>
+											</Grid>
+
+											<Rectangle Height="1" Fill="#F0F0F0" Margin="0,5,0,0"/>
+										</StackPanel>
+									</Viewbox>
+								</DataTemplate>
+							</ItemsControl.ItemTemplate>
+						</ItemsControl>
+
+						<Border Grid.Row="2" Background="#F8F9FA" BorderBrush="#E0E0E0" BorderThickness="0,1,0,0" Margin="-20,20,-20,0" Padding="20,12" CornerRadius="0,0,12,12">
+							<Button Content="View All" Command="{Binding ManageStockCommand}" HorizontalAlignment="Right" Foreground="White" Background="Tomato" Padding="15,6" BorderThickness="0">
+								<Button.Resources>
+									<Style TargetType="Button">
+										<Setter Property="Template">
+											<Setter.Value>
+												<ControlTemplate TargetType="Button">
+													<Border x:Name="viewPromo" Background="{TemplateBinding Background}" CornerRadius="12" Padding="{TemplateBinding Padding}">
+														<ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+													</Border>
+
+													<ControlTemplate.Triggers>
+														<Trigger Property="IsMouseOver" Value="True">
+															<Setter TargetName="viewPromo" Property="Background" Value="Orange"/>
+														</Trigger>
+													</ControlTemplate.Triggers>
+												</ControlTemplate>
+											</Setter.Value>
+										</Setter>
+									</Style>
+								</Button.Resources>
+							</Button>
+						</Border>
+					</Grid>
+				</Border>
+
+				<!-- Bseller -->
+				<Button Grid.Column="1" Margin="0,0,0,0" Background="White" Command="{Binding OpenBestSellerCommand}">
+					<Button.Template>
+						<ControlTemplate TargetType="Button">
+							<Border x:Name="bseller" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
+									BorderThickness="0" CornerRadius="12" Padding="20">
+								<Viewbox Stretch="Uniform" VerticalAlignment="Center">
+									<StackPanel>
+										<TextBlock Text="🏆" FontSize="80" HorizontalAlignment="Center"/>
+										<TextBlock x:Name="bsellerText" Text="Best Seller" FontSize="40" FontWeight="SemiBold" Foreground="Goldenrod" Margin="0,10,0,0" HorizontalAlignment="Center"/>
+										<TextBlock x:Name="bsellerSubtext" Text="View your top-selling books and trends." FontSize="20" Foreground="Goldenrod" Margin="0,10,0,0" HorizontalAlignment="Center"/>
+									</StackPanel>
+								</Viewbox>
+							</Border>
+
+							<ControlTemplate.Triggers>
+								<Trigger Property="IsMouseOver" Value="True">
+									<Setter TargetName="bseller" Property="Background" Value="Goldenrod"/>
+									<Setter TargetName="bsellerText" Property="Foreground" Value="White"/>
+									<Setter TargetName="bsellerSubtext" Property="Foreground" Value="White"/>
+								</Trigger>
+							</ControlTemplate.Triggers>
+						</ControlTemplate>
+					</Button.Template>
+				</Button>
+			</Grid>
+
+			<Border Grid.Row="2" VerticalAlignment="Stretch" Background="White" Padding="15" CornerRadius="16" Margin="5,10,10,15">
+				<Grid>
+					<Grid.RowDefinitions>
+						<RowDefinition Height="Auto"/>
+						<RowDefinition Height="*"/>
+					</Grid.RowDefinitions>
+
+					<TextBlock Grid.Row="0" Text="New Added Books" FontWeight="SemiBold" FontSize="22" Margin="10,5,0,5" Foreground="#222"/>
+
+					<ItemsControl Grid.Row="1" ItemsSource="{Binding NewBooks}">
+						<ItemsControl.ItemsPanel>
+							<ItemsPanelTemplate>
+								<UniformGrid Columns="5"/>
+							</ItemsPanelTemplate>
+						</ItemsControl.ItemsPanel>
+
+						<ItemsControl.ItemTemplate>
+							<DataTemplate>
+								<Border Background="White" Padding="10" BorderThickness="0">
+									<Grid>
+										<Grid.RowDefinitions>
+											<RowDefinition Height="*" />
+											<RowDefinition Height="Auto" />
+											<RowDefinition Height="Auto" />
+										</Grid.RowDefinitions>
+										<Image Grid.Row="0" Source="{Binding CoverImageUrl}" Stretch="UniformToFill"/>
+										<TextBlock Grid.Row="1" Text="{Binding Title}" FontSize="18" FontWeight="SemiBold" Height="52" TextWrapping="Wrap" TextTrimming="CharacterEllipsis" TextAlignment="Left"/>
+										<TextBlock Grid.Row="2" Text="{Binding AuthorNames}" FontSize="16" Foreground="#666666" FontWeight="Normal" Margin="0,0,0,0" TextAlignment="Left"/>
+									</Grid>
+								</Border>
+							</DataTemplate>
+						</ItemsControl.ItemTemplate>
+					</ItemsControl>
+				</Grid>
+			</Border>
+		</Grid>
+	</Grid>
 </Page>

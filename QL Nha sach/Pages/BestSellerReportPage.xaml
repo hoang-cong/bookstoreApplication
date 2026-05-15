@@ -1,0 +1,112 @@
+﻿<Page x:Class="QL_Nha_sach.Pages.BestSellerReportPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:QL_Nha_sach.Pages"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="800"
+      Title="BestSellerReportPage">
+
+	<Page.Resources>
+		<ResourceDictionary>
+			<ResourceDictionary.MergedDictionaries>
+				<ResourceDictionary Source="/Controls/SharedStyles.xaml"/>
+			</ResourceDictionary.MergedDictionaries>
+		</ResourceDictionary>
+	</Page.Resources>
+
+    <Grid Margin="30">
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto"/>
+			<!-- Header -->
+			<RowDefinition Height="Auto"/>
+			<!-- Filters -->
+			<RowDefinition Height="*"/>
+			<!-- ListBox -->
+		</Grid.RowDefinitions>
+
+		<!-- Header Section -->
+		<StackPanel Grid.Row="0" Margin="0,0,0,20">
+			<TextBlock Text="Top Performing Titles" FontSize="22" FontWeight="SemiBold" Foreground="#1A1A1A"/>
+			<TextBlock Text="Ranking based on total units sold this month." FontSize="14" Foreground="#666"/>
+		</StackPanel>
+		
+        <Button Content="✖" HorizontalAlignment="Right" VerticalAlignment="Top" Style="{StaticResource ExitButton}" Click="ExitButton_Click"/>
+
+		<!-- Filter Bar -->
+		<Border Grid.Row="1" Background="#F0F2F5" CornerRadius="12" Padding="15" Margin="0,0,0,20">
+			<StackPanel Orientation="Horizontal">
+				<DatePicker SelectedDate="{Binding SelectedDate}" Width="180" Height="35" VerticalContentAlignment="Center"/>
+				<Button Content="Update Report" Command="{Binding LoadBestSellerReportCommand}" Width="130" Height="35" Margin="15,0,0,0" Background="Green" Foreground="White" FontWeight="SemiBold">
+					<Button.Resources>
+						<Style TargetType="Border">
+							<Setter Property="CornerRadius" Value="6"/>
+						</Style>
+					</Button.Resources>
+				</Button>
+			</StackPanel>
+		</Border>
+
+		<ListBox Grid.Row="2" ItemsSource="{Binding BestSellers}" Background="Transparent" BorderThickness="0" ScrollViewer.VerticalScrollBarVisibility="Auto" HorizontalContentAlignment="Stretch">
+			<ListBox.ItemContainerStyle>
+				<Style TargetType="ListBoxItem">
+					<Setter Property="Background" Value="Transparent"/>
+					<Setter Property="Template">
+						<Setter.Value>
+							<ControlTemplate TargetType="ListBoxItem">
+								<!-- ContentPresenter allows the DataTemplate to show -->
+								<ContentPresenter />
+							</ControlTemplate>
+						</Setter.Value>
+					</Setter>
+				</Style>
+			</ListBox.ItemContainerStyle>
+
+			<ListBox.ItemTemplate>
+				<DataTemplate>
+					<Border Background="White" BorderBrush="#F0F0F0" BorderThickness="1" CornerRadius="12" Margin="0,0,0,12" Padding="12">
+						<Grid>
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="80"/>
+								<!-- Image Column -->
+								<ColumnDefinition Width="*"/>
+								<!-- Info Column -->
+								<ColumnDefinition Width="220"/>
+								<!-- Sales Visualization -->
+							</Grid.ColumnDefinitions>
+
+							<Border Grid.Column="0" Height="100" Width="70" CornerRadius="6" ClipToBounds="True" Background="#F5F5F5" VerticalAlignment="Center" HorizontalAlignment="Left">
+								<Image Source="{Binding CoverImageUrl}" Stretch="UniformToFill"/>
+							</Border>
+
+							<StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="15,0">
+								<TextBlock Text="{Binding Title}" FontSize="20" FontWeight="SemiBold" Foreground="#1A1A1A" TextTrimming="CharacterEllipsis"/>
+								<TextBlock Text="{Binding ISBN}" FontSize="14" Foreground="#666" Margin="0,4,0,0"/>
+								<Border Background="#E8F5E9" HorizontalAlignment="Left" CornerRadius="4" Padding="6,2" Margin="0,8,0,0">
+									<TextBlock Text="Top Seller" FontSize="12" FontWeight="Bold" Foreground="#2E7D32"/>
+								</Border>
+							</StackPanel>
+
+							<StackPanel Grid.Column="2" VerticalAlignment="Center" Margin="10,0">
+								<Grid Margin="0,0,0,8">
+									<TextBlock Text="Monthly Revenue" FontSize="14" Foreground="#999" HorizontalAlignment="Left" VerticalAlignment="Bottom"/>
+									<TextBlock Text="{Binding Quantity, StringFormat='{}{0} Sold'}" FontSize="16" FontWeight="Bold" Foreground="#2E7D32" HorizontalAlignment="Right"/>
+								</Grid>
+
+								<!-- Progress Bar for visual impact -->
+								<ProgressBar Height="8" Value="{Binding Quantity}" Maximum="1000" Foreground="#2E7D32" Background="#F0F0F0" BorderThickness="0">
+									<ProgressBar.Resources>
+										<Style TargetType="Border">
+											<Setter Property="CornerRadius" Value="4"/>
+										</Style>
+									</ProgressBar.Resources>
+								</ProgressBar>
+							</StackPanel>
+						</Grid>
+					</Border>
+				</DataTemplate>
+			</ListBox.ItemTemplate>
+		</ListBox>
+    </Grid>
+</Page>

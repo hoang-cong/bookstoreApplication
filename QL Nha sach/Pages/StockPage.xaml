@@ -1,0 +1,67 @@
+﻿<Page x:Class="QL_Nha_sach.Pages.StockPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:QL_Nha_sach.Pages"
+      xmlns:controls="clr-namespace:QL_Nha_sach.Controls"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="800"
+      Title="StockPage">
+
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <!-- Header -->
+            <RowDefinition Height="*"/>
+            <!-- DataGrid -->
+            <RowDefinition Height="Auto"/>
+            <!-- Footer buttons -->
+        </Grid.RowDefinitions>
+
+        <!-- Exit button -->
+        <Button Content="✖"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Top"
+                Width="30" Height="30"
+                Background="Transparent"
+                BorderThickness="0"
+                Foreground="Red"
+                FontWeight="Bold"
+                Click="ExitButton_Click"/>
+
+        <!-- Search bar -->
+        <DockPanel Grid.Row="0" Margin="0,0,0,15">
+            <StackPanel Orientation="Horizontal" DockPanel.Dock="Left">
+                <TextBlock Text="Search:" VerticalAlignment="Center" Margin="0,0,10,0" FontWeight="Bold"/>
+                <TextBox Width="250" Height="30" VerticalContentAlignment="Center"
+                 Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" />
+            </StackPanel>
+        </DockPanel>
+
+        <DataGrid Grid.Row="1"
+          ItemsSource="{Binding Books}"
+          AutoGenerateColumns="False"
+          CanUserAddRows="False"
+          IsReadOnly="False"
+          SelectedItem="{Binding SelectedBook, Mode=TwoWay}"
+          Margin="0,0,0,10">
+
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="ISBN" Binding="{Binding ISBN}" IsReadOnly="True" Width="120"/>
+                <DataGridTextColumn Header="Title" Binding="{Binding Title}" IsReadOnly="True" Width="200"/>
+                <DataGridTextColumn Header="Publisher" Binding="{Binding Publisher.Name}" IsReadOnly="True" Width="150"/>
+                <DataGridTextColumn Header="Stock"
+                            Binding="{Binding Stock, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
+                            Width="100"/>
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <!-- Save button -->
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,10,0,0">
+            <Button Content="Save Changes" Command="{Binding SaveCommand}" Margin="0,10,0,0"/>
+        </StackPanel>
+
+        <controls:MessageBanner HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0" Panel.ZIndex="100"/>
+    </Grid>
+</Page>

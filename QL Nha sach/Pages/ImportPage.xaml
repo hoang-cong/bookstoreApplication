@@ -4,66 +4,118 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:QL_Nha_sach.Pages"
+      xmlns:controls="clr-namespace:QL_Nha_sach.Controls"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
       Title="ImportPage">
 
-    <Grid Margin="20">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <!-- Header -->
-            <RowDefinition Height="*"/>
-            <!-- Line items -->
-            <RowDefinition Height="Auto"/>
-            <!-- Totals + buttons -->
-        </Grid.RowDefinitions>
+	<Page.Resources>
+		<ResourceDictionary>
+			<ResourceDictionary.MergedDictionaries>
+				<ResourceDictionary Source="/Controls/SharedStyles.xaml"/>
+			</ResourceDictionary.MergedDictionaries>
+		</ResourceDictionary>
+	</Page.Resources>
 
-        <Button Content="✖"
-                HorizontalAlignment="Right"
-                VerticalAlignment="Top"
-                Width="30" Height="30"
-                Background="Transparent"
-                BorderThickness="0"
-                Foreground="Red"
-                FontWeight="Bold"
-                Click="ExitButton_Click"/>
+	<Grid Margin="24" Background="#F9FAFB">
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto"/>
+			<!-- Status Bar -->
+			<RowDefinition Height="Auto"/>
+			<!-- Scanning Section -->
+			<RowDefinition Height="*"/>
+			<!-- Data Table -->
+			<RowDefinition Height="Auto"/>
+			<!-- Totals & Actions -->
+		</Grid.RowDefinitions>
 
-        <!-- Header info -->
-        <StackPanel Orientation="Horizontal" Grid.Row="0" Margin="0,0,0,10">
-            <TextBlock Text="Scan ISBN:" VerticalAlignment="Center" Margin="0,0,10,0"/>
-            <TextBox Width="200" Height="30" Text="{Binding ScannedISBN, UpdateSourceTrigger=PropertyChanged}" />
-            <TextBlock Text="Import Date:" VerticalAlignment="Center" Margin="0,0,10,0"/>
-            <TextBlock Text="{Binding Date}" VerticalAlignment="Center"/>
-            <TextBlock Text="   Staff:" VerticalAlignment="Center" Margin="20,0,10,0"/>
-            <TextBlock Text="{Binding StaffName}" VerticalAlignment="Center"/>
-        </StackPanel>
+		<!-- 1. Top Status Bar (Subtle info) -->
+		<Border Grid.Row="0" Background="White" Padding="15,10" CornerRadius="8" BorderBrush="#E5E7EB" BorderThickness="1" Margin="0,0,0,20">
+			<Grid>
+				<StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+					<TextBlock Text="📅" Margin="0,0,8,0" VerticalAlignment="Center"/>
+					<TextBlock Text="{Binding Date}" Foreground="#4B5563" FontWeight="Medium" VerticalAlignment="Center"/>
 
-        <!-- Line items -->
-        <DataGrid Grid.Row="1"
-                  ItemsSource="{Binding Details}"
-                  AutoGenerateColumns="False"
-                  CanUserAddRows="False"
-                  Margin="0,0,0,10"
-                  SelectedItem="{Binding SelectedDetail, Mode=TwoWay}">
-            <DataGrid.Columns>
-                <DataGridTextColumn Header="ISBN" Binding="{Binding Book.ISBN}" Width="100"/>
-                <DataGridTextColumn Header="Title" Binding="{Binding Title}" Width="200"/>
-                <DataGridTextColumn Header="Quantity" Binding="{Binding Quantity}" Width="100"/>
-                <DataGridTextColumn Header="Unit Price" Binding="{Binding UnitPrice, StringFormat={}{0:C}}" Width="120"/>
-                <DataGridTextColumn Header="SubTotal" Binding="{Binding SubTotal, StringFormat={}{0:C}}" Width="120" IsReadOnly="True"/>
-            </DataGrid.Columns>
-        </DataGrid>
+					<Separator Width="1" Height="15" Margin="20,0" Background="#E5E7EB"/>
 
-        <!-- Totals + buttons -->
-        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,0">
-            <TextBlock Text="Total:" VerticalAlignment="Center" Margin="0,0,10,0"/>
-            <TextBlock Text="{Binding Total, StringFormat={}{0:C}}" VerticalAlignment="Center" Margin="0,0,20,0"/>
-            <Button Content="Save Import" Command="{Binding SaveFormCommand}" Background="#27ae60" Foreground="White" FontWeight="Bold"/>
-        </StackPanel>
+					<TextBlock Text="👤 Stocker:" Foreground="#6B7280" Margin="0,0,8,0" VerticalAlignment="Center"/>
+					<TextBlock Text="{Binding StaffName}" Foreground="#111827" FontWeight="SemiBold" VerticalAlignment="Center"/>
+				</StackPanel>
 
-        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,10,0,0">
-            <Button Content="Add Book" Command="{Binding AddScannedBookCommand}" Margin="10,0,0,0"/>
-            <Button Content="Remove Item" Command="{Binding RemoveItemCommand}" CommandParameter="{Binding SelectedDetail}" Margin="10, 0, 0, 0"/>
-        </StackPanel>
-    </Grid>
+				<!-- Exit button -->
+				<Button Content="✖" HorizontalAlignment="Right" VerticalAlignment="Top" Style="{StaticResource ExitButton}" Click="ExitButton_Click"/>
+			</Grid>
+		</Border>
+
+		<!-- 2. Action/Scanning Section -->
+		<StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,0,0,20">
+			<StackPanel>
+				<TextBlock Text="Quick Scan ISBN" FontSize="12" FontWeight="Bold" Foreground="#4F46E5" Margin="0,0,0,5"/>
+				<StackPanel Orientation="Horizontal">
+					<TextBox Width="300" Height="45" FontSize="18" FontWeight="SemiBold" VerticalContentAlignment="Center" Padding="10,0" Text="{Binding ScannedISBN, UpdateSourceTrigger=PropertyChanged}" BorderBrush="#4F46E5" BorderThickness="2">
+						<!-- Allows Enter Key to Add -->
+						<TextBox.InputBindings>
+							<KeyBinding Key="Enter" Command="{Binding AddScannedBookCommand}"/>
+						</TextBox.InputBindings>
+					</TextBox>
+					<Button Content="Add to List" Command="{Binding AddScannedBookCommand}" Style="{StaticResource SaveButton}" Height="45" Margin="12,0,0,0" Width="120"/>
+				</StackPanel>
+			</StackPanel>
+		</StackPanel>
+
+		<!-- 3. Line Items Table -->
+		<Border Grid.Row="2" Background="White" CornerRadius="12,12,0,0" BorderBrush="#E5E7EB" BorderThickness="1" Padding="5">
+			<DataGrid ItemsSource="{Binding Details}" SelectedItem="{Binding SelectedDetail, Mode=TwoWay}" AutoGenerateColumns="False" CanUserAddRows="False"
+					  HeadersVisibility="Column" GridLinesVisibility="Horizontal" HorizontalGridLinesBrush="#F3F4F6" BorderThickness="0" Background="Transparent" RowHeight="40">
+				<DataGrid.ColumnHeaderStyle>
+					<Style TargetType="DataGridColumnHeader">
+						<Setter Property="Background" Value="#F9FAFB"/>
+						<Setter Property="Foreground" Value="#6B7280"/>
+						<Setter Property="FontWeight" Value="SemiBold"/>
+						<Setter Property="Padding" Value="10"/>
+						<Setter Property="BorderThickness" Value="0,0,0,1"/>
+						<Setter Property="BorderBrush" Value="#E5E7EB"/>
+					</Style>
+				</DataGrid.ColumnHeaderStyle>
+
+				<DataGrid.Columns>
+					<DataGridTextColumn Header="ISBN" Binding="{Binding Book.ISBN}" Width="130"/>
+					<DataGridTextColumn Header="Book Title" Binding="{Binding Title}" Width="*"/>
+					<DataGridTextColumn Header="Qty" Binding="{Binding Quantity}" Width="80"/>
+					<DataGridTextColumn Header="Price" Binding="{Binding UnitPrice, StringFormat={}{0:C}}" Width="100"/>
+					<DataGridTextColumn Header="Subtotal" Binding="{Binding SubTotal, StringFormat={}{0:C}}" Width="120" FontWeight="Bold"/>
+
+					<!-- Action Column -->
+					<DataGridTemplateColumn Width="100">
+						<DataGridTemplateColumn.CellTemplate>
+							<DataTemplate>
+								<Button Content="Remove" Command="{Binding DataContext.RemoveItemCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+										CommandParameter="{Binding}" Foreground="#DC2626" Background="Transparent" BorderThickness="0" FontSize="11"/>
+							</DataTemplate>
+						</DataGridTemplateColumn.CellTemplate>
+					</DataGridTemplateColumn>
+				</DataGrid.Columns>
+			</DataGrid>
+		</Border>
+
+		<!-- 4. Footer: Totals and Saving -->
+		<Border Grid.Row="3" Background="White" BorderBrush="#E5E7EB" BorderThickness="1,0,1,1" CornerRadius="0,0,12,12" Padding="20">
+			<Grid>
+				<StackPanel HorizontalAlignment="Left" VerticalAlignment="Center">
+					<TextBlock Text="{Binding Details.Count, StringFormat='Items: {0}'}" Foreground="#6B7280" FontSize="14"/>
+				</StackPanel>
+
+				<StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+					<StackPanel VerticalAlignment="Center" Margin="0,0,30,0">
+						<TextBlock Text="Grand Total" HorizontalAlignment="Right" Foreground="#6B7280" FontSize="12"/>
+						<TextBlock Text="{Binding Total, StringFormat={}{0:C}}" FontSize="32" FontWeight="Black" Foreground="#059669"/>
+					</StackPanel>
+
+					<Button Content="Save Form" Command="{Binding SaveFormCommand}" Style="{StaticResource SaveButton}"/>
+				</StackPanel>
+			</Grid>
+		</Border>
+
+		<controls:MessageBanner HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,50,0,0" Panel.ZIndex="100"/>
+	</Grid>
 </Page>

@@ -4,103 +4,134 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:QL_Nha_sach.Pages"
+      xmlns:controls="clr-namespace:QL_Nha_sach.Controls"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
       Title="AddBookPage">
 
-    <Grid Background="White" Margin="30">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="*"/>
-            <!-- Main form -->
-            <RowDefinition Height="Auto"/>
-            <!-- Save button -->
-        </Grid.RowDefinitions>
+    <Page.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Controls/SharedStyles.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Page.Resources>
 
-        <!-- Exit button -->
-        <Button Content="✖"
-                HorizontalAlignment="Right"
-                VerticalAlignment="Top"
-                Width="30" Height="30"
-                Background="Transparent"
-                BorderThickness="0"
-                Foreground="Red"
-                FontWeight="Bold"
-                Click="ExitButton_Click"/>
+	<Grid Background="#F3F4F6">
 
-        <!-- Main form: two-column layout -->
-        <Grid Grid.Row="0" Margin="0,40,0,20">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <!-- Left: text inputs -->
-                <ColumnDefinition Width="40"/>
-                <!-- Spacer -->
-                <ColumnDefinition Width="*"/>
-                <!-- Right: dropdowns -->
-            </Grid.ColumnDefinitions>
+			<Border Background="White" CornerRadius="12" Margin="40" VerticalAlignment="Center" HorizontalAlignment="Center" Width="850" Padding="32">
+				<Grid>
+					<Grid.RowDefinitions>
+						<RowDefinition Height="Auto"/>
+						<!-- Title & Close -->
+						<RowDefinition Height="*"/>
+						<!-- Form Fields -->
+						<RowDefinition Height="Auto"/>
+						<!-- Buttons -->
+					</Grid.RowDefinitions>
 
-            <!-- Left side: typing boxes -->
-            <StackPanel Grid.Column="0">
-                <TextBlock Text="Book Title" Margin="0,0,0,5" FontWeight="SemiBold"/>
-                <TextBox Text="{Binding NewBook.Title}" Padding="5" Height="30"/>
+					<!-- 1. Header Section -->
+					<Grid Grid.Row="0" Margin="0,0,0,24">
+						<TextBlock Text="Add New Book" FontSize="22" FontWeight="Bold" Foreground="#111827"/>
+						<!-- Exit button -->
+						<Button Content="✖" HorizontalAlignment="Right" VerticalAlignment="Top" Style="{StaticResource ExitButton}" Click="ExitButton_Click"/>
+					</Grid>
 
-                <TextBlock Text="ISBN Number" Margin="0,10,0,5" FontWeight="SemiBold"/>
-                <TextBox Text="{Binding NewBook.ISBN}" Padding="5" Height="30"/>
+					<!-- 2. Main Form Layout -->
+					<Grid Grid.Row="1">
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="*"/>
+							<ColumnDefinition Width="48"/>
+							<ColumnDefinition Width="*"/>
+						</Grid.ColumnDefinitions>
 
-                <TextBlock Text="Price ($)" Margin="0,10,0,5" FontWeight="SemiBold"/>
-                <TextBox Text="{Binding NewBook.Price}" Padding="5" Height="30"/>
+						<!-- Left Column: Primary Details -->
+						<StackPanel Grid.Column="0">
+							<TextBlock Text="Book Title" Foreground="#4B5563" FontSize="14" FontWeight="Medium" Margin="0,0,0,6"/>
+							<TextBox Text="{Binding NewBook.Title}" Height="36" VerticalContentAlignment="Center" Padding="8,0" Margin="0,0,0,16"/>
 
-                <TextBlock Text="Initial Stock" Margin="0,10,0,5" FontWeight="SemiBold"/>
-                <TextBox Text="{Binding NewBook.Stock}" Padding="5" Height="30"/>
-            </StackPanel>
+							<TextBlock Text="ISBN Number" Foreground="#4B5563" FontSize="14" FontWeight="Medium" Margin="0,0,0,6"/>
+							<Grid Margin="0,0,0,16">
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition Width="*"/>
+									<ColumnDefinition Width="Auto"/>
+								</Grid.ColumnDefinitions>
+								<TextBox Text="{Binding NewBook.ISBN}" Height="36" VerticalContentAlignment="Center" Padding="8,0"/>
+								<Button Grid.Column="1" Content="Autofill" Command="{Binding AutofillBookCommand}"
+										Margin="8,0,0,0" Padding="12,0" Background="#F3F4F6" BorderBrush="#E5E7EB"/>
+							</Grid>
 
-            <!-- Right side: dropdowns with manage buttons -->
-            <StackPanel Grid.Column="2">
-                <TextBlock Text="Author" Margin="0,0,0,5" FontWeight="SemiBold"/>
-                <DockPanel>
-                    <ComboBox ItemsSource="{Binding Authors}" Height="30">
-                        <ComboBox.ItemTemplate>
-                            <DataTemplate>
-                                <CheckBox Content="{Binding AuthorName}" IsChecked="{Binding IsSelected, Mode=TwoWay}" />
-                            </DataTemplate>
-                        </ComboBox.ItemTemplate>
-                    </ComboBox>
-                    <Button Content="Manage" Command="{Binding ManageAuthorCommand}" DockPanel.Dock="Right" Margin="5,0,0,0" Padding="10,0"/>
-                </DockPanel>
+							<TextBlock Text="Price ($)" Foreground="#4B5563" FontSize="14" FontWeight="Medium" Margin="0,0,0,6"/>
+							<TextBox Text="{Binding NewBook.Price}" Height="36" VerticalContentAlignment="Center" Padding="8,0" Margin="0,0,0,16"/>
 
-                <TextBlock Text="Genre" Margin="0,10,0,5" FontWeight="SemiBold"/>
-                <DockPanel>
-                    <ComboBox ItemsSource="{Binding Genres}" Height="30">
-                        <ComboBox.ItemTemplate>
-                            <DataTemplate>
-                                <CheckBox Content="{Binding GenreName}" IsChecked="{Binding IsSelected, Mode=TwoWay}" />
-                            </DataTemplate>
-                        </ComboBox.ItemTemplate>
-                    </ComboBox>
-                    <Button Content="Manage" Command="{Binding ManageGenreCommand}" DockPanel.Dock="Right" Margin="5,0,0,0" Padding="10,0"/>
-                </DockPanel>
-                
-                <TextBlock Text="Publisher" Margin="0,10,0,5" FontWeight="SemiBold"/>
-                <DockPanel>
-                    <Button Content="Manage" Command="{Binding ManagePublisherCommand}" DockPanel.Dock="Right" Margin="5,0,0,0" Padding="10,0"/>
-                    <ComboBox ItemsSource="{Binding Publishers}" DisplayMemberPath="PublisherName" SelectedValuePath="PublisherId" SelectedValue="{Binding NewBook.PublisherId}" Height="30"/>
-                </DockPanel>
+							<TextBlock Text="Initial Stock" Foreground="#4B5563" FontSize="14" FontWeight="Medium" Margin="0,0,0,6"/>
+							<TextBox Text="{Binding NewBook.Stock}" Height="36" VerticalContentAlignment="Center" Padding="8,0"/>
+						</StackPanel>
 
-                <TextBlock Text="Book Status" Margin="0,10,0,5" FontWeight="SemiBold"/>
-                <DockPanel>
-                    <ComboBox ItemsSource="{Binding BookStatuses}" DisplayMemberPath="StatusName" SelectedValuePath="BookStatusId" SelectedValue="{Binding NewBook.BookStatusId}" Height="30"/>
-                </DockPanel>
-            </StackPanel>
-        </Grid>
+						<!-- Right Column: Categorization -->
+						<StackPanel Grid.Column="2">
+							<TextBlock Text="Author" Foreground="#4B5563" FontSize="14" FontWeight="Medium" Margin="0,0,0,6"/>
+							<DockPanel Margin="0,0,0,16">
+								<Button Content="Manage" Command="{Binding ManageAuthorCommand}" DockPanel.Dock="Right" Margin="8,0,0,0" Background="Transparent" Foreground="#2563EB" BorderThickness="0" FontWeight="SemiBold"/>
+								<ComboBox ItemsSource="{Binding Authors}" Height="36" VerticalContentAlignment="Center">
+									<ComboBox.ItemTemplate>
+										<DataTemplate>
+											<ToggleButton IsChecked="{Binding IsSelected, Mode=TwoWay}" HorizontalContentAlignment="Left" Padding="5">
+												<StackPanel Orientation="Horizontal">
+													<TextBlock Text="{Binding AuthorName}" />
+												</StackPanel>
+											</ToggleButton>
+										</DataTemplate>
+									</ComboBox.ItemTemplate>
 
-        <!-- Save button bottom-left -->
-        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,10,0,0">
-            <Button Command="{Binding SaveBookCommand}" 
-                    Content="Save Book to System" 
-                    Padding="15,5"
-                    Background="#27ae60" 
-                    Foreground="White" 
-                    FontWeight="Bold"
-                    Cursor="Hand"/>
-        </StackPanel>
-    </Grid>
+									<ComboBox.ItemContainerStyle>
+										<Style TargetType="ComboBoxItem">
+											<Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+										</Style>
+									</ComboBox.ItemContainerStyle>
+								</ComboBox>
+							</DockPanel>
+
+							<TextBlock Text="Genre" Foreground="#4B5563" FontSize="14" FontWeight="Medium" Margin="0,0,0,6"/>
+							<DockPanel Margin="0,0,0,16">
+								<Button Content="Manage" Command="{Binding ManageGenreCommand}" DockPanel.Dock="Right" Margin="8,0,0,0" Background="Transparent" Foreground="#2563EB" BorderThickness="0" FontWeight="SemiBold"/>
+								<ComboBox ItemsSource="{Binding Genres}" Height="36" VerticalContentAlignment="Center">
+									<ComboBox.ItemTemplate>
+										<DataTemplate>
+											<ToggleButton IsChecked="{Binding IsSelected, Mode=TwoWay}" HorizontalContentAlignment="Left" Padding="5">
+												<StackPanel Orientation="Horizontal">
+													<TextBlock Text="{Binding GenreName}" />
+												</StackPanel>
+											</ToggleButton>
+										</DataTemplate>
+									</ComboBox.ItemTemplate>
+
+									<ComboBox.ItemContainerStyle>
+										<Style TargetType="ComboBoxItem">
+											<Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+										</Style>
+									</ComboBox.ItemContainerStyle>
+								</ComboBox>
+							</DockPanel>
+
+							<TextBlock Text="Publisher" Foreground="#4B5563" FontSize="14" FontWeight="Medium" Margin="0,0,0,6"/>
+							<DockPanel Margin="0,0,0,16">
+								<Button Content="Manage" Command="{Binding ManagePublisherCommand}" DockPanel.Dock="Right" Margin="8,0,0,0" Background="Transparent" Foreground="#2563EB" BorderThickness="0" FontWeight="SemiBold"/>
+								<ComboBox ItemsSource="{Binding Publishers}" DisplayMemberPath="PublisherName" SelectedValuePath="PublisherId" SelectedValue="{Binding NewBook.PublisherId}" Height="36" VerticalContentAlignment="Center"/>
+							</DockPanel>
+
+							<TextBlock Text="Book Status" Foreground="#4B5563" FontSize="14" FontWeight="Medium" Margin="0,0,0,6"/>
+							<ComboBox ItemsSource="{Binding BookStatuses}" DisplayMemberPath="StatusName" SelectedValuePath="BookStatusId" SelectedValue="{Binding NewBook.BookStatusId}" Height="36" VerticalContentAlignment="Center"/>
+						</StackPanel>
+					</Grid>
+
+					<!-- 3. Footer Action Section -->
+					<StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,32,0,0">
+						<Button Content="Save Book" Command="{Binding SaveBookCommand}" Style="{StaticResource SaveButton}" Padding="24,10"/>
+					</StackPanel>
+				</Grid>
+			</Border>
+
+		<controls:MessageBanner HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,20,0,0" Panel.ZIndex="100"/>
+	</Grid>
 </Page>

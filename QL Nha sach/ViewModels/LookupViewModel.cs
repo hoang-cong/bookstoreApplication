@@ -71,14 +71,6 @@ namespace QL_Nha_sach.ViewModels
 
         private void ExecuteDelete(object parameter)
         {
-            var result = MessageBox.Show(
-                $"Are you sure you want to delete '{SelectedItem.Name}'?",
-                "Confirm Delete",
-                MessageBoxButton.YesNo,
-                MessageBoxImage.Warning);
-
-            if (result != MessageBoxResult.Yes) return;
-
             try
             {
                 using var context = _factory.CreateDbContext();
@@ -87,8 +79,6 @@ namespace QL_Nha_sach.ViewModels
                 context.SaveChanges();
 
                 Items.Remove(SelectedItem);
-
-                MessageBox.Show("Deleted successfully!");
             }
             catch (DbUpdateException)
             {

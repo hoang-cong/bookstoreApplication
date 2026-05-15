@@ -27,11 +27,9 @@ namespace QL_Nha_sach.Pages
         public StaffHomePage(HomeScreenViewModel vm, SessionManager session)
         {
             InitializeComponent();
-            DataContext = vm;
+            this.DataContext = vm;
             _session = session;
             vm.NavigateRequested += OnNavigateRequested;
-
-            this.SessionContext.DataContext = _session;
         }
 
         private void OnNavigateRequested(Page page)

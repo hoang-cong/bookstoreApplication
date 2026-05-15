@@ -17,12 +17,22 @@ namespace QL_Nha_sach.ViewModels
     {
         private readonly IDbContextFactory<AppDbContext> _factory;
         private readonly SessionManager _session;
+        private decimal _totalAmount;
 
         public Invoice? CurrentInvoice { get; private set; }
 
         public int InvoiceId => CurrentInvoice.InvoiceId;
         public DateTime Date => CurrentInvoice.InvoiceDate;
         public string StaffName => CurrentInvoice.User?.FullName ?? string.Empty;
+        public decimal TotalAmount
+        {
+            get => _totalAmount;
+            set
+            {
+                _totalAmount = value;
+                OnPropertyChanged(nameof(TotalAmount));
+            }
+        }
 
         public ObservableCollection<InvoiceDetail> Details { get; private set; }
 
@@ -42,6 +52,8 @@ namespace QL_Nha_sach.ViewModels
 
             Details = new ObservableCollection<InvoiceDetail>(CurrentInvoice.InvoiceDetails);
 
+            TotalAmount = CurrentInvoice.InvoiceDetails.Sum(d => d.Quantity * d.UnitPrice);
+
             VoidInvoiceCommand = new RelayCommand(ExecuteVoidInvoice, CanVoidInvoice);
         }
 
@@ -56,18 +68,30 @@ namespace QL_Nha_sach.ViewModels
             if (dbInvoice != null && !dbInvoice.IsVoided)
             {
                 dbInvoice.IsVoided = true;
+                dbInvoice.VoidedByUserId = _session.CurrentUser.UserId;
+
+                var bookIds = dbInvoice.InvoiceDetails.Select(d => d.BookId).ToList();
+                var books = context.Books
+                    .Where(b => bookIds.Contains(b.BookId))
+                    .ToDictionary(b => b.BookId);
+
                 foreach (var detail in dbInvoice.InvoiceDetails)
                 {
-                    var book = context.Books.FirstOrDefault(b => b.BookId == detail.BookId);
-                    if (book != null)
+                    if (books.TryGetValue(detail.BookId, out var book))
+                    {
                         book.Stock += detail.Quantity; // reverse sale
+                    }
                 }
                 context.SaveChanges();
 
                 CurrentInvoice.IsVoided = true;
+                CurrentInvoice.VoidedByUserId = _session.CurrentUser.UserId;
+                CurrentInvoice.VoidedByUser = context.Find<User>(_session.CurrentUser.UserId);
+
                 OnPropertyChanged(nameof(CurrentInvoice));
                 OnPropertyChanged(nameof(IsVoided)); // if you expose IsVoided separately
-                MessageBox.Show("Invoice voided successfully!");
+                OnPropertyChanged(nameof(TotalAmount));
+                ShowMessage("Invoice voided successfully!", false);
             }
         }
         public bool IsVoided => CurrentInvoice?.IsVoided ?? false;

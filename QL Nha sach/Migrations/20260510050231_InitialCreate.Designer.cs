@@ -11,7 +11,7 @@ using QL_Nha_sach.Data;
 namespace QL_Nha_sach.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260430052320_InitialCreate")]
+    [Migration("20260510050231_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -43,6 +43,9 @@ namespace QL_Nha_sach.Migrations
 
                     b.Property<int>("BookStatusId")
                         .HasColumnType("INTEGER");
+
+                    b.Property<string>("CoverImageUrl")
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("ISBN")
                         .IsRequired()
@@ -385,11 +388,19 @@ namespace QL_Nha_sach.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<string>("EmailAddress")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("FullName")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Password")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("PhoneNumber")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
@@ -545,7 +556,7 @@ namespace QL_Nha_sach.Migrations
                         .IsRequired();
 
                     b.HasOne("QL_Nha_sach.Models.Promotion", "Promotion")
-                        .WithMany()
+                        .WithMany("PromotionTargets")
                         .HasForeignKey("PromotionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -596,6 +607,11 @@ namespace QL_Nha_sach.Migrations
             modelBuilder.Entity("QL_Nha_sach.Models.Invoice", b =>
                 {
                     b.Navigation("InvoiceDetails");
+                });
+
+            modelBuilder.Entity("QL_Nha_sach.Models.Promotion", b =>
+                {
+                    b.Navigation("PromotionTargets");
                 });
 
             modelBuilder.Entity("QL_Nha_sach.Models.Publisher", b =>

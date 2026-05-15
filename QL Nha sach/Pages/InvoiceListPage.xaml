@@ -4,9 +4,18 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:QL_Nha_sach.Pages"
+      xmlns:controls="clr-namespace:QL_Nha_sach.Controls"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
       Title="InvoiceListPage">
+
+    <Page.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Controls/SharedStyles.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Page.Resources>
 
     <Grid Margin="20">
         <Grid.RowDefinitions>
@@ -18,37 +27,55 @@
             <!-- Footer buttons -->
         </Grid.RowDefinitions>
 
-        <!-- Exit button -->
-        <Button Content="✖"
-                HorizontalAlignment="Right"
-                VerticalAlignment="Top"
-                Width="30" Height="30"
-                Background="Transparent"
-                BorderThickness="0"
-                Foreground="Red"
-                FontWeight="Bold"
-                Click="ExitButton_Click"/>
+		<Grid Grid.Row="0" Margin="0,0,0,20">
+			<StackPanel>
+				<TextBlock Text="Invoice History" FontSize="28" FontWeight="SemiBold" Foreground="#1A1A1A"/>
+				<TextBlock Text="Review your store's recent invoices." FontSize="14" Foreground="#666"/>
+			</StackPanel>
+			<Button Content="✖" HorizontalAlignment="Right" VerticalAlignment="Top" Style="{StaticResource ExitButton}" Click="ExitButton_Click"/>
+		</Grid>
 
-        <!-- DataGrid -->
-        <DataGrid x:Name="InvoiceGrid"
-                  Grid.Row="1"
-                  ItemsSource="{Binding Invoices}"
-                  SelectedItem="{Binding SelectedInvoice}"
-                  AutoGenerateColumns="False"
-                  Margin="0,40,0,0">
-            <DataGrid.Columns>
-                <DataGridTextColumn Header="ID" Binding="{Binding InvoiceId}" />
-                <DataGridTextColumn Header="Date" Binding="{Binding InvoiceDate}" />
-                <DataGridTextColumn Header="Staff" Binding="{Binding UserId}" />
-                <!-- Show Voided status -->
-                <DataGridTextColumn Header="Status" 
-                                    Binding="{Binding IsVoided}" />
-            </DataGrid.Columns>
-        </DataGrid>
+		<ListBox Grid.Row="1" ItemsSource="{Binding Invoices}" SelectedItem="{Binding SelectedInvoice}" Background="Transparent" BorderThickness="0" HorizontalContentAlignment="Stretch">
+			<ListBox.ItemTemplate>
+				<DataTemplate>
+					<Border Background="White" BorderBrush="#EEE" BorderThickness="1" CornerRadius="8" Padding="15" Margin="0,0,0,10">
+						<Grid>
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="Auto"/>
+								<!-- Icon/Status -->
+								<ColumnDefinition Width="*"/>
+								<!-- Details -->
+								<ColumnDefinition Width="Auto"/>
+								<!-- Date/Time -->
+							</Grid.ColumnDefinitions>
+
+							<!-- Status Icon -->
+							<Ellipse Width="10" Height="10" Fill="#4CAF50" VerticalAlignment="Center" Margin="0,0,15,0"/>
+
+							<StackPanel Grid.Column="1">
+								<TextBlock Text="{Binding InvoiceId, StringFormat='Invoice #INV-{0}'}" FontWeight="Bold" FontSize="16" Foreground="#222"/>
+								<TextBlock Text="{Binding UserId, StringFormat='Processed by Staff: {0}'}" FontSize="13" Foreground="#888" Margin="0,2,0,0"/>
+								<!-- Your specific Style for Voided text -->
+								<TextBlock Style="{StaticResource VoidedStatusTextStyle}" Margin="0,4,0,0"/>
+							</StackPanel>
+
+							<StackPanel Grid.Column="2" VerticalAlignment="Center">
+								<TextBlock Text="{Binding InvoiceDate, StringFormat=\{0:dd MMM yyyy\}}" FontWeight="SemiBold" HorizontalAlignment="Right"/>
+								<TextBlock Text="{Binding InvoiceDate, StringFormat=\{0:HH:mm\}}" FontSize="12" Foreground="#999" HorizontalAlignment="Right"/>
+							</StackPanel>
+						</Grid>
+					</Border>
+				</DataTemplate>
+			</ListBox.ItemTemplate>
+		</ListBox>
 
         <!-- Footer buttons -->
-        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,10,0,0">
-            <Button Content="View Details" Command="{Binding ViewInvoiceDetailCommand}"/>
-        </StackPanel>
+		<Border Grid.Row="2" Background="#F8F9FA" Padding="15" CornerRadius="8" Margin="0,10,0,0">
+			<StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+				<Button Content="View Details" Command="{Binding ViewInvoiceDetailCommand}" Style="{StaticResource EditButton}"/>
+			</StackPanel>
+		</Border>
+
+        <controls:MessageBanner HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0" Panel.ZIndex="100"/>
     </Grid>
 </Page>

@@ -47,20 +47,19 @@ namespace QL_Nha_sach.ViewModels
             _session = session;
             _factory = factory;
 
-            using var context = factory.CreateDbContext();
-            Invoices = new ObservableCollection<Invoice>(
-                context.Invoices.Include(i => i.InvoiceDetails).ToList()
-            );
+            LoadInvoices();
 
             ViewInvoiceDetailCommand = new RelayCommand(ExecuteViewInvoiceDetail);
-            LoadInvoices();
         }
 
         private void LoadInvoices()
         {
             using var context = _factory.CreateDbContext();
             Invoices = new ObservableCollection<Invoice>(
-                context.Invoices.Include(i => i.InvoiceDetails).ToList()
+                context.Invoices
+                    .Include(i => i.InvoiceDetails)
+                    .Include(i => i.VoidedByUser)
+                    .ToList()
             );
         }
 
@@ -68,7 +67,7 @@ namespace QL_Nha_sach.ViewModels
         {
             if (SelectedInvoice == null)
             {
-                MessageBox.Show("Please select an invoice to see detail.");
+                ShowMessage("Please select an invoice to see detail.", true);
                 return;
             }
 

@@ -1,0 +1,163 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- Generic status style -->
+    <Style x:Key="VoidedStatusTextStyle" TargetType="TextBlock">
+        <!-- Default: Active -->
+        <Setter Property="Text" Value="Status: Active"/>
+        <Setter Property="Foreground" Value="Green"/>
+
+        <Style.Triggers>
+            <!-- If Voided -->
+            <DataTrigger Binding="{Binding IsVoided}" Value="True">
+                <Setter Property="Foreground" Value="Red"/>
+                <Setter Property="Text">
+                    <Setter.Value>
+                        <!-- Show Voided + ID + Name -->
+                        <MultiBinding StringFormat="Status: Voided by {0} ({1})">
+                            <Binding Path="VoidedByUserId"/>
+                            <Binding Path="VoidedByUser.FullName"/>
+                        </MultiBinding>
+                    </Setter.Value>
+                </Setter>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <!-- Save button style -->
+    <Style x:Key="SaveButton" TargetType="Button">
+        <Setter Property="Foreground" Value="White"/>
+		<Setter Property="Background" Value="#475569"/>
+		<Setter Property="Padding" Value="24,10"/>
+		<Setter Property="MinWidth" Value="140"/>
+		<Setter Property="FontSize" Value="16"/>
+		<Setter Property="FontWeight" Value="Medium"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="save" BorderThickness="0" Background="{TemplateBinding Background}" CornerRadius="9">
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Margin="{TemplateBinding Padding}"/>
+                    </Border>
+                    
+                    <ControlTemplate.Triggers>
+                        <!-- Hover effect -->
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="save" Property="Background" Value="#64748B"/>
+                        </Trigger>
+                        <!-- Pressed effect (optional) -->
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="save" Property="Background" Value="#334155"/>
+                            <!-- darker green -->
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+	<!-- Edit button style -->
+	<Style x:Key="EditButton" TargetType="Button">
+		<Setter Property="Foreground" Value="White"/>
+		<Setter Property="Background" Value="#475569"/>
+		<Setter Property="Padding" Value="24,10"/>
+		<Setter Property="MinWidth" Value="140"/>
+		<Setter Property="FontSize" Value="16"/>
+		<Setter Property="FontWeight" Value="Medium"/>
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="Button">
+					<Border x:Name="edit" BorderThickness="0" Background="{TemplateBinding Background}" CornerRadius="9">
+						<ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Margin="{TemplateBinding Padding}"/>
+					</Border>
+
+					<ControlTemplate.Triggers>
+						<!-- Hover effect -->
+						<Trigger Property="IsMouseOver" Value="True">
+							<Setter TargetName="edit" Property="Background" Value="#64748B"/>
+						</Trigger>
+						<!-- Pressed effect (optional) -->
+						<Trigger Property="IsPressed" Value="True">
+							<Setter TargetName="edit" Property="Background" Value="#334155"/>
+						</Trigger>
+					</ControlTemplate.Triggers>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
+	
+	<!-- Delete button style -->
+    <Style x:Key="DeleteButton" TargetType="Button">
+        <Setter Property="Foreground" Value="White"/>
+		<Setter Property="Background" Value="#475569"/>
+		<Setter Property="Padding" Value="24,10"/>
+		<Setter Property="MinWidth" Value="140"/>
+		<Setter Property="FontSize" Value="16"/>
+		<Setter Property="FontWeight" Value="Medium"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="delete" BorderThickness="0" Background="{TemplateBinding Background}" CornerRadius="9">
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Margin="{TemplateBinding Padding}"/>
+                    </Border>
+                    
+                    <ControlTemplate.Triggers>
+                        <!-- Hover effect -->
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="delete" Property="Background" Value="#64748B"/>
+                        </Trigger>
+                        <!-- Pressed effect (optional) -->
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="delete" Property="Background" Value="DarkRed"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+	<!-- Navigate button style -->
+	<Style x:Key="NavigateButton" TargetType="Button">
+		<Setter Property="Foreground" Value="Black"/>
+		<Setter Property="Background" Value="White"/>
+		<Setter Property="FontSize" Value="16"/>
+		<Setter Property="FontWeight" Value="SemiBold"/>
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="Button">
+					<Border Background="{TemplateBinding Background}">
+						<ContentPresenter HorizontalAlignment="Left" VerticalAlignment="Center"/>
+					</Border>
+
+					<ControlTemplate.Triggers>
+						<!-- Hover effect -->
+						<Trigger Property="IsMouseOver" Value="True">
+							<Setter Property="Foreground" Value="Goldenrod"/>
+						</Trigger>
+					</ControlTemplate.Triggers>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
+
+    <Style x:Key="ExitButton" TargetType="Button">
+        <Setter Property="Foreground" Value="Gray"/>
+		<Setter Property="FontSize" Value="20"/>
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="exit" Background="{TemplateBinding Background}">
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+
+                    <ControlTemplate.Triggers>
+                        <!-- Hover effect -->
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Foreground" Value="Red"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+</ResourceDictionary>

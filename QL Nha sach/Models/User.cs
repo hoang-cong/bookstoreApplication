@@ -21,6 +21,8 @@ namespace QL_Nha_sach.Models
         public string FullName { get; set; } = string.Empty;
         public string Username { get; set; } = string.Empty;
         public string Password {  get; set; } = string.Empty;
+        public string PhoneNumber { get; set; } = string.Empty;
+        public string EmailAddress { get; set; } = string.Empty;
         public int RoleId { get; set; } // foreign key to role table
         public virtual Role? Role { get; set; }
     }

@@ -4,6 +4,7 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:QL_Nha_sach.Pages"
+      xmlns:controls="clr-namespace:QL_Nha_sach.Controls"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
       Title="ImportDetailPage">
@@ -56,5 +57,7 @@
         <!-- Footer -->
         <Button Grid.Row="2" Content="Back" HorizontalAlignment="Right" Width="80" Click="ExitButton_Click"/>
         <Button Grid.Row="2" Content="Void Import" HorizontalAlignment="Left" Width="80" Command="{Binding VoidImportCommand}"/>
+
+        <controls:MessageBanner HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0" Panel.ZIndex="100"/>
     </Grid>
 </Page>

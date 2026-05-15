@@ -14,6 +14,7 @@ namespace QL_Nha_sach.Models
         public int AuthorId { get; set; }
         public string AuthorName { get; set; } = string.Empty;
 
+
         // REQUIRED for WithMany(a => a.Books)
         public virtual ICollection<BookAuthor> BookAuthors { get; set; } = new List<BookAuthor>();
 

@@ -47,20 +47,19 @@ namespace QL_Nha_sach.ViewModels
             _session = session;
             _factory = factory;
 
-            using var context = factory.CreateDbContext();
-            Imports = new ObservableCollection<Import>(
-                context.Imports.Include(i => i.ImportDetails).ToList()
-            );
+            LoadImports();
 
             ViewImportDetailCommand = new RelayCommand(ExecuteViewImportDetail);
-            LoadImports();
         }
 
         private void LoadImports()
         {
             using var context = _factory.CreateDbContext();
             Imports = new ObservableCollection<Import>(
-                context.Imports.Include(i => i.ImportDetails).ToList()
+                context.Imports
+                    .Include(i => i.ImportDetails)
+                    .Include(i => i.VoidedByUser)
+                    .ToList()
             );
         }
 
@@ -68,7 +67,7 @@ namespace QL_Nha_sach.ViewModels
         {
             if (SelectedImport == null)
             {
-                MessageBox.Show("Please select an Import to see detail.");
+                ShowMessage("Please select an Import to see detail.", true);
                 return;
             }
 

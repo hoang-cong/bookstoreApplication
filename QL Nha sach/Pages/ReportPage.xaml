@@ -1,0 +1,176 @@
+﻿<Page x:Class="QL_Nha_sach.Pages.ReportPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:QL_Nha_sach.Pages"
+	  xmlns:controls="clr-namespace:QL_Nha_sach.Controls"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="800"
+      Title="ReportPage">
+
+	<Page.Resources>
+		<ResourceDictionary>
+			<ResourceDictionary.MergedDictionaries>
+				<ResourceDictionary Source="/Controls/SharedStyles.xaml"/>
+			</ResourceDictionary.MergedDictionaries>
+		</ResourceDictionary>
+	</Page.Resources>
+	
+	<Grid Margin="24">
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto"/>
+			<!-- Title -->
+			<RowDefinition Height="*"/>
+			<!-- Content -->
+		</Grid.RowDefinitions>
+
+		<!-- Header Section -->
+		<Grid Grid.Row="0" Margin="0,0,0,20">
+			<StackPanel>
+				<TextBlock Text="Report Center" FontSize="28" FontWeight="Bold" Foreground="#111827"/>
+				<TextBlock Text="Analyze your business performance and inventory health." Foreground="#6B7280" FontSize="14"/>
+			</StackPanel>
+			
+			<!-- Exit button -->
+			<Button Content="✖" HorizontalAlignment="Right" VerticalAlignment="Top" Style="{StaticResource ExitButton}" Click="ExitButton_Click"/>
+		</Grid>
+
+		<!-- The TabControl -->
+		<TabControl Grid.Row="1" Background="Transparent" BorderThickness="0" Padding="0,20,0,0">
+			<TabControl.Resources>
+				<!-- Modern Tab Header Style -->
+				<Style TargetType="TabItem">
+					<Setter Property="Template">
+						<Setter.Value>
+							<ControlTemplate TargetType="TabItem">
+								<Border x:Name="border" BorderThickness="0,0,0,3" Margin="0,0,20,10" Padding="10,8">
+									<ContentPresenter ContentSource="Header" HorizontalAlignment="Center"/>
+								</Border>
+								<ControlTemplate.Triggers>
+									<Trigger Property="IsSelected" Value="True">
+										<Setter TargetName="border" Property="BorderBrush" Value="#4F46E5"/>
+										<Setter Property="TextElement.Foreground" Value="#4F46E5"/>
+										<Setter Property="TextElement.FontWeight" Value="Bold"/>
+									</Trigger>
+									<Trigger Property="IsSelected" Value="False">
+										<Setter TargetName="border" Property="BorderBrush" Value="Transparent"/>
+										<Setter Property="TextElement.Foreground" Value="#6B7280"/>
+									</Trigger>
+									<Trigger Property="IsMouseOver" Value="True">
+										<Setter Property="TextElement.Foreground" Value="#4F46E5"/>
+									</Trigger>
+								</ControlTemplate.Triggers>
+							</ControlTemplate>
+						</Setter.Value>
+					</Setter>
+				</Style>
+			</TabControl.Resources>
+
+			<!-- Tab 1: Sales -->
+			<TabItem Header="SALES PERFORMANCE">
+				<Border Background="White" CornerRadius="12" Padding="20" BorderBrush="#E5E7EB" BorderThickness="1">
+					
+						<Grid DataContext="{Binding SalesReport}">
+							<Grid.RowDefinitions>
+								<RowDefinition Height="Auto"/>
+								<RowDefinition Height="*"/>
+								<RowDefinition Height="Auto"/>
+							</Grid.RowDefinitions>
+
+							<StackPanel Orientation="Horizontal" Margin="0,0,0,20">
+								<DatePicker SelectedDate="{Binding SelectedDate}" Width="150" Height="35" VerticalContentAlignment="Center"/>
+								<Button Content="Generate Report" Command="{Binding LoadReportCommand}" Style="{StaticResource SaveButton}" Margin="10,0,0,0"/>
+							</StackPanel>
+
+							<DataGrid Grid.Row="1" ItemsSource="{Binding GenreSales}" AutoGenerateColumns="False" CanUserAddRows="False" Background="Transparent" BorderThickness="0">
+								<DataGrid.Columns>
+									<DataGridTextColumn Header="Genre" FontSize="16" Binding="{Binding Genre}" Width="*"/>
+									<DataGridTextColumn Header="Qty Sold" FontSize="16" Binding="{Binding Quantity}" Width="100"/>
+									<DataGridTextColumn Header="Revenue" FontSize="16" Binding="{Binding Revenue, StringFormat={}{0:C0}}" Width="150"/>
+								</DataGrid.Columns>
+							</DataGrid>
+
+							<Border Grid.Row="2" Background="#F9FAFB" Padding="20" Margin="-20,20,-20,-20" CornerRadius="0,0,12,12">
+								<StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+									<TextBlock Text="Total Revenue:" VerticalAlignment="Center" Foreground="#6B7280" Margin="0,0,10,0"/>
+									<TextBlock Text="{Binding TotalRevenue, StringFormat={}{0:C0}}" FontSize="20" FontWeight="Bold" Foreground="#059669"/>
+								</StackPanel>
+							</Border>
+						</Grid>
+					
+				</Border>
+			</TabItem>
+
+			<!-- Tab 2: Inventory -->
+			<TabItem Header="INVENTORY HEALTH">
+				<Border Background="White" CornerRadius="12" Padding="20" BorderBrush="#E5E7EB" BorderThickness="1">
+					<Grid DataContext="{Binding InventoryReport}">
+						<Grid.RowDefinitions>
+							<RowDefinition Height="Auto"/>
+							<!-- KPI Cards -->
+							<RowDefinition Height="Auto"/>
+							<!-- Actions -->
+							<RowDefinition Height="*"/>
+							<!-- List -->
+						</Grid.RowDefinitions>
+
+						<!-- 1. KPI Summary Cards -->
+						<UniformGrid Grid.Row="0" Columns="3" Margin="0,0,0,20">
+							<!-- Low Stock Alert (Red) -->
+							<Border Background="#FEF2F2" Padding="15" CornerRadius="8" Margin="0,0,10,0" BorderBrush="#FEE2E2" BorderThickness="1">
+								<StackPanel>
+									<TextBlock Text="Items to Reorder" Foreground="#991B1B" FontSize="12" FontWeight="Bold"/>
+									<TextBlock Text="{Binding LowStockCount}" FontSize="28" FontWeight="Black" Foreground="#DC2626"/>
+								</StackPanel>
+							</Border>
+
+							<!-- Total Stock (Green) -->
+							<Border Background="#F0FDF4" Padding="15" CornerRadius="8" Margin="0,0,10,0" BorderBrush="#DCFCE7" BorderThickness="1">
+								<StackPanel>
+									<TextBlock Text="Total Books in Stock" Foreground="#166534" FontSize="12" FontWeight="Bold"/>
+									<TextBlock Text="{Binding TotalBooksCount}" FontSize="28" FontWeight="Black" Foreground="#15803D"/>
+								</StackPanel>
+							</Border>
+
+							<!-- Financial Value (Blue) -->
+							<Border Background="#EFF6FF" Padding="15" CornerRadius="8" BorderBrush="#DBEAFE" BorderThickness="1">
+								<StackPanel>
+									<TextBlock Text="Total Inventory Value" Foreground="#1E40AF" FontSize="12" FontWeight="Bold"/>
+									<TextBlock Text="{Binding TotalInventoryValue, StringFormat={}{0:C0}}" FontSize="28" FontWeight="Black" Foreground="#1D4ED8"/>
+								</StackPanel>
+							</Border>
+						</UniformGrid>
+
+						<!-- 2. Action Bar -->
+						<StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,0,0,15">
+							<Button Content="🔄 Refresh Data" Command="{Binding LoadInventoryCommand}" Style="{StaticResource EditButton}"/>
+							<TextBlock Text="Displaying items below regulation threshold" VerticalAlignment="Center" Margin="15,0,0,0" Foreground="#9CA3AF" FontStyle="Italic" FontSize="12"/>
+						</StackPanel>
+
+						<!-- 3. Low Stock DataGrid -->
+						<DataGrid Grid.Row="2" ItemsSource="{Binding LowStockBooks}" AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True"
+								  HeadersVisibility="Column" GridLinesVisibility="Horizontal" HorizontalGridLinesBrush="#F3F4F6" BorderThickness="0">
+							<DataGrid.Columns>
+								<DataGridTextColumn Header="Book Title" FontSize="16" Binding="{Binding Title}" Width="*"/>
+
+								<!-- Highlighted Stock Column -->
+								<DataGridTemplateColumn Header="Current Stock" Width="120">
+									<DataGridTemplateColumn.CellTemplate>
+										<DataTemplate>
+											<TextBlock Text="{Binding Stock}" FontSize="16" FontWeight="Bold" Foreground="{Binding Stock}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+										</DataTemplate>
+									</DataGridTemplateColumn.CellTemplate>
+								</DataGridTemplateColumn>
+
+								<DataGridTextColumn Header="Status" FontSize="16" Binding="{Binding BookStatus.StatusName}" Width="150"/>
+
+								<DataGridTextColumn Header="Unit Price" FontSize="16" Binding="{Binding Price, StringFormat={}{0:C0}}" Width="100"/>
+							</DataGrid.Columns>
+						</DataGrid>
+					</Grid>
+				</Border>
+			</TabItem>
+		</TabControl>
+	</Grid>
+</Page>

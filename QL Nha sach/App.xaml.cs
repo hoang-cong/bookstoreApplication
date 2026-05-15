@@ -29,32 +29,49 @@ namespace QL_Nha_sach
 
                     services.AddSingleton<SessionManager>();
 
+                    // Register InvoiceService
+                    services.AddScoped<InvoiceService>();
+
                     // 2. Register your Windows and ViewModels
                     services.AddSingleton<MainWindow>();
                     services.AddTransient<MainViewModel>();
                     services.AddTransient<AddBookViewModel>();
+                    services.AddTransient<PromotionViewModel>();
+                    services.AddTransient<AddPromotionViewModel>();
                     services.AddTransient<LoginViewModel>();
                     services.AddTransient<EditBookViewModel>();
+                    //services.AddTransient<EditPromotionViewModel>();
                     services.AddTransient<BookViewModel>();
                     services.AddTransient<HomeScreenViewModel>();
+                    //services.AddTransient<ImportDetailViewModel>();
                     services.AddTransient<ImportListViewModel>();
                     services.AddTransient<ImportViewModel>();
+                    //services.AddTransient<InvoiceDetailViewModel>();
                     services.AddTransient<InvoiceListViewModel>();
                     services.AddTransient<InvoiceViewModel>();
+                    services.AddTransient<TransactionListViewModel>();
+                    services.AddTransient<UserManagementViewModel>();
+                    services.AddTransient<AddUserViewModel>();
+                    //services.AddTransient<EditUserViewModel>();
 
                     services.AddTransient<AddBookPage>();
+                    services.AddTransient<AddPromotionPage>();
                     services.AddTransient<BookManagementPage>();
+                    //services.AddTransient<EditPromotionPage>();
                     services.AddTransient<LoginPage>();
                     services.AddTransient<ManagerHomePage>();
                     services.AddTransient<StaffHomePage>();
                     services.AddTransient<StockerHomePage>();
-                    services.AddTransient<ImportDetailPage>();
+                    //services.AddTransient<ImportDetailPage>();
                     services.AddTransient<ImportListPage>();
-                    services.AddTransient<InvoiceDetailPage>();
+                    //services.AddTransient<InvoiceDetailPage>();
                     services.AddTransient<InvoiceListPage>();
                     services.AddTransient<TransactionListPage>();
-                    
-                    services.AddTransient<EditBookWindow>();
+                    services.AddTransient<UserManagementPage>();
+                    services.AddTransient<AddUserPage>();
+                    //services.AddTransient<EditUserPage>();
+
+                    //services.AddTransient<EditBookWindow>();
                     services.AddTransient<LookupWindow>();
                 })
                 .Build();

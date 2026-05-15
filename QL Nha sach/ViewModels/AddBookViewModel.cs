@@ -8,10 +8,14 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using Microsoft.Extensions.Configuration;
+using System.IO;
 
 namespace QL_Nha_sach.ViewModels
 {
@@ -20,6 +24,7 @@ namespace QL_Nha_sach.ViewModels
         private readonly IDbContextFactory<AppDbContext> _factory;
         private readonly SessionManager _session;
         private Book _newBook = new() { Stock = 0, Price = 0 };
+        private readonly IConfiguration _config;
 
         public IDbContextFactory<AppDbContext> Factory => _factory;
 
@@ -38,16 +43,26 @@ namespace QL_Nha_sach.ViewModels
         public ICommand ManageGenreCommand { get; set; }
         public ICommand ManagePublisherCommand { get; set; }
         public ICommand SaveBookCommand { get; set; }
+        public ICommand AutofillBookCommand { get; set; }
 
         public AddBookViewModel(SessionManager session, IDbContextFactory<AppDbContext> factory)
         {
             _session = session;
             _factory = factory;
             LoadData();
+
+            // This builds the bridge between the file and your code
+            _config = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                .Build();
+
             ManageAuthorCommand = new RelayCommand(_ => ExecuteManageLookup<Author>("Author"));
             ManageGenreCommand = new RelayCommand(_ => ExecuteManageLookup<Genre>("Genre"));
             ManagePublisherCommand = new RelayCommand(_ => ExecuteManageLookup<Publisher>("Publisher"));
             SaveBookCommand = new RelayCommand(ExecuteSaveBook);
+
+            AutofillBookCommand = new RelayCommand(async _ => await AutofillBookFromIsbnAsync());
         }
 
         public void LoadData()
@@ -72,11 +87,147 @@ namespace QL_Nha_sach.ViewModels
 
             LoadData();
         }
+
+        // testing ISBN: 9780140328721 (Matilda by Roald Dahl)
+        // testing ISBN: 9781476746586 (All the Light We Cannot See by Anthony Doerr)
+        // testing ISBN: 9780486264721 (the call of the wild by Jack London)
+
+        public async Task AutofillBookFromIsbnAsync()
+        {
+            if (string.IsNullOrWhiteSpace(NewBook.ISBN))
+                return;
+
+            try
+            {
+                string apiKey = _config["ApiKeys:GoogleBooks"];
+                if (string.IsNullOrEmpty(apiKey))
+                {
+                    ShowMessage("API Key missing! Check appsettings.json", true);
+                    return;
+                }
+
+                using var client = new HttpClient();
+                // var apiKey = "AIzaSyD56izeqicKnWtgmWVDu2i_NNQTvIguyaY";
+                var url = $"https://www.googleapis.com/books/v1/volumes?q=isbn:{NewBook.ISBN}&key={apiKey}";
+
+                var response = await client.GetStringAsync(url);
+
+                using var doc = JsonDocument.Parse(response);
+                using var context = _factory.CreateDbContext();
+
+                if (!doc.RootElement.TryGetProperty("items", out var items) || items.GetArrayLength() == 0)
+                {
+                    ShowMessage("No book found.", true);
+                    return;
+                }
+
+                var volumeInfo = items[0].GetProperty("volumeInfo");
+
+                if (volumeInfo.TryGetProperty("title", out var titleProp))
+                    NewBook.Title = titleProp.GetString();
+
+                if (volumeInfo.TryGetProperty("imageLinks", out var imageLinks))
+                {
+                    if (imageLinks.TryGetProperty("thumbnail", out var thumbnail))
+                    {
+                        NewBook.CoverImageUrl = thumbnail.GetString();
+                    }
+                }
+
+                // Publisher
+                if (volumeInfo.TryGetProperty("publisher", out var publisherProp))
+                {
+                    var publisherName = publisherProp.GetString()?.Trim();
+
+                    if (!string.IsNullOrWhiteSpace(publisherName))
+                    {
+                        var publisher = Publishers.FirstOrDefault(p => p.PublisherName.ToLower() == publisherName.ToLower());
+
+                        if (publisher == null)
+                        {
+                            publisher = new Publisher { PublisherName = publisherName };
+
+                            context.Publishers.Add(publisher);
+                            context.SaveChanges();
+
+                            Publishers.Add(publisher);
+                        }
+                        NewBook.PublisherId = publisher.PublisherId;
+                    }
+                }
+
+                // Authors
+                if (volumeInfo.TryGetProperty("authors", out var authorsProp))
+                {
+                    foreach (var rawName in authorsProp.EnumerateArray())
+                    {
+                        var authorName = rawName.GetString()?.Trim();
+
+                        if (string.IsNullOrWhiteSpace(authorName))
+                            continue;
+
+                        var author = Authors.FirstOrDefault(a => a.AuthorName.ToLower() == authorName.ToLower());
+
+                        if (author == null)
+                        {
+                            author = new Author
+                            {
+                                AuthorName = authorName
+                            };
+
+                            context.Authors.Add(author);
+                            context.SaveChanges();
+
+                            Authors.Add(author);
+                        }
+                        author.IsSelected = true;
+                    }
+                }
+
+                // Categories
+                if (volumeInfo.TryGetProperty("categories", out var categoriesProp))
+                {
+                    foreach (var rawCategory in categoriesProp.EnumerateArray())
+                    {
+                        var categoryName = rawCategory.GetString()?.Trim();
+
+                        if (string.IsNullOrWhiteSpace(categoryName))
+                            continue;
+
+                        var genre = Genres.FirstOrDefault(g => g.GenreName.ToLower() == categoryName.ToLower());
+
+                        if (genre == null)
+                        {
+                            genre = new Genre
+                            {
+                                GenreName = categoryName
+                            };
+
+                            context.Genres.Add(genre);
+                            context.SaveChanges();
+
+                            Genres.Add(genre);
+                        }
+                        genre.IsSelected = true;
+                    }
+                }
+
+                OnPropertyChanged(nameof(NewBook));
+                context.SaveChanges();
+
+                ShowMessage("Book info autofilled from ISBN!", false);
+            }
+            catch (Exception ex)
+            {
+                ShowMessage($"Failed to fetch data, please try again", true);
+            }
+        }
+
         private void ExecuteSaveBook(object parameter)
         {
             if (string.IsNullOrEmpty(NewBook.Title))
             {
-                MessageBox.Show("Please enter a title!");
+                ShowMessage("Please enter a title!", true);
                 return;
             }
 
@@ -110,7 +261,7 @@ namespace QL_Nha_sach.ViewModels
 
                 context.SaveChanges();
 
-                MessageBox.Show("Book Added Successfully!");
+                ShowMessage("Book Added Successfully!", false);
 
                 // Reset for next entry
                 NewBook = new() { Stock = 0, Price = 0 };
@@ -126,80 +277,3 @@ namespace QL_Nha_sach.ViewModels
         }
     }
 }
-/*Your code is much closer, and you've fixed the main issue by initializing the `BookStatusId`. However, there is one **"sneaky" bug** waiting for you in your reset logic that will cause the second book you try to add to fail.
-
-Here is the breakdown of what is good and what needs one final polish:
-
-### 1. The Reset Logic Bug
-In your `ExecuteSaveBook`, you reset the form with this line:
-`NewBook = new() { Stock = 0, Price = 0 };`
-
-* **The Problem:** You forgot to include `BookStatusId = 1` here!
-* **The Result:** The first book will save perfectly. But after that, `NewBook` becomes a fresh object where `BookStatusId` is back to **0**. When you try to save the second book, you'll get that **SQLite Error 19** again.
-
-### 2. ObservableCollection Properties
-In `LoadData`, you are doing: 
-`Authors = new ObservableCollection<Author>(...)`
-* **The Problem:** Since `Authors` is a property, the UI needs to know when the *entire collection* is replaced. 
-* **The Fix:** Make sure your collections call `OnPropertyChanged()` or use the backing fields, otherwise, when you return from the "Manage" window, the ComboBox might look empty even though you reloaded the data.
-
----
-
-### The "Final Polish" Version
-Here is the corrected `ExecuteSaveBook` and a more robust way to handle the collections:
-
-```csharp
-// Use backing fields to ensure the UI updates when you reload data
-private ObservableCollection<Author> _authors;
-public ObservableCollection<Author> Authors 
-{ 
-    get => _authors; 
-    set { _authors = value; OnPropertyChanged(); } 
-}
-
-// ... do the same for Genres and Publishers ...
-
-private void ExecuteSaveBook(object parameter)
-{
-    if (string.IsNullOrWhiteSpace(NewBook.Title))
-    {
-        MessageBox.Show("Please enter a title!");
-        return;
-    }
-
-    // Explicitly check for 0s before saving to avoid crashes
-    if (NewBook.AuthorId == 0 || NewBook.GenreId == 0 || NewBook.PublisherId == 0)
-    {
-        MessageBox.Show("Please select an Author, Genre, and Publisher!");
-        return;
-    }
-
-    try
-    {
-        using var context = _factory.CreateDbContext();
-
-        context.Books.Add(NewBook);
-        context.SaveChanges();
-
-        MessageBox.Show("Book Added Successfully!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
-
-        // FIX: Re-include the StatusId here so the NEXT book doesn't crash!
-        NewBook = new() { Stock = 0, Price = 0, BookStatusId = 1 };
-    }
-    catch (Exception ex)
-    {
-        // Don't comment out the try-catch! 
-        // It's your best friend for finding errors without the app crashing.
-        MessageBox.Show($"Error: {ex.InnerException?.Message ?? ex.Message}");
-    }
-}
-```
-
-### Why did you comment out the `try-catch`?
-I noticed you commented it out in your snippet. Definitely keep it! In database programming, things can go wrong that aren't your fault (like the database file being locked or a unique constraint on an ISBN being triggered). You want the app to tell the user what happened rather than just disappearing.
-
-### One last tip for the road:
-Make sure you actually have a row in your `BookStatuses` table with an `Id` of `1`. If that table is empty, even setting it to `1` in code won't save you from Error 19!
-
-**Everything else looks solid—the generic lookup logic and the UI binding are very well implemented.** Are you planning to add an "Image" or "Cover" property for the books next?
-**/

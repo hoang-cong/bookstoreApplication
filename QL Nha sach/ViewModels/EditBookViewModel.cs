@@ -92,7 +92,7 @@ namespace QL_Nha_sach.ViewModels
                 }
 
                 context.SaveChanges();
-                MessageBox.Show("Book updated successfully!");
+                ShowMessage("Book updated successfully.", false);
             }
         }
 

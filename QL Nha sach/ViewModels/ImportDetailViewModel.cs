@@ -56,18 +56,29 @@ namespace QL_Nha_sach.ViewModels
             if (dbImport != null && !dbImport.IsVoided)
             {
                 dbImport.IsVoided = true;
+                dbImport.VoidedByUserId = _session.CurrentUser.UserId;
+
+                var bookIds = dbImport.ImportDetails.Select(d => d.BookId).ToList();
+                var books = context.Books
+                    .Where(b => bookIds.Contains(b.BookId))
+                    .ToDictionary(b => b.BookId);
+
                 foreach (var detail in dbImport.ImportDetails)
                 {
-                    var book = context.Books.FirstOrDefault(b => b.BookId == detail.BookId);
-                    if (book != null)
-                        book.Stock += detail.Quantity; // reverse sale
+                    if (books.TryGetValue(detail.BookId, out var book))
+                    {
+                        book.Stock += detail.Quantity; // reverse the import
+                    }
                 }
                 context.SaveChanges();
 
                 CurrentImport.IsVoided = true;
+                CurrentImport.VoidedByUserId = _session.CurrentUser.UserId;
+                CurrentImport.VoidedByUser = context.Find<User>(_session.CurrentUser.UserId);
+
                 OnPropertyChanged(nameof(CurrentImport));
-                OnPropertyChanged(nameof(IsVoided)); // if you expose IsVoided separately
-                MessageBox.Show("Import voided successfully!");
+                OnPropertyChanged(nameof(IsVoided));
+                ShowMessage("Import voided successfully!", false);
             }
         }
         public bool IsVoided => CurrentImport?.IsVoided ?? false;
