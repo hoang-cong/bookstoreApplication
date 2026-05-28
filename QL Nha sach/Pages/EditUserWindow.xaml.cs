@@ -1,8 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using QL_Nha_sach.Data;
-using QL_Nha_sach.Services;
-using QL_Nha_sach.ViewModels;
+﻿using QL_Nha_sach.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,29 +11,24 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
 
 namespace QL_Nha_sach.Pages
 {
     /// <summary>
-    /// Interaction logic for TransactionListPage.xaml
+    /// Interaction logic for EditUserWindow.xaml
     /// </summary>
-    public partial class TransactionListPage : Page
+    public partial class EditUserWindow : Window
     {
-        public TransactionListPage(TransactionListViewModel vm)
+        public EditUserWindow(EditUserViewModel vm)
         {
             InitializeComponent();
             this.DataContext = vm;
-
-            vm.NavigateRequested += page =>
-            {
-                NavigationService.Navigate(page);
-            };
         }
+
         private void ExitButton_Click(object sender, RoutedEventArgs e)
         {
-            NavigationService?.GoBack();
+            this.Close();
         }
     }
 }

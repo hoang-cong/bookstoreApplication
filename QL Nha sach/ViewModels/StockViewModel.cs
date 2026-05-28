@@ -99,6 +99,12 @@ namespace QL_Nha_sach.ViewModels
             }
 
             using var context = _factory.CreateDbContext();
+            var regulation = context.Regulations.FirstOrDefault();
+            if (regulation == null)
+            {
+                ShowMessage("System regulations are not configured.", true);
+                return;
+            }
             var dbBook = context.Books.FirstOrDefault(b => b.BookId == SelectedBook.BookId);
 
             if (dbBook != null)
@@ -106,6 +112,16 @@ namespace QL_Nha_sach.ViewModels
                 if (SelectedBook.Stock < 0)
                 {
                     ShowMessage("Stock cannot be negative.", true);
+                    return;
+                }
+                if (SelectedBook.Stock > regulation.MaxStock)
+                {
+                    ShowMessage($"Stock must be less than {regulation.MaxStock}.", true);
+                    return;
+                }
+                if (SelectedBook.Stock > regulation.MinStock)
+                {
+                    ShowMessage($"Stock must be greater than {regulation.MinStock}.", true);
                     return;
                 }
 

@@ -77,10 +77,16 @@ namespace QL_Nha_sach.ViewModels
 
         private void ExecuteManageLookup<T>(string title) where T : class, ILookup, new()
         {
-            // Get the window from DI
-            var window = App.AppHost.Services.GetRequiredService<LookupWindow>();
+            //var window = App.AppHost.Services.GetRequiredService<LookupWindow>();
 
             var vm = new LookupViewModel<T>(_factory, title);
+            LookupWindow window = new LookupWindow();
+
+            if (Application.Current.MainWindow != null)
+            {
+                window.Owner = Application.Current.MainWindow;
+            }
+            window.WindowStartupLocation = WindowStartupLocation.CenterOwner;
 
             window.DataContext = vm;
             window.ShowDialog();
@@ -97,6 +103,14 @@ namespace QL_Nha_sach.ViewModels
             if (string.IsNullOrWhiteSpace(NewBook.ISBN))
                 return;
 
+            using var context = _factory.CreateDbContext();
+            bool bookExists = context.Books.Any(b => b.ISBN == NewBook.ISBN);
+            if (bookExists)
+            {
+                ShowMessage("Book with this ISBN already exists!", true);
+                return;
+            }
+
             try
             {
                 string apiKey = _config["ApiKeys:GoogleBooks"];
@@ -107,13 +121,11 @@ namespace QL_Nha_sach.ViewModels
                 }
 
                 using var client = new HttpClient();
-                // var apiKey = "AIzaSyD56izeqicKnWtgmWVDu2i_NNQTvIguyaY";
                 var url = $"https://www.googleapis.com/books/v1/volumes?q=isbn:{NewBook.ISBN}&key={apiKey}";
 
                 var response = await client.GetStringAsync(url);
 
                 using var doc = JsonDocument.Parse(response);
-                using var context = _factory.CreateDbContext();
 
                 if (!doc.RootElement.TryGetProperty("items", out var items) || items.GetArrayLength() == 0)
                 {
@@ -230,11 +242,37 @@ namespace QL_Nha_sach.ViewModels
                 ShowMessage("Please enter a title!", true);
                 return;
             }
+            if (string.IsNullOrEmpty(NewBook.ISBN))
+            {
+                ShowMessage("Please enter an ISBN!", true);
+                return;
+            }
+            using var context = _factory.CreateDbContext();
+            var regulation = context.Regulations.FirstOrDefault();
+            if (regulation == null)
+            {
+                ShowMessage("System regulations are not configured.", true);
+                return;
+            }
+            bool bookExists = context.Books.Any(b => b.ISBN == NewBook.ISBN);
+            if (bookExists)
+            {
+                ShowMessage("Book with this ISBN already exists!", true);
+                return;
+            }
+            if (NewBook.Stock < regulation.MinStock)
+            {
+                ShowMessage($"Stock must be greater than {regulation.MinStock}.", true);
+                return;
+            }
+            if (NewBook.Stock > regulation.MaxStock)
+            {
+                ShowMessage($"Stock must be less than {regulation.MaxStock}.", true);
+                return;
+            }
 
             try
             {
-                using var context = _factory.CreateDbContext();
-
                 // Add the book first
                 context.Books.Add(NewBook);
                 context.SaveChanges();
@@ -272,7 +310,8 @@ namespace QL_Nha_sach.ViewModels
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error: {ex.InnerException?.Message ?? ex.Message}");
+                //MessageBox.Show($"Error: {ex.InnerException?.Message ?? ex.Message}");
+                ShowMessage("Please ensure all fields are entered properly and try again.", true);
             }
         }
     }

@@ -3,6 +3,11 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:QL_Nha_sach">
     <Application.Resources>
-         
+		<ResourceDictionary>
+			<ResourceDictionary.MergedDictionaries>
+				<ResourceDictionary Source="/Controls/SharedStyles.xaml"/>
+				<ResourceDictionary Source="/Controls/en.xaml"/>
+			</ResourceDictionary.MergedDictionaries>
+		</ResourceDictionary>
     </Application.Resources>
 </Application>

@@ -40,7 +40,50 @@ namespace QL_Nha_sach.Pages
         {
             _session.Logout(NavigationService);
         }
+
+        private void LanguageMenuButton_Click(object sender, RoutedEventArgs e)
+        {
+            // Automatically open the dropdown menu right beneath the button on click
+            if (sender is Button btn && btn.ContextMenu != null)
+            {
+                btn.ContextMenu.PlacementTarget = btn;
+                btn.ContextMenu.IsOpen = true;
+            }
+        }
+
+        private void LanguageMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is MenuItem menuItem)
+            {
+                string cultureCode = menuItem.Tag.ToString();
+                SwitchLanguage(cultureCode);
+            }
+        }
+        public void SwitchLanguage(string cultureCode) // e.g., "en" or "vi"
+        {
+            ResourceDictionary dict = new ResourceDictionary();
+
+            switch (cultureCode)
+            {
+                case "vi":
+                    dict.Source = new Uri("../Controls/vi.xaml", UriKind.Relative);
+                    break;
+                case "en":
+                default:
+                    dict.Source = new Uri("../Controls/en.xaml", UriKind.Relative);
+                    break;
+            }
+
+            var currentMergedDictionaries = Application.Current.Resources.MergedDictionaries;
+            foreach (var d in currentMergedDictionaries.ToList())
+            {
+                if (d.Source != null && (d.Source.OriginalString.Contains("en") || d.Source.OriginalString.Contains("vi")))
+                {
+                    currentMergedDictionaries.Remove(d);
+                }
+            }
+
+            currentMergedDictionaries.Add(dict);
+        }
     }
-
-
 }

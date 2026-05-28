@@ -9,59 +9,56 @@
       d:DesignHeight="450" d:DesignWidth="800"
       Title="StockPage">
 
-    <Grid Margin="20">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <!-- Header -->
-            <RowDefinition Height="*"/>
-            <!-- DataGrid -->
-            <RowDefinition Height="Auto"/>
-            <!-- Footer buttons -->
-        </Grid.RowDefinitions>
+	<Page.Resources>
+		<ResourceDictionary>
+			<ResourceDictionary.MergedDictionaries>
+				<ResourceDictionary Source="/Controls/SharedStyles.xaml"/>
+			</ResourceDictionary.MergedDictionaries>
+		</ResourceDictionary>
+	</Page.Resources>
 
-        <!-- Exit button -->
-        <Button Content="✖"
-                HorizontalAlignment="Right"
-                VerticalAlignment="Top"
-                Width="30" Height="30"
-                Background="Transparent"
-                BorderThickness="0"
-                Foreground="Red"
-                FontWeight="Bold"
-                Click="ExitButton_Click"/>
+	<Grid Margin="24">
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto"/>
+			<RowDefinition Height="*"/>
+			<RowDefinition Height="Auto"/>
+		</Grid.RowDefinitions>
 
-        <!-- Search bar -->
-        <DockPanel Grid.Row="0" Margin="0,0,0,15">
-            <StackPanel Orientation="Horizontal" DockPanel.Dock="Left">
-                <TextBlock Text="Search:" VerticalAlignment="Center" Margin="0,0,10,0" FontWeight="Bold"/>
-                <TextBox Width="250" Height="30" VerticalContentAlignment="Center"
-                 Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" />
-            </StackPanel>
-        </DockPanel>
+		<Grid Grid.Row="0" Margin="0,0,0,20">
+			<StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+				<TextBlock Text="Book Inventory" FontSize="22" FontWeight="SemiBold" Foreground="#111827" VerticalAlignment="Center" Margin="0,0,24,0"/>
 
-        <DataGrid Grid.Row="1"
-          ItemsSource="{Binding Books}"
-          AutoGenerateColumns="False"
-          CanUserAddRows="False"
-          IsReadOnly="False"
-          SelectedItem="{Binding SelectedBook, Mode=TwoWay}"
-          Margin="0,0,0,10">
+				<Grid Width="400" HorizontalAlignment="Left">
+					<Border Background="White" BorderBrush="#E5E7EB" BorderThickness="1" CornerRadius="6" Height="36">
+						<Grid>
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="36"/>
+								<ColumnDefinition Width="*"/>
+							</Grid.ColumnDefinitions>
 
-            <DataGrid.Columns>
-                <DataGridTextColumn Header="ISBN" Binding="{Binding ISBN}" IsReadOnly="True" Width="120"/>
-                <DataGridTextColumn Header="Title" Binding="{Binding Title}" IsReadOnly="True" Width="200"/>
-                <DataGridTextColumn Header="Publisher" Binding="{Binding Publisher.Name}" IsReadOnly="True" Width="150"/>
-                <DataGridTextColumn Header="Stock"
-                            Binding="{Binding Stock, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
-                            Width="100"/>
-            </DataGrid.Columns>
-        </DataGrid>
+							<TextBlock Text="🔍" FontSize="13" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="#9CA3AF"/>
+							<TextBox Grid.Column="1" Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" Background="Transparent" BorderThickness="0" Margin="4,0,12,0" FontSize="14" Foreground="#111827" VerticalContentAlignment="Center"/>
+						</Grid>
+					</Border>
+				</Grid>
+			</StackPanel>
 
-        <!-- Save button -->
-        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,10,0,0">
-            <Button Content="Save Changes" Command="{Binding SaveCommand}" Margin="0,10,0,0"/>
-        </StackPanel>
+			<Button Content="✖" Style="{StaticResource ExitButton}" HorizontalAlignment="Right" VerticalAlignment="Center" Click="ExitButton_Click"/>
+		</Grid>
 
-        <controls:MessageBanner HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0" Panel.ZIndex="100"/>
-    </Grid>
+		<DataGrid Grid.Row="1" ItemsSource="{Binding Books}" SelectedItem="{Binding SelectedBook, Mode=TwoWay}" AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="False" SelectionMode="Single" GridLinesVisibility="Horizontal" RowHeight="36" Background="Transparent" BorderBrush="#E5E7EB" BorderThickness="1">
+			<DataGrid.Columns>
+				<DataGridTextColumn Header="ISBN" Binding="{Binding ISBN}" IsReadOnly="True" Width="1.5*"/>
+				<DataGridTextColumn Header="Title" Binding="{Binding Title}" IsReadOnly="True" Width="4*"/>
+				<DataGridTextColumn Header="Publisher" Binding="{Binding Publisher.Name}" IsReadOnly="True" Width="2.5*"/>
+				<DataGridTextColumn Header="Stock" Binding="{Binding Stock, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Width="1*"/>
+			</DataGrid.Columns>
+		</DataGrid>
+
+		<StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">
+			<Button Content="Save Changes" Command="{Binding SaveCommand}" Style="{StaticResource SaveButton}" Padding="16,8"/>
+		</StackPanel>
+
+		<controls:MessageBanner Grid.Row="0" Grid.RowSpan="3" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,10,0,0" Panel.ZIndex="100"/>
+	</Grid>
 </Page>

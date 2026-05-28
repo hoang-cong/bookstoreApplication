@@ -6,60 +6,54 @@
         xmlns:local="clr-namespace:QL_Nha_sach.Pages"
         mc:Ignorable="d"
         Title="{Binding Title}" 
-        Height="450" Width="350" 
-        WindowStartupLocation="CenterOwner">
-    <Grid Margin="15">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
-        </Grid.RowDefinitions>
+        Height="450" Width="800"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="Transparent"
+        WindowState="Maximized">
 
-        <TextBlock Grid.Row="0" 
-                   Text="{Binding Title, StringFormat='Manage {0}s'}" 
-                   FontSize="18" FontWeight="Bold" Margin="0,0,0,10"/>
+	<Grid>
+		<Border Background="Black" Opacity="0.5"/>
 
-        <TextBox Grid.Row="1" 
-                 Text="{Binding NewName, UpdateSourceTrigger=PropertyChanged}" 
-                 Tag="Enter name here..."
-                 Padding="5" Margin="0,0,0,10"/>
+		<Grid VerticalAlignment="Center" HorizontalAlignment="Center">
+			<Border Background="#FFFFFF" CornerRadius="12" Padding="30" Width="400" Height="450">
+				<Border.Effect>
+					<DropShadowEffect BlurRadius="25" ShadowDepth="3" Direction="270" Color="#CCCCCC" Opacity="0.4"/>
+				</Border.Effect>
+				<Grid Margin="15">
+					<Grid.RowDefinitions>
+						<RowDefinition Height="Auto"/>
+						<RowDefinition Height="Auto"/>
+						<RowDefinition Height="Auto"/>
+						<RowDefinition Height="*"/>
+						<RowDefinition Height="Auto"/>
+					</Grid.RowDefinitions>
 
-        <Grid Grid.Row="2" Margin="0,0,0,15">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
+					<TextBlock Grid.Row="0" Text="{Binding Title, StringFormat='Manage {0}s'}" FontSize="18" FontWeight="Bold" Margin="0,0,0,10"/>
 
-            <Button Grid.Column="0" 
-                    Content="Add New" 
-                    Command="{Binding AddCommand}" 
-                    Margin="0,0,5,0" Padding="10,5"
-                    Background="#E1F5FE"/>
-            <Button Grid.Column="1" 
-                    Content="Delete Selected" 
-                    Command="{Binding DeleteCommand}" 
-                    Margin="5,0,0,0" Padding="10,5"
-                    Background="#FFEBEE" Foreground="#C62828"/>
-        </Grid>
+					<TextBox Grid.Row="1" Text="{Binding NewName, UpdateSourceTrigger=PropertyChanged}" Tag="Enter name here..." Padding="5" Margin="0,0,0,10"/>
 
-        <ListBox Grid.Row="3" 
-                 ItemsSource="{Binding Items}" 
-                 SelectedItem="{Binding SelectedItem, Mode=TwoWay}"
-                 DisplayMemberPath="Name" 
-                 Margin="0,0,0,10">
-            <ListBox.ItemContainerStyle>
-                <Style TargetType="ListBoxItem">
-                    <Setter Property="Padding" Value="5"/>
-                </Style>
-            </ListBox.ItemContainerStyle>
-        </ListBox>
+					<Grid Grid.Row="2" Margin="0,0,0,15">
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="*"/>
+							<ColumnDefinition Width="*"/>
+						</Grid.ColumnDefinitions>
 
-        <Button Grid.Row="4" 
-                Content="Done" 
-                Click="Close_Click" 
-                HorizontalAlignment="Right"
-                Width="100" Padding="10,5" IsDefault="True"/>
-    </Grid>
+						<Button Grid.Column="0" Content="Add New" Command="{Binding AddCommand}" Margin="0,0,5,0" Padding="10,5" Background="#E1F5FE"/>
+						<Button Grid.Column="1" Content="Delete Selected" Command="{Binding DeleteCommand}" Margin="5,0,0,0" Padding="10,5" Background="#FFEBEE" Foreground="#C62828"/>
+					</Grid>
+
+					<ListBox Grid.Row="3" ItemsSource="{Binding Items}" SelectedItem="{Binding SelectedItem, Mode=TwoWay}" DisplayMemberPath="Name" Margin="0,0,0,10">
+						<ListBox.ItemContainerStyle>
+							<Style TargetType="ListBoxItem">
+								<Setter Property="Padding" Value="5"/>
+							</Style>
+						</ListBox.ItemContainerStyle>
+					</ListBox>
+
+					<Button Grid.Row="4" Content="Done" Click="Close_Click" HorizontalAlignment="Right" Width="100" Padding="10,5" IsDefault="True"/>
+				</Grid>
+			</Border>
+		</Grid>
+	</Grid>
 </Window>

@@ -17,65 +17,160 @@
         </ResourceDictionary>
     </Page.Resources>
 
-    <Grid Margin="20">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <!-- Header -->
-            <RowDefinition Height="*"/>
-            <!-- DataGrid -->
-            <RowDefinition Height="Auto"/>
-            <!-- Footer buttons -->
-        </Grid.RowDefinitions>
+	<Grid Margin="20">
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto"/>
+			<RowDefinition Height="*"/>
+			<RowDefinition Height="Auto"/>
+		</Grid.RowDefinitions>
 
 		<Grid Grid.Row="0" Margin="0,0,0,20">
 			<StackPanel>
-				<TextBlock Text="Invoice History" FontSize="28" FontWeight="SemiBold" Foreground="#1A1A1A"/>
-				<TextBlock Text="Review your store's recent invoices." FontSize="14" Foreground="#666"/>
+				<TextBlock Text="{DynamicResource Str_InvoiceHistory}" FontSize="28" FontWeight="SemiBold" Foreground="#1A1A1A"/>
+				<TextBlock Text="{DynamicResource Str_ReviewyourstoresrecentInvoices}" FontSize="14" Foreground="#666"/>
+
+				<Grid Width="400" HorizontalAlignment="Left" Margin="0,10,0,0">
+					<Border Background="White" BorderBrush="#E5E7EB" BorderThickness="1" CornerRadius="8" Height="40">
+						<Grid>
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="40"/>
+								<ColumnDefinition Width="*"/>
+							</Grid.ColumnDefinitions>
+							<TextBlock Text="🔍" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="#9CA3AF"/>
+							<TextBox Grid.Column="1" Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" Background="Transparent" BorderThickness="0" Margin="5,0,10,0" FontSize="14" Foreground="#111827" VerticalContentAlignment="Center"/>
+						</Grid>
+					</Border>
+				</Grid>
 			</StackPanel>
 			<Button Content="✖" HorizontalAlignment="Right" VerticalAlignment="Top" Style="{StaticResource ExitButton}" Click="ExitButton_Click"/>
 		</Grid>
 
-		<ListBox Grid.Row="1" ItemsSource="{Binding Invoices}" SelectedItem="{Binding SelectedInvoice}" Background="Transparent" BorderThickness="0" HorizontalContentAlignment="Stretch">
-			<ListBox.ItemTemplate>
-				<DataTemplate>
-					<Border Background="White" BorderBrush="#EEE" BorderThickness="1" CornerRadius="8" Padding="15" Margin="0,0,0,10">
-						<Grid>
-							<Grid.ColumnDefinitions>
-								<ColumnDefinition Width="Auto"/>
-								<!-- Icon/Status -->
-								<ColumnDefinition Width="*"/>
-								<!-- Details -->
-								<ColumnDefinition Width="Auto"/>
-								<!-- Date/Time -->
-							</Grid.ColumnDefinitions>
+		<Grid Grid.Row="1">
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="2*"/>
+				<ColumnDefinition Width="3*"/>
+			</Grid.ColumnDefinitions>
 
-							<!-- Status Icon -->
-							<Ellipse Width="10" Height="10" Fill="#4CAF50" VerticalAlignment="Center" Margin="0,0,15,0"/>
+			<ListBox Grid.Column="0" ItemsSource="{Binding Invoices}" SelectedItem="{Binding SelectedInvoice}" Background="Transparent" BorderThickness="0" HorizontalContentAlignment="Stretch" Margin="0,0,15,0">
+				<ListBox.ItemTemplate>
+					<DataTemplate>
+						<Border Background="White" BorderBrush="#EEE" BorderThickness="1" CornerRadius="8" Padding="15" Margin="0,0,0,10">
+							<Grid>
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition Width="Auto"/>
+									<ColumnDefinition Width="*"/>
+									<ColumnDefinition Width="Auto"/>
+								</Grid.ColumnDefinitions>
 
-							<StackPanel Grid.Column="1">
-								<TextBlock Text="{Binding InvoiceId, StringFormat='Invoice #INV-{0}'}" FontWeight="Bold" FontSize="16" Foreground="#222"/>
-								<TextBlock Text="{Binding UserId, StringFormat='Processed by Staff: {0}'}" FontSize="13" Foreground="#888" Margin="0,2,0,0"/>
-								<!-- Your specific Style for Voided text -->
-								<TextBlock Style="{StaticResource VoidedStatusTextStyle}" Margin="0,4,0,0"/>
+								<Ellipse Width="10" Height="10" Fill="#4CAF50" VerticalAlignment="Center" Margin="0,0,15,0"/>
+
+								<StackPanel Grid.Column="1">
+									<TextBlock FontSize="16" Foreground="#222" FontWeight="Bold">
+										<Run Text="{DynamicResource Str_Invoice#}" />
+										<Run Text=" " />
+										<Run Text="{Binding InvoiceId}" />
+									</TextBlock>
+									<TextBlock FontSize="13" Foreground="#888" Margin="0,2,0,0">
+										<Run Text="{DynamicResource Str_ProcessedbyStocker}" />
+										<Run Text=" " />
+										<Run Text="{Binding UserId}" />
+									</TextBlock>
+									<TextBlock Style="{StaticResource VoidedStatusTextStyle}" Margin="0,4,0,0"/>
+								</StackPanel>
+
+								<StackPanel Grid.Column="2" VerticalAlignment="Center">
+									<TextBlock Text="{Binding InvoiceDate, StringFormat=\{0:dd MMM yyyy\}}" FontWeight="SemiBold" HorizontalAlignment="Right"/>
+									<TextBlock Text="{Binding InvoiceDate, StringFormat=\{0:HH:mm\}}" FontSize="12" Foreground="#999" HorizontalAlignment="Right"/>
+								</StackPanel>
+							</Grid>
+						</Border>
+					</DataTemplate>
+				</ListBox.ItemTemplate>
+			</ListBox>
+
+			<Border Grid.Column="1" Background="White" BorderBrush="#E5E7EB" BorderThickness="1" CornerRadius="8" Padding="20">
+				<Grid DataContext="{Binding SelectedInvoice}">
+					<Grid.RowDefinitions>
+						<RowDefinition Height="Auto"/>
+						<RowDefinition Height="*"/>
+						<RowDefinition Height="Auto"/>
+					</Grid.RowDefinitions>
+
+					<Grid Grid.Row="0" Margin="0,0,0,20">
+						<StackPanel>
+							<StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+								<TextBlock Text="{DynamicResource Str_INVOICE}" FontSize="12" FontWeight="Bold" Foreground="#6B7280" VerticalAlignment="Center"/>
+								<TextBlock Text="{Binding InvoiceId, StringFormat='#{0}'}" FontSize="24" FontWeight="Bold" Foreground="#111827" Margin="12,0,0,0"/>
+
+								<Border Margin="16,0,0,0" Padding="8,2" CornerRadius="12" VerticalAlignment="Center" BorderThickness="1">
+									<TextBlock Style="{StaticResource VoidedStatusTextStyle}" Margin="0,4,0,0"/>
+								</Border>
 							</StackPanel>
 
-							<StackPanel Grid.Column="2" VerticalAlignment="Center">
-								<TextBlock Text="{Binding InvoiceDate, StringFormat=\{0:dd MMM yyyy\}}" FontWeight="SemiBold" HorizontalAlignment="Right"/>
-								<TextBlock Text="{Binding InvoiceDate, StringFormat=\{0:HH:mm\}}" FontSize="12" Foreground="#999" HorizontalAlignment="Right"/>
-							</StackPanel>
-						</Grid>
+							<UniformGrid Columns="3" Margin="0,8,0,0">
+								<StackPanel>
+									<TextBlock Text="{DynamicResource Str_DATE}" FontSize="10" FontWeight="Bold" Foreground="#9CA3AF"/>
+									<TextBlock Text="{Binding InvoiceDate, StringFormat='{}{0:MMM dd, yyyy}'}" FontSize="14" Foreground="#374151" FontWeight="Medium"/>
+								</StackPanel>
+								<StackPanel>
+									<TextBlock Text="{DynamicResource Str_PROCESSEDBY}" FontSize="10" FontWeight="Bold" Foreground="#9CA3AF"/>
+									<TextBlock Text="{Binding UserId}" FontSize="14" Foreground="#374151" FontWeight="Medium"/>
+								</StackPanel>
+							</UniformGrid>
+						</StackPanel>
+					</Grid>
+
+					<Border Grid.Row="1" Background="Transparent" CornerRadius="8" BorderBrush="#E5E7EB" BorderThickness="1" Padding="1">
+						<DataGrid ItemsSource="{Binding DataContext.Details, RelativeSource={RelativeSource AncestorType=Page}}" AutoGenerateColumns="False" IsReadOnly="True" Background="Transparent" BorderThickness="0" GridLinesVisibility="None" HeadersVisibility="Column" RowHeight="45" HorizontalScrollBarVisibility="Disabled">
+							<DataGrid.Resources>
+								<Style TargetType="DataGridColumnHeader">
+									<Setter Property="Background" Value="#F9FAFB"/>
+									<Setter Property="Foreground" Value="#6B7280"/>
+									<Setter Property="FontWeight" Value="SemiBold"/>
+									<Setter Property="Padding" Value="12,10"/>
+									<Setter Property="BorderThickness" Value="0,0,0,1"/>
+									<Setter Property="BorderBrush" Value="#E5E7EB"/>
+								</Style>
+							</DataGrid.Resources>
+
+							<DataGrid.Columns>
+								<DataGridTextColumn Header="ISBN" Binding="{Binding Book.ISBN}" Width="120" />
+								<DataGridTextColumn Header="{DynamicResource Str_Title}" Binding="{Binding Book.Title}" Width="2*" />
+								<DataGridTextColumn Header="{DynamicResource Str_Quantity}" Binding="{Binding Quantity}" Width="80"/>
+								<DataGridTextColumn Header="{DynamicResource Str_UnitPrice}" Binding="{Binding UnitPrice, StringFormat={}{0:C0}}" Width="120"/>
+								<DataGridTextColumn Header="{DynamicResource Str_Discount}" Binding="{Binding Discount, StringFormat={}{0}%}" Width="100"/>
+								<DataGridTextColumn Header="{DynamicResource Str_SubTotal}" Binding="{Binding SubTotal, StringFormat={}{0:C0}}" Width="120">
+									<DataGridTextColumn.ElementStyle>
+										<Style TargetType="TextBlock">
+											<Setter Property="FontWeight" Value="Bold"/>
+											<Setter Property="Foreground" Value="#111827"/>
+											<Setter Property="HorizontalAlignment" Value="Right"/>
+											<Setter Property="Margin" Value="0,0,12,0"/>
+										</Style>
+									</DataGridTextColumn.ElementStyle>
+								</DataGridTextColumn>
+							</DataGrid.Columns>
+						</DataGrid>
 					</Border>
-				</DataTemplate>
-			</ListBox.ItemTemplate>
-		</ListBox>
 
-        <!-- Footer buttons -->
+					<Grid Grid.Row="2" Margin="0,20,0,0">
+						<StackPanel HorizontalAlignment="Right" Width="250">
+							<Grid Margin="0,4">
+								<TextBlock Text="{DynamicResource Str_TotalAmount}" FontSize="14" Foreground="#6B7280"/>
+								<TextBlock Text="{Binding DataContext.TotalAmount, RelativeSource={RelativeSource AncestorType=Page}, StringFormat={}{0:C0}}" FontSize="20" FontWeight="Bold" Foreground="#111827" HorizontalAlignment="Right"/>
+							</Grid>
+						</StackPanel>
+					</Grid>
+				</Grid>
+			</Border>
+		</Grid>
+
 		<Border Grid.Row="2" Background="#F8F9FA" Padding="15" CornerRadius="8" Margin="0,10,0,0">
 			<StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
-				<Button Content="View Details" Command="{Binding ViewInvoiceDetailCommand}" Style="{StaticResource EditButton}"/>
+				<Button Content="{DynamicResource Str_VoidInvoice}" Command="{Binding VoidInvoiceCommand}" Style="{StaticResource DeleteButton}"/>
 			</StackPanel>
 		</Border>
 
-        <controls:MessageBanner HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0" Panel.ZIndex="100"/>
-    </Grid>
+		<controls:MessageBanner HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0" Panel.ZIndex="100"/>
+	</Grid>
 </Page>

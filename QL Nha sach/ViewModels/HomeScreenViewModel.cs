@@ -23,6 +23,7 @@ namespace QL_Nha_sach.ViewModels
         private readonly IDbContextFactory<AppDbContext> _factory;
         private readonly SessionManager _session;
         private ObservableCollection<Book> _books = new();
+        private string _searchText = string.Empty;
         private DateTime _date = DateTime.Now;
 
         public ObservableCollection<Promotion> Promotions { get; }
@@ -31,6 +32,7 @@ namespace QL_Nha_sach.ViewModels
         public int TotalUsersCount { get; set; }
         public int LowStockCount { get; set; }
         public ObservableCollection<BestSeller> HomeBestSellers { get; } = new();
+        public ObservableCollection<Book> LowStockBooks { get; } = new();
 
         public string FullName { get; set; }
         public string RoleName { get; set; }
@@ -41,6 +43,18 @@ namespace QL_Nha_sach.ViewModels
             set { _books = value; OnPropertyChanged(); }
         }
         public ObservableCollection<Book> NewBooks { get; } = new ObservableCollection<Book>();
+        public string SearchText
+        {
+            get => _searchText;
+            set
+            {
+                if (_searchText != value)
+                {
+                    _searchText = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
         public DateTime Date
         {
             get => _date;
@@ -50,19 +64,18 @@ namespace QL_Nha_sach.ViewModels
         // Commands
         public ICommand ManageBooksCommand { get; }
         public ICommand ManagePromotionCommand { get; }
-        public ICommand ViewPromotionCommand { get; }
         public ICommand CreateInvoiceCommand { get; }
         public ICommand OpenInvoiceListCommand { get; }
         public ICommand ImportBooksCommand { get; }
         public ICommand OpenImportListCommand { get; }
         public ICommand ManageStockCommand { get; }
-        public ICommand OpenTransactionListCommand { get; }
         public ICommand OpenBestSellerCommand { get; }
         public ICommand ManageUserCommand { get; }
         public ICommand OpenReportCommand { get; }
         public ICommand ManageRegulationCommand { get; }
 
-        public ICommand OpenSettingsCommand { get; }
+        public ICommand ExecuteSearchCommand { get; }
+        public ICommand ViewProfileCommand { get; }
 
         // Role flags
         public bool IsManager => _session.CurrentUser?.Role?.RoleName == "Manager";
@@ -85,21 +98,20 @@ namespace QL_Nha_sach.ViewModels
 
             LoadData();
 
-            ManageBooksCommand = new RelayCommand(_ => OpenBookManagement(), _ => IsManager);
-            ManagePromotionCommand = new RelayCommand(_ => OpenPromotionManagement(), _ => IsManager);
-            ViewPromotionCommand = new RelayCommand(_ => OpenViewPromotion(), _ => IsStaff);
+            ManageBooksCommand = new RelayCommand(_ => OpenBookManagement(null));
+            ManagePromotionCommand = new RelayCommand(_ => OpenPromotionManagement(), _ => IsManager || IsStaff);
             CreateInvoiceCommand = new RelayCommand(_ => OpenCreateInvoice(), _ => IsStaff);
             OpenInvoiceListCommand = new RelayCommand(_ => OpenInvoiceList(), _ => IsStaff || IsManager);
             ImportBooksCommand = new RelayCommand(_ => OpenImportBooks(), _ => IsStocker);
             OpenImportListCommand = new RelayCommand(_ => OpenImportList(), _ => IsStocker || IsManager);
             ManageStockCommand = new RelayCommand(_ => OpenStockManagement(), _ => IsStocker);
-            OpenTransactionListCommand = new RelayCommand(_ => OpenTransactionList(), _ => IsManager);
             OpenBestSellerCommand = new RelayCommand(_ => OpenBestSeller(), _ => IsManager);
             ManageUserCommand = new RelayCommand(_ => OpenUserManagement(), _ => IsManager);
             OpenReportCommand = new RelayCommand(_ => OpenReport(), _ => IsManager);
             ManageRegulationCommand = new RelayCommand(_ => OpenRegulationManagement(), _ => IsManager);
 
-            OpenSettingsCommand = new RelayCommand(_ => OpenSettings());
+            ExecuteSearchCommand = new RelayCommand(_ => OpenBookManagement(SearchText), _ => !string.IsNullOrWhiteSpace(SearchText));
+            ViewProfileCommand = new RelayCommand(_ => OpenProfile());
         }
 
         public void LoadData()
@@ -164,6 +176,16 @@ namespace QL_Nha_sach.ViewModels
                 });
             }
 
+            var lowStockBooks = context.Books
+                .Take(3)
+                .ToList();
+
+            LowStockBooks.Clear();
+            foreach (var book in lowStockBooks)
+            {
+                LowStockBooks.Add(book);
+            }
+
             context.ChangeTracker.Clear();
 
             // Notify UI
@@ -176,24 +198,24 @@ namespace QL_Nha_sach.ViewModels
             OnPropertyChanged(nameof(HomeBestSellers));
         }
 
-        private void OpenBookManagement()
+        private void OpenBookManagement(string? initialSearch = null)
         {
             // navigate to BookManagementPage
             var vm = new BookViewModel(_session, _factory);
+            if (!string.IsNullOrWhiteSpace(initialSearch))
+            {
+                vm.ExternalSearchText = initialSearch;
+            }
+            vm.LoadData(); // Ensure data is loaded before navigating
             NavigateRequested?.Invoke(new BookManagementPage(vm));
+            SearchText = string.Empty;
         }
 
         private void OpenPromotionManagement()
         {
             // navigate to PromotionManagementPage
-            var vm = new PromotionViewModel(_factory);
+            var vm = new PromotionViewModel(_session, _factory);
             NavigateRequested?.Invoke(new PromotionListPage(vm));
-        }
-
-        private void OpenViewPromotion()
-        {
-            var vm = new PromotionViewModel(_factory);
-            NavigateRequested?.Invoke(new ViewPromotionPage(vm));
         }
 
         private void OpenCreateInvoice()
@@ -226,12 +248,6 @@ namespace QL_Nha_sach.ViewModels
             NavigateRequested?.Invoke(new StockPage(vm));
         }
 
-        private void OpenTransactionList()
-        {
-            var vm = new TransactionListViewModel(_session, _factory);
-            NavigateRequested?.Invoke(new TransactionListPage(vm));
-        }
-
         private void OpenBestSeller()
         {
             var vm = new BestSellerReportViewModel(_factory);
@@ -256,10 +272,16 @@ namespace QL_Nha_sach.ViewModels
             NavigateRequested?.Invoke(new RegulationPage(vm));
         }
 
-        private void OpenSettings()
+        private void OpenProfile()
         {
-            //var vm = new SettingsViewModel(_session, _factory);
-            //NavigateRequested?.Invoke(new SettingsPage(vm));
+            var vm = new AccountViewModel(_session, _factory);
+            AccountWindow profileModal = new AccountWindow(vm);
+            if (Application.Current.MainWindow != null)
+            {
+                profileModal.Owner = Application.Current.MainWindow;
+            }
+            profileModal.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+            profileModal.ShowDialog();
         }
     }
 }

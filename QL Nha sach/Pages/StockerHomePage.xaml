@@ -20,54 +20,70 @@
 	<Grid Background="#E6E7E8">
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition Width="*"/>
-			<ColumnDefinition Width="4*"/>
+			<ColumnDefinition Width="5*"/>
 		</Grid.ColumnDefinitions>
 
 		<!-- Sidebar -->
 		<Border Grid.Column="0" Background="White" CornerRadius="10" Margin="10,15,5,20" Padding="20">
-			<Viewbox Stretch="Uniform" VerticalAlignment="Top">
-				<StackPanel>
-					<TextBlock Text="Bookstore" FontSize="30" FontWeight="SemiBold" Foreground="#222" Padding="10"/>
-					<Button Content="📚    Import Books" Command="{Binding ImportBooksCommand}" Height="80" Padding="10" HorizontalContentAlignment="Left" Style="{StaticResource NavigateButton}"/>
-					<Button Content="👤    Import List" Command="{Binding OpenImportListCommand}" Height="80" Padding="10" HorizontalContentAlignment="Left" Style="{StaticResource NavigateButton}"/>
-					<Rectangle Height="1" Fill="#E0E0E0"/>
-					<Button Content="⚙️    Settings" Command="{Binding OpenSettingsCommand}" Height="80" Padding="10" HorizontalContentAlignment="Left" Style="{StaticResource NavigateButton}"/>
-					<Button Content="Logout" Click="LogoutButton_Click" BorderThickness="0" Height="80" FontSize="26" Background="White" Foreground="Red" FontWeight="SemiBold" Padding="10" HorizontalContentAlignment="Left"/>
-				</StackPanel>
-			</Viewbox>
+			<StackPanel>
+				<TextBlock Text="{DynamicResource Str_Bookstore}" FontSize="22" FontWeight="SemiBold" Foreground="#222" Padding="10"/>
+				<Button Content="{DynamicResource Str_AllBooks}" Command="{Binding ManageBooksCommand}" Height="80" Padding="10" HorizontalContentAlignment="Left" Style="{StaticResource NavigateButton}"/>
+				<Button Content="{DynamicResource Str_ImportBooks}" Command="{Binding ImportBooksCommand}" Height="80" Padding="10" HorizontalContentAlignment="Left" Style="{StaticResource NavigateButton}"/>
+				<Button Content="{DynamicResource Str_ImportList}" Command="{Binding OpenImportListCommand}" Height="80" Padding="10" HorizontalContentAlignment="Left" Style="{StaticResource NavigateButton}"/>
+				<Rectangle Height="1" Fill="#E0E0E0"/>
+				<Button Content="{DynamicResource Str_Language}" Click="LanguageMenuButton_Click" Height="80" Padding="10" HorizontalContentAlignment="Left" Style="{StaticResource NavigateButton}">
+					<Button.ContextMenu>
+						<ContextMenu>
+							<MenuItem Header="English" Tag="en" Click="LanguageMenuItem_Click"/>
+							<MenuItem Header="Tiếng Việt" Tag="vi" Click="LanguageMenuItem_Click"/>
+						</ContextMenu>
+					</Button.ContextMenu>
+				</Button>
+				<Button Content="{DynamicResource Str_Logout}" Click="LogoutButton_Click" BorderThickness="0" Height="80" FontSize="16" Background="White" Foreground="Red" FontWeight="SemiBold" Padding="10" HorizontalContentAlignment="Left"/>
+			</StackPanel>
 		</Border>
 
 		<!-- Main Content -->
 		<Grid Grid.Column="1" Background="#E6E7E8" Margin="5">
 			<Grid.RowDefinitions>
 				<RowDefinition Height="*"/>
-				<!-- Search bar -->
+				<RowDefinition Height="2*"/>
 				<RowDefinition Height="3*"/>
-				<!-- Dashboard cards -->
 				<RowDefinition Height="5*"/>
-				<!-- New Books -->
 			</Grid.RowDefinitions>
 
 			<!-- Search -->
 			<Border Grid.Row="0" Background="White" Margin="5,10,10,10" CornerRadius="20" Padding="10">
-				<Viewbox Stretch="Uniform" HorizontalAlignment="Left">
-					<Border Background="LightGray" Margin="10" CornerRadius="40" Height="80" VerticalAlignment="Center" HorizontalAlignment="Left">
+				<Grid>
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="3*"/>
+						<ColumnDefinition Width="*"/>
+					</Grid.ColumnDefinitions>
+
+					<Border Grid.Column="0" Background="LightGray" Margin="10" CornerRadius="20" Height="40">
 						<Grid Margin="15,0">
 							<Grid.ColumnDefinitions>
 								<ColumnDefinition Width="Auto"/>
 								<ColumnDefinition Width="*"/>
 							</Grid.ColumnDefinitions>
 
-							<TextBlock Text="🔍" FontSize="30" Foreground="#9CA3AF" VerticalAlignment="Center" Margin="0,0,10,0"/>
-							<TextBox Grid.Column="1" Width="1200" Background="Transparent" BorderThickness="0" VerticalContentAlignment="Center" FontSize="30" Foreground="#1F2937"/>
+							<TextBlock Text="🔍" FontSize="20" Foreground="#9CA3AF" VerticalAlignment="Center" Margin="0,0,10,0"/>
+							<TextBox Grid.Column="1" Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" Background="Transparent" BorderThickness="0" VerticalContentAlignment="Center" FontSize="16" Foreground="#1F2937">
+								<TextBox.InputBindings>
+									<KeyBinding Key="Return" Command="{Binding ExecuteSearchCommand}"/>
+								</TextBox.InputBindings>
+							</TextBox>
 						</Grid>
 					</Border>
-				</Viewbox>
+					<StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,10,0">
+						<Button Content="👤" Command="{Binding ViewProfileCommand}" FontSize="20" Background="White" BorderThickness="0"/>
+					</StackPanel>
+				</Grid>
 			</Border>
 
-			<!-- Dashboard Cards -->
 			<Grid Grid.Row="1" Margin="5,10,10,10">
 				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="*" />
 					<ColumnDefinition Width="*" />
 					<ColumnDefinition Width="*" />
 				</Grid.ColumnDefinitions>
@@ -76,123 +92,134 @@
 					<RowDefinition Height="*" />
 				</Grid.RowDefinitions>
 
-				<!-- Stocks -->
-				<Border Grid.Column="0" Background="White" BorderThickness="0" CornerRadius="12" Margin="0,0,15,0">
-					<Grid Margin="20,20,20,0">
-						<Grid.RowDefinitions>
-							<RowDefinition Height="Auto" />
-							<!-- Header -->
-							<RowDefinition Height="*"    />
-							<!-- Content -->
-							<RowDefinition Height="Auto" />
-							<!-- Footer/Action  -->
-						</Grid.RowDefinitions>
+				<!-- KPI Cards -->
+				<Border Grid.Column="0" Background="#F0F9FF" Padding="20" CornerRadius="12" Margin="0,0,15,0" BorderThickness="0">
+					<Grid>
+						<Grid VerticalAlignment="Top" HorizontalAlignment="Right">
+							<Ellipse Width="45" Height="45" Fill="#BAE6FD"/>
+							<TextBlock Text="{Binding UniqueTitlesCount}" FontSize="20" FontWeight="Bold" Foreground="#4F46E5" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+						</Grid>
 
-						<TextBlock Grid.Row="0" Text="Inventory" FontSize="18" FontWeight="SemiBold" Foreground="Black" Margin="0,0,0,15"/>
-
-						<ItemsControl Grid.Row="1" ItemsSource="{Binding Promotions}">
-							<ItemsControl.ItemTemplate>
-								<DataTemplate>
-									<Viewbox Stretch="Uniform" HorizontalAlignment="Center">
-										<StackPanel>
-											<Grid Margin="0,12">
-												<Grid.ColumnDefinitions>
-													<ColumnDefinition Width="*" />
-													<ColumnDefinition Width="Auto" />
-													<ColumnDefinition Width="Auto" />
-												</Grid.ColumnDefinitions>
-
-												<StackPanel Grid.Column="0" VerticalAlignment="Center">
-													<TextBlock Text="{Binding PromotionName}" FontSize="18" FontWeight="SemiBold" Foreground="#1C1C1E"/>
-												</StackPanel>
-
-												<Border Grid.Column="1" Background="#F2F2F7" CornerRadius="6" Padding="10,6" Margin="30,0" VerticalAlignment="Center">
-													<StackPanel Orientation="Horizontal">
-														<TextBlock Text="📅" Margin="0,0,8,0" FontSize="12" VerticalAlignment="Center"/>
-														<TextBlock Text="{Binding StartDate, StringFormat=\{0:MMM dd\}}" FontSize="13" Foreground="#3A3A3C" FontWeight="Medium"/>
-														<TextBlock Text=" – " FontSize="13" Foreground="#8E8E93"/>
-														<TextBlock Text="{Binding EndDate, StringFormat={}{0:MMM dd, yyyy}}" FontSize="13" Foreground="#3A3A3C" FontWeight="Medium"/>
-													</StackPanel>
-												</Border>
-
-												<Border Grid.Column="2" Background="#E8F5E9" Padding="12,6" CornerRadius="8" VerticalAlignment="Center">
-													<TextBlock Text="{Binding Discount, StringFormat={}{0}% OFF}" Foreground="#2E7D32" FontWeight="Bold" FontSize="14"/>
-												</Border>
-											</Grid>
-
-											<Rectangle Height="1" Fill="#F0F0F0" Margin="0,5,0,0"/>
-										</StackPanel>
-									</Viewbox>
-								</DataTemplate>
-							</ItemsControl.ItemTemplate>
-						</ItemsControl>
-
-						<Border Grid.Row="2" Background="#F8F9FA" BorderBrush="#E0E0E0" BorderThickness="0,1,0,0" Margin="-20,20,-20,0" Padding="20,12" CornerRadius="0,0,12,12">
-							<Button Content="View All" Command="{Binding ManageStockCommand}" HorizontalAlignment="Right" Foreground="White" Background="Tomato" Padding="15,6" BorderThickness="0">
-								<Button.Resources>
-									<Style TargetType="Button">
-										<Setter Property="Template">
-											<Setter.Value>
-												<ControlTemplate TargetType="Button">
-													<Border x:Name="viewPromo" Background="{TemplateBinding Background}" CornerRadius="12" Padding="{TemplateBinding Padding}">
-														<ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-													</Border>
-
-													<ControlTemplate.Triggers>
-														<Trigger Property="IsMouseOver" Value="True">
-															<Setter TargetName="viewPromo" Property="Background" Value="Orange"/>
-														</Trigger>
-													</ControlTemplate.Triggers>
-												</ControlTemplate>
-											</Setter.Value>
-										</Setter>
-									</Style>
-								</Button.Resources>
-							</Button>
-						</Border>
+						<StackPanel VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="0,20,0,0">
+							<TextBlock Text="{DynamicResource Str_TotalBooks}" FontSize="16" FontWeight="SemiBold" Foreground="#0C4A6E"/>
+							<TextBlock Text="{DynamicResource Str_Activetitlesinlibrary}" FontSize="12" Foreground="#64748B" Margin="0,2,0,0"/>
+						</StackPanel>
 					</Grid>
 				</Border>
 
-				<!-- Bseller -->
-				<Button Grid.Column="1" Margin="0,0,0,0" Background="White" Command="{Binding OpenBestSellerCommand}">
-					<Button.Template>
-						<ControlTemplate TargetType="Button">
-							<Border x:Name="bseller" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
-									BorderThickness="0" CornerRadius="12" Padding="20">
-								<Viewbox Stretch="Uniform" VerticalAlignment="Center">
-									<StackPanel>
-										<TextBlock Text="🏆" FontSize="80" HorizontalAlignment="Center"/>
-										<TextBlock x:Name="bsellerText" Text="Best Seller" FontSize="40" FontWeight="SemiBold" Foreground="Goldenrod" Margin="0,10,0,0" HorizontalAlignment="Center"/>
-										<TextBlock x:Name="bsellerSubtext" Text="View your top-selling books and trends." FontSize="20" Foreground="Goldenrod" Margin="0,10,0,0" HorizontalAlignment="Center"/>
-									</StackPanel>
-								</Viewbox>
-							</Border>
+				<Border Grid.Column="1" Background="#FEF2F2" Padding="20" CornerRadius="12" Margin="0,0,15,0" BorderThickness="0">
+					<Grid>
+						<Grid VerticalAlignment="Top" HorizontalAlignment="Right">
+							<Ellipse Width="45" Height="45" Fill="#FECACA"/>
+							<TextBlock Text="{Binding LowStockCount}" FontSize="16" FontWeight="Bold" Foreground="#B91C1C" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+						</Grid>
 
-							<ControlTemplate.Triggers>
-								<Trigger Property="IsMouseOver" Value="True">
-									<Setter TargetName="bseller" Property="Background" Value="Goldenrod"/>
-									<Setter TargetName="bsellerText" Property="Foreground" Value="White"/>
-									<Setter TargetName="bsellerSubtext" Property="Foreground" Value="White"/>
-								</Trigger>
-							</ControlTemplate.Triggers>
-						</ControlTemplate>
-					</Button.Template>
-				</Button>
+						<StackPanel VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="0,20,0,0">
+							<TextBlock Text="{DynamicResource Str_Lowstock}" FontSize="16" FontWeight="SemiBold" Foreground="#7F1D1D"/>
+							<TextBlock Text="{DynamicResource Str_Requiresattention}" FontSize="12" Foreground="#64748B" Margin="0,2,0,0"/>
+						</StackPanel>
+					</Grid>
+				</Border>
+
+				<Border Grid.Column="2" Background="#EEF2FF" Padding="20" CornerRadius="12" BorderThickness="0">
+					<Grid>
+						<Grid VerticalAlignment="Top" HorizontalAlignment="Right">
+							<Ellipse Width="45" Height="45" Fill="#C7D2FE"/>
+							<TextBlock Text="{Binding TotalBooksCount}" FontSize="20" FontWeight="Bold" Foreground="#4338CA" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+						</Grid>
+
+						<StackPanel VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="0,20,0,0">
+							<TextBlock Text="{DynamicResource Str_Inventory}" FontSize="16" FontWeight="SemiBold" Foreground="#1E293B"/>
+							<TextBlock Text="{DynamicResource Str_Allcopiesinlibrary}" FontSize="12" Foreground="#6366F1" Margin="0,2,0,0"/>
+						</StackPanel>
+					</Grid>
+				</Border>
 			</Grid>
 
-			<Border Grid.Row="2" VerticalAlignment="Stretch" Background="White" Padding="15" CornerRadius="16" Margin="5,10,10,15">
+			<!-- Inventory -->
+			<Border Grid.Row="2" Background="White" BorderThickness="0" CornerRadius="12" Margin="0,0,15,0">
+				<Grid Margin="20,20,20,0">
+					<Grid.RowDefinitions>
+						<RowDefinition Height="Auto" />
+						<!-- Header -->
+						<RowDefinition Height="*"    />
+						<!-- Content -->
+						<RowDefinition Height="Auto" />
+						<!-- Footer/Action  -->
+					</Grid.RowDefinitions>
+
+					<TextBlock Grid.Row="0" Text="{DynamicResource Str_Inventory}" FontSize="16" FontWeight="SemiBold" Foreground="Black" Margin="0,0,0,15"/>
+
+					<ItemsControl Grid.Row="1" ItemsSource="{Binding Books}">
+						<ItemsControl.ItemTemplate>
+							<DataTemplate>
+								<StackPanel>
+									<Grid Margin="0,12">
+										<Grid.ColumnDefinitions>
+											<ColumnDefinition Width="*" />
+											<ColumnDefinition Width="Auto" />
+											<ColumnDefinition Width="Auto" />
+										</Grid.ColumnDefinitions>
+
+										<StackPanel Grid.Column="0" VerticalAlignment="Center">
+											<TextBlock Text="{Binding Title}" FontSize="16" FontWeight="SemiBold" Foreground="#1C1C1E"/>
+										</StackPanel>
+
+										<Border Grid.Column="1" Background="#F2F2F7" CornerRadius="6" Padding="10,6" Margin="30,0" VerticalAlignment="Center">
+											<TextBlock Text="{Binding ISBN}" FontSize="13" Foreground="#3A3A3C" FontWeight="Medium"/>
+										</Border>
+
+										<Border Grid.Column="2" Background="#E8F5E9" Padding="12,6" CornerRadius="8" VerticalAlignment="Center">
+											<TextBlock Text="{Binding Stock}" Foreground="#2E7D32" FontWeight="Bold" FontSize="14"/>
+										</Border>
+									</Grid>
+
+									<Rectangle Height="1" Fill="#F0F0F0" Margin="0,5,0,0"/>
+								</StackPanel>
+
+							</DataTemplate>
+						</ItemsControl.ItemTemplate>
+					</ItemsControl>
+
+					<Border Grid.Row="2" Background="#F8F9FA" BorderBrush="#E0E0E0" BorderThickness="0,1,0,0" Margin="-20,20,-20,0" Padding="20,12" CornerRadius="0,0,12,12">
+						<Button Content="{DynamicResource Str_ViewAll}" Command="{Binding ManageStockCommand}" HorizontalAlignment="Right" Foreground="White" Background="Tomato" Padding="15,6" BorderThickness="0">
+							<Button.Resources>
+								<Style TargetType="Button">
+									<Setter Property="Template">
+										<Setter.Value>
+											<ControlTemplate TargetType="Button">
+												<Border x:Name="viewPromo" Background="{TemplateBinding Background}" CornerRadius="12" Padding="{TemplateBinding Padding}">
+													<ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+												</Border>
+
+												<ControlTemplate.Triggers>
+													<Trigger Property="IsMouseOver" Value="True">
+														<Setter TargetName="viewPromo" Property="Background" Value="Orange"/>
+													</Trigger>
+												</ControlTemplate.Triggers>
+											</ControlTemplate>
+										</Setter.Value>
+									</Setter>
+								</Style>
+							</Button.Resources>
+						</Button>
+					</Border>
+				</Grid>
+			</Border>
+
+			<Border Grid.Row="3" VerticalAlignment="Stretch" Background="White" Padding="15" CornerRadius="16" Margin="5,10,10,15">
 				<Grid>
 					<Grid.RowDefinitions>
 						<RowDefinition Height="Auto"/>
 						<RowDefinition Height="*"/>
 					</Grid.RowDefinitions>
 
-					<TextBlock Grid.Row="0" Text="New Added Books" FontWeight="SemiBold" FontSize="22" Margin="10,5,0,5" Foreground="#222"/>
+					<TextBlock Grid.Row="0" Text="{DynamicResource Str_NewAddedBooks}" FontWeight="SemiBold" FontSize="16" Margin="10,5,0,5" Foreground="#222"/>
 
 					<ItemsControl Grid.Row="1" ItemsSource="{Binding NewBooks}">
 						<ItemsControl.ItemsPanel>
 							<ItemsPanelTemplate>
-								<UniformGrid Columns="5"/>
+								<UniformGrid Columns="6"/>
 							</ItemsPanelTemplate>
 						</ItemsControl.ItemsPanel>
 
@@ -206,8 +233,8 @@
 											<RowDefinition Height="Auto" />
 										</Grid.RowDefinitions>
 										<Image Grid.Row="0" Source="{Binding CoverImageUrl}" Stretch="UniformToFill"/>
-										<TextBlock Grid.Row="1" Text="{Binding Title}" FontSize="18" FontWeight="SemiBold" Height="52" TextWrapping="Wrap" TextTrimming="CharacterEllipsis" TextAlignment="Left"/>
-										<TextBlock Grid.Row="2" Text="{Binding AuthorNames}" FontSize="16" Foreground="#666666" FontWeight="Normal" Margin="0,0,0,0" TextAlignment="Left"/>
+										<TextBlock Grid.Row="1" Text="{Binding Title}" FontSize="16" FontWeight="SemiBold" Height="48" TextWrapping="Wrap" TextTrimming="CharacterEllipsis" TextAlignment="Left"/>
+										<TextBlock Grid.Row="2" Text="{Binding AuthorNames}" FontSize="12" Foreground="#666666" FontWeight="Normal" Margin="0,0,0,0" TextAlignment="Left"/>
 									</Grid>
 								</Border>
 							</DataTemplate>

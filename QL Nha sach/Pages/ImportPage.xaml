@@ -38,7 +38,7 @@
 
 					<Separator Width="1" Height="15" Margin="20,0" Background="#E5E7EB"/>
 
-					<TextBlock Text="👤 Stocker:" Foreground="#6B7280" Margin="0,0,8,0" VerticalAlignment="Center"/>
+					<TextBlock Text="{DynamicResource Str_Stocker}" Foreground="#6B7280" Margin="0,0,8,0" VerticalAlignment="Center"/>
 					<TextBlock Text="{Binding StaffName}" Foreground="#111827" FontWeight="SemiBold" VerticalAlignment="Center"/>
 				</StackPanel>
 
@@ -50,7 +50,7 @@
 		<!-- 2. Action/Scanning Section -->
 		<StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,0,0,20">
 			<StackPanel>
-				<TextBlock Text="Quick Scan ISBN" FontSize="12" FontWeight="Bold" Foreground="#4F46E5" Margin="0,0,0,5"/>
+				<TextBlock Text="{DynamicResource Str_QuickScanISBN}" FontSize="12" FontWeight="Bold" Foreground="#4F46E5" Margin="0,0,0,5"/>
 				<StackPanel Orientation="Horizontal">
 					<TextBox Width="300" Height="45" FontSize="18" FontWeight="SemiBold" VerticalContentAlignment="Center" Padding="10,0" Text="{Binding ScannedISBN, UpdateSourceTrigger=PropertyChanged}" BorderBrush="#4F46E5" BorderThickness="2">
 						<!-- Allows Enter Key to Add -->
@@ -58,15 +58,14 @@
 							<KeyBinding Key="Enter" Command="{Binding AddScannedBookCommand}"/>
 						</TextBox.InputBindings>
 					</TextBox>
-					<Button Content="Add to List" Command="{Binding AddScannedBookCommand}" Style="{StaticResource SaveButton}" Height="45" Margin="12,0,0,0" Width="120"/>
+					<Button Content="{DynamicResource Str_AddtoList}" Command="{Binding AddScannedBookCommand}" Style="{StaticResource SaveButton}" Height="45" Margin="12,0,0,0" Width="120"/>
 				</StackPanel>
 			</StackPanel>
 		</StackPanel>
 
 		<!-- 3. Line Items Table -->
 		<Border Grid.Row="2" Background="White" CornerRadius="12,12,0,0" BorderBrush="#E5E7EB" BorderThickness="1" Padding="5">
-			<DataGrid ItemsSource="{Binding Details}" SelectedItem="{Binding SelectedDetail, Mode=TwoWay}" AutoGenerateColumns="False" CanUserAddRows="False"
-					  HeadersVisibility="Column" GridLinesVisibility="Horizontal" HorizontalGridLinesBrush="#F3F4F6" BorderThickness="0" Background="Transparent" RowHeight="40">
+			<DataGrid ItemsSource="{Binding Details}" SelectedItem="{Binding SelectedDetail, Mode=TwoWay}" AutoGenerateColumns="False" CanUserAddRows="False" HeadersVisibility="Column" GridLinesVisibility="Horizontal" HorizontalGridLinesBrush="#F3F4F6" BorderThickness="0" Background="Transparent" RowHeight="40">
 				<DataGrid.ColumnHeaderStyle>
 					<Style TargetType="DataGridColumnHeader">
 						<Setter Property="Background" Value="#F9FAFB"/>
@@ -79,18 +78,17 @@
 				</DataGrid.ColumnHeaderStyle>
 
 				<DataGrid.Columns>
-					<DataGridTextColumn Header="ISBN" Binding="{Binding Book.ISBN}" Width="130"/>
-					<DataGridTextColumn Header="Book Title" Binding="{Binding Title}" Width="*"/>
-					<DataGridTextColumn Header="Qty" Binding="{Binding Quantity}" Width="80"/>
-					<DataGridTextColumn Header="Price" Binding="{Binding UnitPrice, StringFormat={}{0:C}}" Width="100"/>
-					<DataGridTextColumn Header="Subtotal" Binding="{Binding SubTotal, StringFormat={}{0:C}}" Width="120" FontWeight="Bold"/>
+					<DataGridTextColumn Header="ISBN" Binding="{Binding ISBN}" Width="130"/>
+					<DataGridTextColumn Header="{DynamicResource Str_Title}" Binding="{Binding Title}" IsReadOnly="True" Width="*"/>
+					<DataGridTextColumn Header="{DynamicResource Str_Quantity}" Binding="{Binding Quantity}" Width="80"/>
+					<DataGridTextColumn Header="{DynamicResource Str_Price}" Binding="{Binding UnitPrice, StringFormat={}{0:C}}" IsReadOnly="True" Width="100"/>
+					<DataGridTextColumn Header="{DynamicResource Str_SubTotal}" Binding="{Binding SubTotal, StringFormat={}{0:C}}" IsReadOnly="True" Width="120" FontWeight="Bold"/>
 
 					<!-- Action Column -->
 					<DataGridTemplateColumn Width="100">
 						<DataGridTemplateColumn.CellTemplate>
 							<DataTemplate>
-								<Button Content="Remove" Command="{Binding DataContext.RemoveItemCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
-										CommandParameter="{Binding}" Foreground="#DC2626" Background="Transparent" BorderThickness="0" FontSize="11"/>
+								<Button Content="{DynamicResource Str_Delete}" Command="{Binding DataContext.RemoveItemCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}" CommandParameter="{Binding}" Foreground="#DC2626" Background="Transparent" BorderThickness="0" FontSize="11"/>
 							</DataTemplate>
 						</DataGridTemplateColumn.CellTemplate>
 					</DataGridTemplateColumn>
@@ -102,16 +100,17 @@
 		<Border Grid.Row="3" Background="White" BorderBrush="#E5E7EB" BorderThickness="1,0,1,1" CornerRadius="0,0,12,12" Padding="20">
 			<Grid>
 				<StackPanel HorizontalAlignment="Left" VerticalAlignment="Center">
-					<TextBlock Text="{Binding Details.Count, StringFormat='Items: {0}'}" Foreground="#6B7280" FontSize="14"/>
+					<TextBlock Text="{DynamicResource Str_Items}" Foreground="#6B7280" FontSize="14"/>
+					<TextBlock Text="{Binding Details.Count}" Foreground="#6B7280" FontSize="14"/>
 				</StackPanel>
 
 				<StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
 					<StackPanel VerticalAlignment="Center" Margin="0,0,30,0">
-						<TextBlock Text="Grand Total" HorizontalAlignment="Right" Foreground="#6B7280" FontSize="12"/>
+						<TextBlock Text="{DynamicResource Str_TotalAmount}" HorizontalAlignment="Right" Foreground="#6B7280" FontSize="12"/>
 						<TextBlock Text="{Binding Total, StringFormat={}{0:C}}" FontSize="32" FontWeight="Black" Foreground="#059669"/>
 					</StackPanel>
 
-					<Button Content="Save Form" Command="{Binding SaveFormCommand}" Style="{StaticResource SaveButton}"/>
+					<Button Content="{DynamicResource Str_Save}" Command="{Binding SaveFormCommand}" Style="{StaticResource SaveButton}"/>
 				</StackPanel>
 			</Grid>
 		</Border>

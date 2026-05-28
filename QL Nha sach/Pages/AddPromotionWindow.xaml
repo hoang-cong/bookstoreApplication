@@ -1,0 +1,86 @@
+﻿<Window x:Class="QL_Nha_sach.Pages.AddPromotionWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:QL_Nha_sach.Pages"
+		xmlns:services="clr-namespace:QL_Nha_sach.Services"
+		xmlns:controls="clr-namespace:QL_Nha_sach.Controls"
+        mc:Ignorable="d"
+        Title="AddPromotionWindow" Height="450" Width="800"
+		WindowStyle="None"
+        AllowsTransparency="True"
+        Background="Transparent"
+        WindowState="Maximized">
+
+	<Grid>
+		<Border Background="Black" Opacity="0.5"/>
+
+		<Border Background="#FFFFFF" CornerRadius="12" VerticalAlignment="Center" HorizontalAlignment="Center" Width="800">
+			<Grid>
+				<Grid.RowDefinitions>
+					<RowDefinition Height="Auto"/>
+					<RowDefinition Height="*"/>
+					<RowDefinition Height="Auto"/>
+				</Grid.RowDefinitions>
+
+				<Border Grid.Row="0" Background="#F8FAFC" CornerRadius="12,12,0,0" Padding="24,18" BorderBrush="#E2E8F0" BorderThickness="0,0,0,1">
+					<Grid>
+						<TextBlock Text="{DynamicResource Str_CreatePromotion}" FontSize="18" FontWeight="SemiBold" Foreground="#1E293B" VerticalAlignment="Center"/>
+						<Button Content="✖" HorizontalAlignment="Right" VerticalAlignment="Center" Style="{StaticResource ExitButton}" Click="ExitButton_Click"/>
+					</Grid>
+				</Border>
+
+				<Grid Grid.Row="1" Margin="24,20">
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="*"/>
+						<ColumnDefinition Width="Auto"/>
+						<ColumnDefinition Width="*"/>
+					</Grid.ColumnDefinitions>
+
+					<StackPanel Grid.Column="0">
+						<TextBlock Text="{DynamicResource Str_GeneralDetails}" FontSize="14" FontWeight="Bold" Foreground="#475569" Margin="0,0,0,16"/>
+						<TextBlock Text="{DynamicResource Str_PromotionName}" Foreground="#64748B" FontSize="12" FontWeight="Medium" Margin="0,0,0,6"/>
+						<TextBox Text="{Binding Name}" Padding="8,6" Margin="0,0,0,16" VerticalContentAlignment="Center"/>
+
+						<Grid Margin="0,0,0,16">
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="*"/>
+								<ColumnDefinition Width="*"/>
+							</Grid.ColumnDefinitions>
+							<StackPanel Grid.Column="0" Margin="0,0,8,0">
+								<TextBlock Text="{DynamicResource Str_Discount}" Foreground="#64748B" FontSize="12" FontWeight="Medium" Margin="0,0,0,6"/>
+								<TextBox Text="{Binding DiscountPercentage}" Padding="8,6" VerticalContentAlignment="Center"/>
+							</StackPanel>
+						</Grid>
+
+						<TextBlock Text="{DynamicResource Str_ValidityPeriod}" Foreground="#64748B" FontSize="12" FontWeight="Medium" Margin="0,0,0,6"/>
+						<UniformGrid Columns="2" Margin="0,0,0,8">
+							<DatePicker SelectedDate="{Binding StartDate}" Margin="0,0,6,0" HorizontalAlignment="Stretch" Padding="5"/>
+							<DatePicker SelectedDate="{Binding EndDate}" Margin="6,0,0,0" HorizontalAlignment="Stretch" Padding="5"/>
+						</UniformGrid>
+					</StackPanel>
+
+					<Rectangle Grid.Column="1" Width="1" Fill="#E2E8F0" Margin="24,8"/>
+
+					<StackPanel Grid.Column="2">
+						<TextBlock Text="{DynamicResource Str_Targeting}" FontSize="14" FontWeight="Bold" Foreground="#475569" Margin="0,0,0,16"/>
+						<CheckBox Content="{DynamicResource Str_Applytoallbooks}" IsChecked="{Binding ApplyToAllBooks}" FontWeight="Medium" Foreground="#334155" Margin="0,0,0,12" VerticalContentAlignment="Center"/>
+						<Border BorderBrush="#CBD5E1" BorderThickness="1" CornerRadius="6" Background="#F8FAFC">
+							<ListBox ItemsSource="{Binding AvailableBooks}" Height="165" BorderThickness="0" Background="Transparent" DisplayMemberPath="Title" SelectionMode="Multiple" Padding="4" services:ListBoxSelectedItemsBehavior.BindableSelectedItems="{Binding SelectedBooks}"/>
+						</Border>
+						<TextBlock Text="{DynamicResource Str_Selectspecifictitlesforthisdiscount}" FontSize="11" Foreground="#94A3B8" Margin="2,6,0,0"/>
+					</StackPanel>
+				</Grid>
+
+				<Border Grid.Row="2" Padding="24,16" Background="#F8FAFC" CornerRadius="0,0,12,12" BorderBrush="#E2E8F0" BorderThickness="0,1,0,0">
+					<StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+						<Button Content="{DynamicResource Str_Save}" Command="{Binding SaveCommand}" Style="{StaticResource SaveButton}"/>
+					</StackPanel>
+				</Border>
+
+				<controls:MessageBanner HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,16,0,0" Panel.ZIndex="100"/>
+			</Grid>
+		</Border>
+	</Grid>
+</Window>

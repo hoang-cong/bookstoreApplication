@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -36,5 +37,8 @@ namespace QL_Nha_sach.Models
         public int Quantity { get; set; }
         public decimal UnitPrice { get; set; } // SNAPSHOT: The cost from the supplier (import price)
         public decimal SubTotal => Quantity * UnitPrice;
+
+        [NotMapped]
+        public string ISBN { get; set; } = string.Empty;
     }
 }

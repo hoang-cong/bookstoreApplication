@@ -28,8 +28,6 @@ namespace QL_Nha_sach.ViewModels
         
         public ICommand SaveCommand { get; }
 
-        public event Action<Page> NavigateRequested;
-
         public AddPromotionViewModel(IDbContextFactory<AppDbContext> factory)
         {
             _factory = factory;
@@ -43,6 +41,13 @@ namespace QL_Nha_sach.ViewModels
         private void SavePromotion()
         {
             using var context = _factory.CreateDbContext();
+            var regulation = context.Regulations.FirstOrDefault();
+            if (regulation == null)
+            {
+                ShowMessage("System regulations are not configured.", true);
+                return;
+            }
+
             var promotion = new Promotion
             {
                 PromotionName = Name,
@@ -50,6 +55,18 @@ namespace QL_Nha_sach.ViewModels
                 StartDate = StartDate,
                 EndDate = EndDate,
             };
+
+            if (StartDate > EndDate)
+            {
+                ShowMessage("Promotion start date must be before end date.", true);
+                return;
+            }
+            if (DiscountPercentage <= 0 || DiscountPercentage > regulation.Discount)
+            {
+                ShowMessage($"Discount percentage must be between 0 and {regulation.Discount}.", true);
+                return;
+            }
+
             context.Promotions.Add(promotion);
             context.SaveChanges();
 
@@ -78,9 +95,7 @@ namespace QL_Nha_sach.ViewModels
             }
             context.SaveChanges();
 
-            // Navigate back to PromotionListPage
-            var vm = new PromotionViewModel(_factory);
-            NavigateRequested?.Invoke(new PromotionListPage(vm));
+            ShowMessage("Promotion added successfully!", false);
         }
     }
 }

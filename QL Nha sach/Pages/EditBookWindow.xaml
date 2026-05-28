@@ -5,106 +5,112 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:QL_Nha_sach.Pages"
         xmlns:controls="clr-namespace:QL_Nha_sach.Controls"
-		SizeToContent="WidthAndHeight"
-        mc:Ignorable="d"
-        Title="EditBookWindow" Height="450" Width="800">
+		mc:Ignorable="d"
+        Title="EditBookWindow" Height="450" Width="800"
+		WindowStyle="None"
+        AllowsTransparency="True"
+        Background="Transparent"
+        WindowState="Maximized">
 
-	<Grid Background="#F3F4F6">
-		<!-- Page background -->
-		<Border Background="White" CornerRadius="12" Margin="40" Padding="32" MaxWidth="900" VerticalAlignment="Center">
-			<StackPanel>
-				<!-- Title -->
-				<TextBlock Text="Edit Book Details" FontSize="24" FontWeight="Bold" Foreground="#111827" Margin="0,0,0,24"/>
+	<Grid>
+		<Border Background="Black" Opacity="0.5"/>
+		
+		<Grid VerticalAlignment="Center" HorizontalAlignment="Center">
+			<Border Background="White" CornerRadius="12" Margin="40" Padding="32" Width="400">
+				<StackPanel>
+					<TextBlock Text="{DynamicResource Str_EditBookDetails}" FontSize="24" FontWeight="Bold" Foreground="#111827" Margin="0,0,0,24"/>
+					<Button Content="✖" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,-15,-15,0" Click="ExitButton_Click" Style="{StaticResource ExitButton}"/>
 
-				<!-- Row 1: Title & ISBN -->
-				<Grid Margin="0,0,0,20">
-					<Grid.ColumnDefinitions>
-						<ColumnDefinition Width="*"/>
-						<ColumnDefinition Width="24"/>
-						<ColumnDefinition Width="*"/>
-					</Grid.ColumnDefinitions>
+					<Grid Margin="0,0,0,20">
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="*"/>
+							<ColumnDefinition Width="24"/>
+							<ColumnDefinition Width="*"/>
+						</Grid.ColumnDefinitions>
 
-					<StackPanel Grid.Column="0">
-						<TextBlock Text="Book Title" Foreground="#4B5563" FontSize="13" FontWeight="Medium" Margin="0,0,0,6"/>
-						<TextBox Text="{Binding EditableBook.Title}" Height="38" VerticalContentAlignment="Center" Padding="10,0"/>
-					</StackPanel>
+						<StackPanel Grid.Column="0">
+							<TextBlock Text="{DynamicResource Str_Title}" Foreground="#4B5563" FontSize="13" FontWeight="Medium" Margin="0,0,0,6"/>
+							<TextBox Text="{Binding EditableBook.Title}" Height="38" VerticalContentAlignment="Center" Padding="10,0"/>
+						</StackPanel>
 
-					<StackPanel Grid.Column="2">
-						<TextBlock Text="ISBN Number" Foreground="#4B5563" FontSize="13" FontWeight="Medium" Margin="0,0,0,6"/>
-						<TextBox Text="{Binding EditableBook.ISBN}" Height="38" VerticalContentAlignment="Center" Padding="10,0"/>
-					</StackPanel>
-				</Grid>
+						<StackPanel Grid.Column="2">
+							<TextBlock Text="ISBN" Foreground="#4B5563" FontSize="13" FontWeight="Medium" Margin="0,0,0,6"/>
+							<TextBox Text="{Binding EditableBook.ISBN}" Height="38" VerticalContentAlignment="Center" Padding="10,0"/>
+						</StackPanel>
+					</Grid>
 
-				<!-- Row 2: Author & Genre (Multi-select Lists) -->
-				<Grid Margin="0,0,0,20">
-					<Grid.ColumnDefinitions>
-						<ColumnDefinition Width="*"/>
-						<ColumnDefinition Width="24"/>
-						<ColumnDefinition Width="*"/>
-					</Grid.ColumnDefinitions>
+					<!-- Row 2: Author & Genre (Multi-select Lists) -->
+					<Grid Margin="0,0,0,20">
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="*"/>
+							<ColumnDefinition Width="24"/>
+							<ColumnDefinition Width="*"/>
+						</Grid.ColumnDefinitions>
 
-					<StackPanel Grid.Column="0">
-						<TextBlock Text="Author(s)" Foreground="#4B5563" FontSize="13" FontWeight="Medium" Margin="0,0,0,6"/>
-						<Border BorderThickness="1" BorderBrush="#D1D5DB" CornerRadius="6">
-							<ListBox ItemsSource="{Binding Authors}" DisplayMemberPath="AuthorName" SelectionMode="Multiple" Height="120" BorderThickness="0" SelectionChanged="AuthorsListBox_SelectionChanged"/>
-						</Border>
-					</StackPanel>
+						<StackPanel Grid.Column="0">
+							<TextBlock Text="{DynamicResource Str_Author}" Foreground="#4B5563" FontSize="13" FontWeight="Medium" Margin="0,0,0,6"/>
+							<Border BorderThickness="1" BorderBrush="#D1D5DB" CornerRadius="6">
+								<ListBox ItemsSource="{Binding Authors}" DisplayMemberPath="AuthorName" SelectionMode="Multiple" Height="120" BorderThickness="0" SelectionChanged="AuthorsListBox_SelectionChanged"/>
+							</Border>
+						</StackPanel>
 
-					<StackPanel Grid.Column="2">
-						<TextBlock Text="Genre(s)" Foreground="#4B5563" FontSize="13" FontWeight="Medium" Margin="0,0,0,6"/>
-						<Border BorderThickness="1" BorderBrush="#D1D5DB" CornerRadius="6">
-							<ListBox ItemsSource="{Binding Genres}" DisplayMemberPath="GenreName" SelectionMode="Multiple" Height="120" BorderThickness="0" SelectionChanged="GenresListBox_SelectionChanged"/>
-						</Border>
-					</StackPanel>
-				</Grid>
+						<StackPanel Grid.Column="2">
+							<TextBlock Text="{DynamicResource Str_Genre}" Foreground="#4B5563" FontSize="13" FontWeight="Medium" Margin="0,0,0,6"/>
+							<Border BorderThickness="1" BorderBrush="#D1D5DB" CornerRadius="6">
+								<ListBox ItemsSource="{Binding Genres}" DisplayMemberPath="GenreName" SelectionMode="Multiple" Height="120" BorderThickness="0" SelectionChanged="GenresListBox_SelectionChanged"/>
+							</Border>
+						</StackPanel>
+					</Grid>
 
-				<!-- Row 3: Publisher & Status -->
-				<Grid Margin="0,0,0,20">
-					<Grid.ColumnDefinitions>
-						<ColumnDefinition Width="*"/>
-						<ColumnDefinition Width="24"/>
-						<ColumnDefinition Width="*"/>
-					</Grid.ColumnDefinitions>
+					<!-- Row 3: Publisher & Status -->
+					<Grid Margin="0,0,0,20">
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="*"/>
+							<ColumnDefinition Width="24"/>
+							<ColumnDefinition Width="*"/>
+						</Grid.ColumnDefinitions>
 
-					<StackPanel Grid.Column="0">
-						<TextBlock Text="Publisher" Foreground="#4B5563" FontSize="13" FontWeight="Medium" Margin="0,0,0,6"/>
-						<ComboBox ItemsSource="{Binding Publishers}" DisplayMemberPath="PublisherName" SelectedValuePath="PublisherId" SelectedValue="{Binding EditableBook.PublisherId}" Height="38" VerticalContentAlignment="Center"/>
-					</StackPanel>
+						<StackPanel Grid.Column="0">
+							<TextBlock Text="{DynamicResource Str_Publisher}" Foreground="#4B5563" FontSize="13" FontWeight="Medium" Margin="0,0,0,6"/>
+							<ComboBox ItemsSource="{Binding Publishers}" DisplayMemberPath="PublisherName" SelectedValuePath="PublisherId" SelectedValue="{Binding EditableBook.PublisherId}" Height="38" VerticalContentAlignment="Center"/>
+						</StackPanel>
 
-					<StackPanel Grid.Column="2">
-						<TextBlock Text="Book Status" Foreground="#4B5563" FontSize="13" FontWeight="Medium" Margin="0,0,0,6"/>
-						<ComboBox ItemsSource="{Binding BookStatuses}" DisplayMemberPath="StatusName" SelectedValuePath="BookStatusId" SelectedValue="{Binding EditableBook.BookStatusId}" Height="38" VerticalContentAlignment="Center"/>
-					</StackPanel>
-				</Grid>
+						<StackPanel Grid.Column="2">
+							<TextBlock Text="{DynamicResource Str_BookStatus}" Foreground="#4B5563" FontSize="13" FontWeight="Medium" Margin="0,0,0,6"/>
+							<ComboBox ItemsSource="{Binding BookStatuses}" DisplayMemberPath="StatusName" SelectedValuePath="BookStatusId" SelectedValue="{Binding EditableBook.BookStatusId}" Height="38" VerticalContentAlignment="Center"/>
+						</StackPanel>
+					</Grid>
 
-				<!-- Row 4: Price & Stock -->
-				<Grid Margin="0,0,0,32">
-					<Grid.ColumnDefinitions>
-						<ColumnDefinition Width="*"/>
-						<ColumnDefinition Width="24"/>
-						<ColumnDefinition Width="*"/>
-					</Grid.ColumnDefinitions>
+					<!-- Row 4: Price & Stock -->
+					<Grid Margin="0,0,0,32">
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="*"/>
+							<ColumnDefinition Width="24"/>
+							<ColumnDefinition Width="*"/>
+						</Grid.ColumnDefinitions>
 
-					<StackPanel Grid.Column="0">
-						<TextBlock Text="Price ($)" Foreground="#4B5563" FontSize="13" FontWeight="Medium" Margin="0,0,0,6"/>
-						<TextBox Text="{Binding EditableBook.Price}" Height="38" VerticalContentAlignment="Center" Padding="10,0"/>
-					</StackPanel>
+						<StackPanel Grid.Column="0">
+							<TextBlock Text="{DynamicResource Str_Price}" Foreground="#4B5563" FontSize="13" FontWeight="Medium" Margin="0,0,0,6"/>
+							<TextBox Text="{Binding EditableBook.Price}" Height="38" VerticalContentAlignment="Center" Padding="10,0"/>
+						</StackPanel>
 
-					<StackPanel Grid.Column="2">
-						<TextBlock Text="Initial Stock" Foreground="#4B5563" FontSize="13" FontWeight="Medium" Margin="0,0,0,6"/>
-						<TextBox Text="{Binding EditableBook.Stock}" Height="38" VerticalContentAlignment="Center" Padding="10,0"/>
-					</StackPanel>
-				</Grid>
+						<StackPanel Grid.Column="2">
+							<TextBlock Text="{DynamicResource Str_Stock}" Foreground="#4B5563" FontSize="13" FontWeight="Medium" Margin="0,0,0,6"/>
+							<TextBox Text="{Binding EditableBook.Stock}" Height="38" VerticalContentAlignment="Center" Padding="10,0"/>
+						</StackPanel>
+					</Grid>
 
-				<!-- Save Button Row -->
-				<Grid>
-					<Button Content="Save Changes" Command="{Binding SaveCommand}" HorizontalAlignment="Left"
-							Background="Green" Foreground="White" FontWeight="SemiBold" Padding="24,12">
+					<Button Content="{DynamicResource Str_Save}" Command="{Binding SaveCommand}" HorizontalAlignment="Left" Background="Green" Foreground="White" FontWeight="SemiBold" Padding="24,12" Height="42">
+						<Button.Resources>
+							<Style TargetType="Border">
+								<Setter Property="CornerRadius" Value="6" />
+							</Style>
+						</Button.Resources>
 					</Button>
-				</Grid>
-			</StackPanel>
-		</Border>
+				</StackPanel>
+			</Border>
 
-		<controls:MessageBanner HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,20,0,0" Panel.ZIndex="100"/>
+			<controls:MessageBanner HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,20,0,0" Panel.ZIndex="100"/>
+		</Grid>
 	</Grid>
 </Window>

@@ -65,6 +65,11 @@ namespace QL_Nha_sach.ViewModels
             var book = context.Books.FirstOrDefault(b => b.ISBN == ScannedISBN);
             if (book != null)
             {
+                if (book.BookStatusId == 3)
+                {
+                    ShowMessage("This book is not for sale", true);
+                    return;
+                }
                 var existingDetail = Details.FirstOrDefault(d => d.BookId == book.BookId);
                 if (existingDetail != null)
                 {
@@ -75,6 +80,7 @@ namespace QL_Nha_sach.ViewModels
                     Details.Add(new TDetail
                     {
                         BookId = book.BookId,
+                        ISBN = book.ISBN,
                         Title = book.Title,
                         Quantity = 1,
                         UnitPrice = book.Price

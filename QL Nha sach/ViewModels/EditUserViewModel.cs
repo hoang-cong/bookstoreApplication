@@ -1,12 +1,15 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using QL_Nha_sach.Data;
 using QL_Nha_sach.Models;
+using QL_Nha_sach.Services;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Reflection.Metadata;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace QL_Nha_sach.ViewModels
@@ -18,7 +21,6 @@ namespace QL_Nha_sach.ViewModels
         public int UserId { get; }
         public string FullName { get; set; } = string.Empty;
         public string Username { get; set; } = string.Empty;
-        public string Password { get; set; } = string.Empty;
         public string PhoneNumber { get; set; } = string.Empty;
         public string EmailAddress { get; set; } = string.Empty;
         public Role? SelectedRole { get; set; }
@@ -33,7 +35,7 @@ namespace QL_Nha_sach.ViewModels
             UserId = userId;
             LoadRoles();
             LoadUser();
-            SaveCommand = new RelayCommand(_ => SaveUser());
+            SaveCommand = new RelayCommand(SaveUser);
         }
 
         private void LoadRoles()
@@ -52,27 +54,56 @@ namespace QL_Nha_sach.ViewModels
             {
                 FullName = user.FullName;
                 Username = user.Username;
-                Password = user.Password;
                 PhoneNumber = user.PhoneNumber;
                 EmailAddress = user.EmailAddress;
                 SelectedRole = user.Role;
             }
         }
 
-        private void SaveUser()
+        private void SaveUser(object parameter)
         {
+            var passwordBox = parameter as PasswordBox;
+            string Password = passwordBox?.Password ?? string.Empty;
+
+            if (string.IsNullOrWhiteSpace(FullName))
+            {
+                ShowMessage("Full Name cannot be empty.", true);
+                return;
+            }
+
             using var context = _factory.CreateDbContext();
             var user = context.Users.FirstOrDefault(u => u.UserId == UserId);
+
             if (user != null)
             {
+
                 user.FullName = FullName;
                 user.Username = Username;
-                user.Password = Password; // later replace with hashing
                 user.PhoneNumber = PhoneNumber;
                 user.EmailAddress = EmailAddress;
                 user.RoleId = SelectedRole?.RoleId ?? user.RoleId;
+
+                bool exists = context.Users.Any(u => u.Username == user.Username);
+                if (exists)
+                {
+                    ShowMessage("User with this Username already exists!", true);
+                    return;
+                }
+                if (!string.IsNullOrWhiteSpace(Password))
+                {
+                    if (Password.Length < 6)
+                    {
+                        ShowMessage("Password must have at least 6 character", true);
+                        return;
+                    }
+                    user.Password = Password;
+                }
+
                 context.SaveChanges();
-                ShowMessage("User updated successfully!", false);
+
+                ShowMessage("Profile updated successfully!", false);
+
+                if (passwordBox != null) passwordBox.Password = string.Empty;
             }
         }
     }

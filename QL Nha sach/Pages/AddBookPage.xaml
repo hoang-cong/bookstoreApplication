@@ -23,17 +23,13 @@
 				<Grid>
 					<Grid.RowDefinitions>
 						<RowDefinition Height="Auto"/>
-						<!-- Title & Close -->
 						<RowDefinition Height="*"/>
-						<!-- Form Fields -->
 						<RowDefinition Height="Auto"/>
-						<!-- Buttons -->
 					</Grid.RowDefinitions>
 
 					<!-- 1. Header Section -->
 					<Grid Grid.Row="0" Margin="0,0,0,24">
-						<TextBlock Text="Add New Book" FontSize="22" FontWeight="Bold" Foreground="#111827"/>
-						<!-- Exit button -->
+						<TextBlock Text="{DynamicResource Str_AddNewBook}" FontSize="22" FontWeight="Bold" Foreground="#111827"/>
 						<Button Content="✖" HorizontalAlignment="Right" VerticalAlignment="Top" Style="{StaticResource ExitButton}" Click="ExitButton_Click"/>
 					</Grid>
 
@@ -47,32 +43,31 @@
 
 						<!-- Left Column: Primary Details -->
 						<StackPanel Grid.Column="0">
-							<TextBlock Text="Book Title" Foreground="#4B5563" FontSize="14" FontWeight="Medium" Margin="0,0,0,6"/>
+							<TextBlock Text="{DynamicResource Str_Title}" Foreground="#4B5563" FontSize="14" FontWeight="Medium" Margin="0,0,0,6"/>
 							<TextBox Text="{Binding NewBook.Title}" Height="36" VerticalContentAlignment="Center" Padding="8,0" Margin="0,0,0,16"/>
 
-							<TextBlock Text="ISBN Number" Foreground="#4B5563" FontSize="14" FontWeight="Medium" Margin="0,0,0,6"/>
+							<TextBlock Text="ISBN" Foreground="#4B5563" FontSize="14" FontWeight="Medium" Margin="0,0,0,6"/>
 							<Grid Margin="0,0,0,16">
 								<Grid.ColumnDefinitions>
 									<ColumnDefinition Width="*"/>
 									<ColumnDefinition Width="Auto"/>
 								</Grid.ColumnDefinitions>
 								<TextBox Text="{Binding NewBook.ISBN}" Height="36" VerticalContentAlignment="Center" Padding="8,0"/>
-								<Button Grid.Column="1" Content="Autofill" Command="{Binding AutofillBookCommand}"
-										Margin="8,0,0,0" Padding="12,0" Background="#F3F4F6" BorderBrush="#E5E7EB"/>
+								<Button Grid.Column="1" Content="Autofill" Command="{Binding AutofillBookCommand}" Margin="8,0,0,0" Padding="12,0" Background="#F3F4F6" BorderBrush="#E5E7EB"/>
 							</Grid>
 
-							<TextBlock Text="Price ($)" Foreground="#4B5563" FontSize="14" FontWeight="Medium" Margin="0,0,0,6"/>
+							<TextBlock Text="{DynamicResource Str_Price}" Foreground="#4B5563" FontSize="14" FontWeight="Medium" Margin="0,0,0,6"/>
 							<TextBox Text="{Binding NewBook.Price}" Height="36" VerticalContentAlignment="Center" Padding="8,0" Margin="0,0,0,16"/>
 
-							<TextBlock Text="Initial Stock" Foreground="#4B5563" FontSize="14" FontWeight="Medium" Margin="0,0,0,6"/>
+							<TextBlock Text="{DynamicResource Str_Stock}" Foreground="#4B5563" FontSize="14" FontWeight="Medium" Margin="0,0,0,6"/>
 							<TextBox Text="{Binding NewBook.Stock}" Height="36" VerticalContentAlignment="Center" Padding="8,0"/>
 						</StackPanel>
 
 						<!-- Right Column: Categorization -->
 						<StackPanel Grid.Column="2">
-							<TextBlock Text="Author" Foreground="#4B5563" FontSize="14" FontWeight="Medium" Margin="0,0,0,6"/>
+							<TextBlock Text="{DynamicResource Str_Author}" Foreground="#4B5563" FontSize="14" FontWeight="Medium" Margin="0,0,0,6"/>
 							<DockPanel Margin="0,0,0,16">
-								<Button Content="Manage" Command="{Binding ManageAuthorCommand}" DockPanel.Dock="Right" Margin="8,0,0,0" Background="Transparent" Foreground="#2563EB" BorderThickness="0" FontWeight="SemiBold"/>
+								<Button Content="{DynamicResource Str_Manage}" Command="{Binding ManageAuthorCommand}" DockPanel.Dock="Right" Margin="8,0,0,0" Background="Transparent" Foreground="#2563EB" BorderThickness="0" FontWeight="SemiBold"/>
 								<ComboBox ItemsSource="{Binding Authors}" Height="36" VerticalContentAlignment="Center">
 									<ComboBox.ItemTemplate>
 										<DataTemplate>
@@ -92,9 +87,9 @@
 								</ComboBox>
 							</DockPanel>
 
-							<TextBlock Text="Genre" Foreground="#4B5563" FontSize="14" FontWeight="Medium" Margin="0,0,0,6"/>
+							<TextBlock Text="{DynamicResource Str_Genre}" Foreground="#4B5563" FontSize="14" FontWeight="Medium" Margin="0,0,0,6"/>
 							<DockPanel Margin="0,0,0,16">
-								<Button Content="Manage" Command="{Binding ManageGenreCommand}" DockPanel.Dock="Right" Margin="8,0,0,0" Background="Transparent" Foreground="#2563EB" BorderThickness="0" FontWeight="SemiBold"/>
+								<Button Content="{DynamicResource Str_Manage}" Command="{Binding ManageGenreCommand}" DockPanel.Dock="Right" Margin="8,0,0,0" Background="Transparent" Foreground="#2563EB" BorderThickness="0" FontWeight="SemiBold"/>
 								<ComboBox ItemsSource="{Binding Genres}" Height="36" VerticalContentAlignment="Center">
 									<ComboBox.ItemTemplate>
 										<DataTemplate>
@@ -114,20 +109,20 @@
 								</ComboBox>
 							</DockPanel>
 
-							<TextBlock Text="Publisher" Foreground="#4B5563" FontSize="14" FontWeight="Medium" Margin="0,0,0,6"/>
+							<TextBlock Text="{DynamicResource Str_Publisher}" Foreground="#4B5563" FontSize="14" FontWeight="Medium" Margin="0,0,0,6"/>
 							<DockPanel Margin="0,0,0,16">
-								<Button Content="Manage" Command="{Binding ManagePublisherCommand}" DockPanel.Dock="Right" Margin="8,0,0,0" Background="Transparent" Foreground="#2563EB" BorderThickness="0" FontWeight="SemiBold"/>
+								<Button Content="{DynamicResource Str_Manage}" Command="{Binding ManagePublisherCommand}" DockPanel.Dock="Right" Margin="8,0,0,0" Background="Transparent" Foreground="#2563EB" BorderThickness="0" FontWeight="SemiBold"/>
 								<ComboBox ItemsSource="{Binding Publishers}" DisplayMemberPath="PublisherName" SelectedValuePath="PublisherId" SelectedValue="{Binding NewBook.PublisherId}" Height="36" VerticalContentAlignment="Center"/>
 							</DockPanel>
 
-							<TextBlock Text="Book Status" Foreground="#4B5563" FontSize="14" FontWeight="Medium" Margin="0,0,0,6"/>
+							<TextBlock Text="{DynamicResource Str_BookStatus}" Foreground="#4B5563" FontSize="14" FontWeight="Medium" Margin="0,0,0,6"/>
 							<ComboBox ItemsSource="{Binding BookStatuses}" DisplayMemberPath="StatusName" SelectedValuePath="BookStatusId" SelectedValue="{Binding NewBook.BookStatusId}" Height="36" VerticalContentAlignment="Center"/>
 						</StackPanel>
 					</Grid>
 
 					<!-- 3. Footer Action Section -->
 					<StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,32,0,0">
-						<Button Content="Save Book" Command="{Binding SaveBookCommand}" Style="{StaticResource SaveButton}" Padding="24,10"/>
+						<Button Content="{DynamicResource Str_Save}" Command="{Binding SaveBookCommand}" Style="{StaticResource SaveButton}" Padding="24,10"/>
 					</StackPanel>
 				</Grid>
 			</Border>

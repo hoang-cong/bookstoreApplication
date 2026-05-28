@@ -28,8 +28,8 @@
 
 		<!-- Header Section -->
 		<StackPanel Grid.Row="0" Margin="0,0,0,20">
-			<TextBlock Text="Top Performing Titles" FontSize="22" FontWeight="SemiBold" Foreground="#1A1A1A"/>
-			<TextBlock Text="Ranking based on total units sold this month." FontSize="14" Foreground="#666"/>
+			<TextBlock Text="{DynamicResource Str_TopPerformingTitles}" FontSize="22" FontWeight="SemiBold" Foreground="#1A1A1A"/>
+			<TextBlock Text="{DynamicResource Str_Rankingbasedontotalunitssoldthismonth}" FontSize="14" Foreground="#666"/>
 		</StackPanel>
 		
         <Button Content="✖" HorizontalAlignment="Right" VerticalAlignment="Top" Style="{StaticResource ExitButton}" Click="ExitButton_Click"/>
@@ -38,7 +38,7 @@
 		<Border Grid.Row="1" Background="#F0F2F5" CornerRadius="12" Padding="15" Margin="0,0,0,20">
 			<StackPanel Orientation="Horizontal">
 				<DatePicker SelectedDate="{Binding SelectedDate}" Width="180" Height="35" VerticalContentAlignment="Center"/>
-				<Button Content="Update Report" Command="{Binding LoadBestSellerReportCommand}" Width="130" Height="35" Margin="15,0,0,0" Background="Green" Foreground="White" FontWeight="SemiBold">
+				<Button Content="{DynamicResource Str_UpdateReport}" Command="{Binding LoadBestSellerReportCommand}" Width="130" Height="35" Margin="15,0,0,0" Background="Green" Foreground="White" FontWeight="SemiBold">
 					<Button.Resources>
 						<Style TargetType="Border">
 							<Setter Property="CornerRadius" Value="6"/>
@@ -84,13 +84,13 @@
 								<TextBlock Text="{Binding Title}" FontSize="20" FontWeight="SemiBold" Foreground="#1A1A1A" TextTrimming="CharacterEllipsis"/>
 								<TextBlock Text="{Binding ISBN}" FontSize="14" Foreground="#666" Margin="0,4,0,0"/>
 								<Border Background="#E8F5E9" HorizontalAlignment="Left" CornerRadius="4" Padding="6,2" Margin="0,8,0,0">
-									<TextBlock Text="Top Seller" FontSize="12" FontWeight="Bold" Foreground="#2E7D32"/>
+									<TextBlock Text="{DynamicResource Str_TopSeller}" FontSize="12" FontWeight="Bold" Foreground="#2E7D32"/>
 								</Border>
 							</StackPanel>
 
 							<StackPanel Grid.Column="2" VerticalAlignment="Center" Margin="10,0">
 								<Grid Margin="0,0,0,8">
-									<TextBlock Text="Monthly Revenue" FontSize="14" Foreground="#999" HorizontalAlignment="Left" VerticalAlignment="Bottom"/>
+									<TextBlock Text="{DynamicResource Str_MonthlyRevenue}" FontSize="14" Foreground="#999" HorizontalAlignment="Left" VerticalAlignment="Bottom"/>
 									<TextBlock Text="{Binding Quantity, StringFormat='{}{0} Sold'}" FontSize="16" FontWeight="Bold" Foreground="#2E7D32" HorizontalAlignment="Right"/>
 								</Grid>
 

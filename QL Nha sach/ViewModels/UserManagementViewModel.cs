@@ -2,21 +2,23 @@
 using QL_Nha_sach.Data;
 using QL_Nha_sach.Models;
 using QL_Nha_sach.Pages;
+using QL_Nha_sach.Services;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Input;
+using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace QL_Nha_sach.ViewModels
 {
     public class UserManagementViewModel : BaseViewModel
     {
         private readonly IDbContextFactory<AppDbContext> _factory;
-        
+
         private User? _selectedUser;
         private string _searchText;
 
@@ -48,8 +50,6 @@ namespace QL_Nha_sach.ViewModels
         public ICommand EditUserCommand { get; }
         public ICommand DeleteUserCommand { get; }
 
-        public event Action<Page> NavigateRequested;
-
         public UserManagementViewModel(IDbContextFactory<AppDbContext> factory)
         {
             _factory = factory;
@@ -58,7 +58,7 @@ namespace QL_Nha_sach.ViewModels
 
             AddUserCommand = new RelayCommand(_ => AddUser());
             EditUserCommand = new RelayCommand(u => EditUser(u as User));
-            DeleteUserCommand = new RelayCommand(u => DeleteUser(u as User));
+            DeleteUserCommand = new RelayCommand(DeleteUser, _ => SelectedUser != null);
         }
 
         private void LoadUsers()
@@ -99,7 +99,13 @@ namespace QL_Nha_sach.ViewModels
         private void AddUser()
         {
             var vm = new AddUserViewModel(_factory);
-            NavigateRequested?.Invoke(new AddUserPage(vm));
+            AddUserWindow window = new AddUserWindow(vm);
+            if (Application.Current.MainWindow != null)
+            {
+                window.Owner = Application.Current.MainWindow;
+            }
+            window.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+            window.ShowDialog();
 
             LoadUsers();
         }
@@ -112,22 +118,42 @@ namespace QL_Nha_sach.ViewModels
                 return;
             }
             var vm = new EditUserViewModel(_factory, SelectedUser.UserId);
-            NavigateRequested?.Invoke(new EditUserPage(vm));
+            EditUserWindow window = new EditUserWindow(vm);
+            if (Application.Current.MainWindow != null)
+            {
+                window.Owner = Application.Current.MainWindow;
+            }
+            window.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+            window.ShowDialog();
 
             LoadUsers();
         }
 
-        private void DeleteUser(User? user)
+        private void DeleteUser(object parameter)
         {
-            if (user == null) return;
-            using var context = _factory.CreateDbContext();
-            var dbUser = context.Users.FirstOrDefault(u => u.UserId == user.UserId);
-            if (dbUser != null)
+            if (SelectedUser == null) return;
+            if (SelectedUser.UserId == 1)
             {
-                context.Users.Remove(dbUser);
-                context.SaveChanges();
+                ShowMessage("Cannot delete admin user", true);
+                return;
             }
-            LoadUsers();
+
+            try
+            {
+                using var context = _factory.CreateDbContext();
+                context.Users.Remove(SelectedUser);
+                context.SaveChanges();
+                LoadUsers();
+            }
+            catch (DbUpdateException)
+            {
+                MessageBox.Show("Cannot delete this account because it is currently linked to invoice / import records in the database.",
+                                "Deletion blocked", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"An error occurred: {ex.Message}");
+            }
         }
     }
 }

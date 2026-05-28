@@ -37,7 +37,7 @@ namespace QL_Nha_sach.Data
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             // Creates a SQLite database file named bookstore.db
-            optionsBuilder.UseSqlite("Data Source=bookstore.db");
+            optionsBuilder.UseSqlite("Data Source=bookstore.db;Foreign Keys=True;");
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -60,7 +60,7 @@ namespace QL_Nha_sach.Data
                 .HasOne(ba => ba.Author)
                 .WithMany(a => a.BookAuthors)
                 .HasForeignKey(ba => ba.AuthorId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.Restrict);
 
             // BookGenre relationships
             modelBuilder.Entity<BookGenre>()
@@ -73,7 +73,7 @@ namespace QL_Nha_sach.Data
                 .HasOne(bg => bg.Genre)
                 .WithMany(g => g.BookGenres)
                 .HasForeignKey(bg => bg.GenreId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<ImportDetail>()
                 .HasKey(d => new { d.ImportId, d.BookId });
@@ -94,17 +94,20 @@ namespace QL_Nha_sach.Data
             modelBuilder.Entity<Book>()
                 .HasOne(b => b.Publisher)
                 .WithMany(a => a.Books)
-                .HasForeignKey(b => b.PublisherId);
+                .HasForeignKey(b => b.PublisherId)
+                .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Import>()
                 .HasOne(i => i.User)
                 .WithMany()
-                .HasForeignKey(i => i.UserId);
+                .HasForeignKey(i => i.UserId)
+                .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<ImportDetail>()
                 .HasOne(d => d.Book)
                 .WithMany()
-                .HasForeignKey(d => d.BookId);
+                .HasForeignKey(d => d.BookId)
+                .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<ImportDetail>()
                 .HasOne(d => d.Import)
@@ -117,18 +120,26 @@ namespace QL_Nha_sach.Data
             modelBuilder.Entity<Invoice>()
                 .HasOne(i => i.User)
                 .WithMany()
-                .HasForeignKey(i => i.UserId);
+                .HasForeignKey(i => i.UserId)
+                .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<InvoiceDetail>()
                 .HasOne(d => d.Book)
                 .WithMany() // Or .WithMany(b => b.InvoiceDetails) if added that collection to Book.cs
-                .HasForeignKey(d => d.BookId);
+                .HasForeignKey(d => d.BookId)
+                .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<InvoiceDetail>()
                 .HasOne(d => d.Invoice)
                 .WithMany(i => i.InvoiceDetails)
                 .HasForeignKey(d => d.InvoiceId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<PromotionTarget>()
+                .HasOne(pt => pt.Book)
+                .WithMany()
+                .HasForeignKey(pt => pt.BookId)
+                .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<User>()
                 .HasOne(d => d.Role)
@@ -150,23 +161,3 @@ namespace QL_Nha_sach.Data
         }
     }
 }
-//Go to Tools -> NuGet Package Manager -> Package Manager Console.
-
-//PowerShell
-//# This creates a "blueprint" of your database based on your classes
-//Add-Migration InitialCreate
-
-//# This actually builds the database file (bookstore.db)
-//Update-Database
-
-//What to look for
-//Once you run Update-Database, look at your Solution Explorer:
-
-//A new folder named Migrations will appear. This contains the C# "translation" of your tables into SQL.
-
-//A file named bookstore.db (or whatever you named it in OnConfiguring) will appear in your project folder.
-
-//One last "Peer" Check on your Models
-//Before you run that command, double-check that your InvoiceDetail and StockImportDetail don't have that duplicate [Key] we talked about. If they do, the migration will fail.
-
-//Wait! One tiny detail: Since you are in a WPF app, remember that the database file is created in the Output folder (where the .exe lives) when you run the app. If you don't see the .db file in your main folder, check bin/Debug/net8.0-windows/.

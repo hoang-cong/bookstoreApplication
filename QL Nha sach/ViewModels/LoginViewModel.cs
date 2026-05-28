@@ -26,8 +26,10 @@ namespace QL_Nha_sach.ViewModels
         public string Username { get; set; }
 
         public ICommand LoginCommand { get; }
+        public ICommand SignUpCommand { get; }
 
         public event Action<User> LoginSucceeded;
+        public event Action<Page> NavigateRequested;
 
         public LoginViewModel(IDbContextFactory<AppDbContext> factory, SessionManager session)
         {
@@ -38,14 +40,13 @@ namespace QL_Nha_sach.ViewModels
             if (!context.Users.Any())
             {
                 context.Users.AddRange(
-                    new User { Username = "admin", Password = "123", FullName = "Admin User", PhoneNumber = "0912995866", EmailAddress = "admin@gmail.com", RoleId = 1 },
-                    new User { Username = "staff", Password = "123", FullName = "Staff User", PhoneNumber = "0874933256", EmailAddress = "staff@gmail.com", RoleId = 2 },
-                    new User { Username = "stocker", Password = "123", FullName = "Stocker User", PhoneNumber = "0376988321", EmailAddress = "stocker@gmail.com", RoleId = 3 }
+                    new User { Username = "admin", Password = "123", FullName = "Admin User", PhoneNumber = "0912995866", EmailAddress = "admin@gmail.com", RoleId = 1 }
                 );
                 context.SaveChanges();
             }
 
             LoginCommand = new RelayCommand(ExecuteLoginCommand);
+            SignUpCommand = new RelayCommand(_ => OpenSignUp());
         }
 
         private void ExecuteLoginCommand(object parameter)
@@ -69,6 +70,12 @@ namespace QL_Nha_sach.ViewModels
             {
                 MessageBox.Show("Invalid username or password");
             }
+        }
+
+        private void OpenSignUp()
+        {
+            var vm = new SignUpViewModel(_factory);
+            NavigateRequested?.Invoke(new SignUpPage(vm));
         }
     }
 }

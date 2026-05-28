@@ -31,8 +31,7 @@ namespace QL_Nha_sach.Pages
 
         private void ExitButton_Click(object sender, RoutedEventArgs e)
         {
-            var stockerHome = App.AppHost.Services.GetRequiredService<StockerHomePage>();
-            NavigationService?.Navigate(stockerHome);
+            NavigationService?.GoBack();
         }
     }
 }

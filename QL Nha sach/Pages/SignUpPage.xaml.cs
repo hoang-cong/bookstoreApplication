@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using QL_Nha_sach.ViewModels;
+﻿using QL_Nha_sach.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,20 +17,21 @@ using System.Windows.Shapes;
 namespace QL_Nha_sach.Pages
 {
     /// <summary>
-    /// Interaction logic for AddPromotionPage.xaml
+    /// Interaction logic for SignUpPage.xaml
     /// </summary>
-    public partial class AddPromotionPage : Page
+    public partial class SignUpPage : Page
     {
-        public AddPromotionPage(AddPromotionViewModel vm)
+        public SignUpPage(SignUpViewModel vm)
         {
             InitializeComponent();
             this.DataContext = vm;
 
-            vm.NavigateRequested += page =>
+            vm.SignUpSucceeded += () =>
             {
-                NavigationService.Navigate(page);
+                this.NavigationService?.GoBack();
             };
         }
+
         private void ExitButton_Click(object sender, RoutedEventArgs e)
         {
             NavigationService?.GoBack();

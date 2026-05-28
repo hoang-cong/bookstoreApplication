@@ -45,6 +45,7 @@ namespace QL_Nha_sach.ViewModels
             get => _books;
             set { _books = value; OnPropertyChanged(); }
         }
+        public string ExternalSearchText { get; set; } = string.Empty;
         public string SearchText
         {
             get => _searchText;
@@ -78,6 +79,7 @@ namespace QL_Nha_sach.ViewModels
             get => _selectedAuthor;
             set { _selectedAuthor = value; OnPropertyChanged(); ApplyFilters(); }
         }
+        public bool IsManager => _session.CurrentUser?.Role?.RoleName == "Manager";
 
         public event Action<Page> NavigateRequested;
 
@@ -94,9 +96,9 @@ namespace QL_Nha_sach.ViewModels
             LoadData();
 
             ClearFiltersCommand = new RelayCommand(_ => ExecuteClearFilters());
-            AddBookCommand = new RelayCommand(_ => ExecuteAddBook());
-            EditBookCommand = new RelayCommand(ExecuteEditBook);
-            DeleteBookCommand = new RelayCommand(ExecuteDeleteBook, (obj) => SelectedBook != null);
+            AddBookCommand = new RelayCommand(_ => ExecuteAddBook(), _ => IsManager);
+            EditBookCommand = new RelayCommand(ExecuteEditBook, _ => IsManager);
+            DeleteBookCommand = new RelayCommand(ExecuteDeleteBook, _ => IsManager && SelectedBook != null);
         }
 
         public void LoadData()
@@ -116,6 +118,10 @@ namespace QL_Nha_sach.ViewModels
                 .OrderByDescending(b => b.BookId)
                 .ToList();
 
+            if (!string.IsNullOrWhiteSpace(ExternalSearchText))
+            {
+                SearchText = ExternalSearchText;
+            }
             ApplyFilters(); // Initial display
         }
 
@@ -195,20 +201,42 @@ namespace QL_Nha_sach.ViewModels
             }
 
             var window = new EditBookWindow(SelectedBook);
+            if(Application.Current.MainWindow != null)
+            {
+                window.Owner = Application.Current.MainWindow;
+            }
+            window.WindowStartupLocation = WindowStartupLocation.CenterOwner;
             window.ShowDialog();
 
             LoadData();
         }
         private void ExecuteDeleteBook(object parameter)
         {
-            using var context = _factory.CreateDbContext();
+            if (SelectedBook == null) return;
             
             var result = MessageBox.Show($"Delete {SelectedBook.Title}?", "Confirm", MessageBoxButton.YesNo);
-            if (result == MessageBoxResult.Yes)
+            if (result != MessageBoxResult.Yes) return;
+
+            try
             {
+                using var context = _factory.CreateDbContext();
+
                 context.Books.Remove(SelectedBook);
                 context.SaveChanges();
+
                 LoadData();
+            }
+            catch (DbUpdateException ex)
+            {
+                MessageBox.Show($"Cannot delete '{SelectedBook.Title}' because it is linked to existing invoice, import records or active promotions.\n\nConsider marking it as inactive instead.", "Deletion Blocked",
+                                MessageBoxButton.OK,
+                                MessageBoxImage.Error);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"An unexpected error occurred while deleting the book: {ex.Message}", "Error",
+                                MessageBoxButton.OK,
+                                MessageBoxImage.Error);
             }
         }
     }

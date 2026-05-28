@@ -14,6 +14,8 @@
 			<ResourceDictionary.MergedDictionaries>
 				<ResourceDictionary Source="/Controls/SharedStyles.xaml"/>
 			</ResourceDictionary.MergedDictionaries>
+
+			<BooleanToVisibilityConverter x:Key="BoolToVisConverter" />
 		</ResourceDictionary>
 	</Page.Resources>
 
@@ -30,7 +32,7 @@
 		<!-- Header Section -->
 		<Grid Grid.Row="0" Margin="0,0,0,24">
 			<StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-				<TextBlock Text="Inventory" FontSize="22" FontWeight="Bold" Foreground="#111827" Margin="0,0,20,0"/>
+				<TextBlock Text="{DynamicResource Str_Inventory}" FontSize="22" FontWeight="Bold" Foreground="#111827" Margin="0,0,20,0"/>
 				<Border Background="White" CornerRadius="8" BorderBrush="#E5E7EB" BorderThickness="1" Padding="8,4">
 					<StackPanel Orientation="Horizontal">
 						<TextBlock Text="🔍" VerticalAlignment="Center" Margin="5,0,8,0" Foreground="#9CA3AF"/>
@@ -39,18 +41,18 @@
 				</Border>
 
 				<StackPanel Margin="0,0,16,0">
-					<TextBlock Text="Genre" FontSize="11" FontWeight="Bold" Foreground="#6B7280" Margin="0,0,0,4"/>
+					<TextBlock Text="{DynamicResource Str_Genre}" FontSize="11" FontWeight="Bold" Foreground="#6B7280" Margin="0,0,0,4"/>
 					<ComboBox ItemsSource="{Binding Genres}" SelectedItem="{Binding SelectedGenre}" DisplayMemberPath="GenreName" Width="140" Padding="8,6"/>
 				</StackPanel>
 
 				<!-- Author Dropdown -->
 				<StackPanel Margin="0,0,16,0">
-					<TextBlock Text="Author" FontSize="11" FontWeight="Bold" Foreground="#6B7280" Margin="0,0,0,4"/>
+					<TextBlock Text="{DynamicResource Str_Author}" FontSize="11" FontWeight="Bold" Foreground="#6B7280" Margin="0,0,0,4"/>
 					<ComboBox ItemsSource="{Binding Authors}" SelectedItem="{Binding SelectedAuthor}" DisplayMemberPath="AuthorName" Width="140" Padding="8,6"/>
 				</StackPanel>
 
 				<!-- Reset Button -->
-				<Button Command="{Binding ClearFiltersCommand}" Content="Reset Filters" VerticalAlignment="Bottom" Padding="12,7" Background="Transparent" BorderBrush="#D1D5DB" Foreground="#374151" Cursor="Hand">
+				<Button Command="{Binding ClearFiltersCommand}" Content="{DynamicResource Str_ResetFilters}" VerticalAlignment="Bottom" Padding="12,7" Background="Transparent" BorderBrush="#D1D5DB" Foreground="#374151" Cursor="Hand">
 					<Button.Resources>
 						<Style TargetType="Border">
 							<Setter Property="CornerRadius" Value="6"/>
@@ -165,8 +167,8 @@
 
 							<!-- Labels -->
 							<TextBlock Text="ISBN" Grid.Row="0" Foreground="#9CA3AF" FontSize="12" Margin="0,4"/>
-							<TextBlock Text="Genre" Grid.Row="1" Foreground="#9CA3AF" FontSize="12" Margin="0,4"/>
-							<TextBlock Text="Publisher" Grid.Row="2" Foreground="#9CA3AF" FontSize="12" Margin="0,4"/>
+							<TextBlock Text="{DynamicResource Str_Genre}" Grid.Row="1" Foreground="#9CA3AF" FontSize="12" Margin="0,4"/>
+							<TextBlock Text="{DynamicResource Str_Publisher}" Grid.Row="2" Foreground="#9CA3AF" FontSize="12" Margin="0,4"/>
 
 							<!-- Values -->
 							<TextBlock Text="{Binding SelectedBook.ISBN}" Grid.Column="1" Grid.Row="0" Foreground="#374151" FontSize="12" FontWeight="Medium" Margin="0,4"/>
@@ -179,10 +181,10 @@
 		</Grid>
 
 		<!-- Footer Actions -->
-		<StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0,20,0,0">
-			<Button Content="+ Add Book" Command="{Binding AddBookCommand}" Style="{StaticResource SaveButton}"/>
-			<Button Content="Edit" Command="{Binding EditBookCommand}" Margin="12,0" Width="100" Height="40" Background="White" BorderBrush="#E5E7EB"/>
-			<Button Content="Delete" Command="{Binding DeleteBookCommand}" Width="100" Height="40" Background="White" Foreground="#DC2626" BorderBrush="#FEE2E2"/>
+		<StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0,20,0,0" Visibility="{Binding IsManager, Converter={StaticResource BoolToVisConverter}}">
+			<Button Content="{DynamicResource Str_Add}" Command="{Binding AddBookCommand}" Style="{StaticResource SaveButton}"/>
+			<Button Content="{DynamicResource Str_Edit}" Command="{Binding EditBookCommand}" Margin="12,0" Width="100" Height="40" Background="White" BorderBrush="#E5E7EB"/>
+			<Button Content="{DynamicResource Str_Delete}" Command="{Binding DeleteBookCommand}" Width="100" Height="40" Background="White" Foreground="#DC2626" BorderBrush="#FEE2E2"/>
 		</StackPanel>
 
 		<controls:MessageBanner HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0" Panel.ZIndex="100"/>

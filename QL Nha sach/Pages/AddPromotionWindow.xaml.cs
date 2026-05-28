@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using QL_Nha_sach.ViewModels;
+﻿using QL_Nha_sach.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,19 +17,18 @@ using System.Windows.Shapes;
 namespace QL_Nha_sach.Pages
 {
     /// <summary>
-    /// Interaction logic for ImportDetailPage.xaml
+    /// Interaction logic for AddPromotionWindow.xaml
     /// </summary>
-    public partial class ImportDetailPage : Page
+    public partial class AddPromotionWindow : Window
     {
-        public ImportDetailPage(ImportDetailViewModel vm)
+        public AddPromotionWindow(AddPromotionViewModel vm)
         {
             InitializeComponent();
             this.DataContext = vm;
         }
-
         private void ExitButton_Click(object sender, RoutedEventArgs e)
         {
-            NavigationService?.GoBack();
+            this.Close();
         }
     }
 }

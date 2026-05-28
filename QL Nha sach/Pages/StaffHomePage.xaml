@@ -25,16 +25,22 @@
 
 		<!-- Sidebar -->
 		<Border Grid.Column="0" Background="White" CornerRadius="10" Margin="10,15,5,20" Padding="20">
-
 			<StackPanel>
-				<TextBlock Text="Bookstore" FontSize="22" FontWeight="SemiBold" Foreground="#222" Padding="10"/>
-				<Button Content="📜    Create Invoice" Command="{Binding CreateInvoiceCommand}" Height="80" Padding="10" HorizontalContentAlignment="Left" Style="{StaticResource NavigateButton}"/>
-				<Button Content="📚    Invoice List" Command="{Binding OpenInvoiceListCommand}" Height="80" Padding="10" HorizontalContentAlignment="Left" Style="{StaticResource NavigateButton}"/>
+				<TextBlock Text="{DynamicResource Str_Bookstore}" FontSize="22" FontWeight="SemiBold" Foreground="#222" Padding="10"/>
+				<Button Content="{DynamicResource Str_AllBooks}" Command="{Binding ManageBooksCommand}" Height="80" Padding="10" HorizontalContentAlignment="Left" Style="{StaticResource NavigateButton}"/>
+				<Button Content="{DynamicResource Str_CreateInvoice}" Command="{Binding CreateInvoiceCommand}" Height="80" Padding="10" HorizontalContentAlignment="Left" Style="{StaticResource NavigateButton}"/>
+				<Button Content="{DynamicResource Str_InvoiceList}" Command="{Binding OpenInvoiceListCommand}" Height="80" Padding="10" HorizontalContentAlignment="Left" Style="{StaticResource NavigateButton}"/>
 				<Rectangle Height="1" Fill="#E0E0E0"/>
-				<Button Content="⚙️    Settings" Command="{Binding OpenSettingsCommand}" Height="80" Padding="10" HorizontalContentAlignment="Left" Style="{StaticResource NavigateButton}"/>
-				<Button Content="Logout" Click="LogoutButton_Click" BorderThickness="0" Height="80" FontSize="16" Background="White" Foreground="Red" FontWeight="SemiBold" Padding="10" HorizontalContentAlignment="Left"/>
+				<Button Content="{DynamicResource Str_Language}" Click="LanguageMenuButton_Click" Height="80" Padding="10" HorizontalContentAlignment="Left" Style="{StaticResource NavigateButton}">
+					<Button.ContextMenu>
+						<ContextMenu>
+							<MenuItem Header="English" Tag="en" Click="LanguageMenuItem_Click"/>
+							<MenuItem Header="Tiếng Việt" Tag="vi" Click="LanguageMenuItem_Click"/>
+						</ContextMenu>
+					</Button.ContextMenu>
+				</Button>
+				<Button Content="{DynamicResource Str_Logout}" Click="LogoutButton_Click" BorderThickness="0" Height="80" FontSize="16" Background="White" Foreground="Red" FontWeight="SemiBold" Padding="10" HorizontalContentAlignment="Left"/>
 			</StackPanel>
-
 		</Border>
 
 		<!-- Main Content -->
@@ -48,8 +54,13 @@
 
 			<!-- Search -->
 			<Border Grid.Row="0" Background="White" Margin="5,10,10,10" CornerRadius="20" Padding="10">
-				<Viewbox Stretch="Uniform" HorizontalAlignment="Left">
-					<Border Background="LightGray" Margin="10" CornerRadius="40" Height="80" VerticalAlignment="Center" HorizontalAlignment="Left">
+				<Grid>
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="3*"/>
+						<ColumnDefinition Width="*"/>
+					</Grid.ColumnDefinitions>
+
+					<Border Grid.Column="0" Background="LightGray" Margin="10" CornerRadius="20" Height="40">
 						<Grid Margin="15,0">
 							<Grid.ColumnDefinitions>
 								<ColumnDefinition Width="Auto"/>
@@ -57,10 +68,17 @@
 							</Grid.ColumnDefinitions>
 
 							<TextBlock Text="🔍" FontSize="20" Foreground="#9CA3AF" VerticalAlignment="Center" Margin="0,0,10,0"/>
-							<TextBox Grid.Column="1" Width="1200" Background="Transparent" BorderThickness="0" VerticalContentAlignment="Center" FontSize="20" Foreground="#1F2937"/>
+							<TextBox Grid.Column="1" Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" Background="Transparent" BorderThickness="0" VerticalContentAlignment="Center" FontSize="16" Foreground="#1F2937">
+								<TextBox.InputBindings>
+									<KeyBinding Key="Return" Command="{Binding ExecuteSearchCommand}"/>
+								</TextBox.InputBindings>
+							</TextBox>
 						</Grid>
 					</Border>
-				</Viewbox>
+					<StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,10,0">
+						<Button Content="👤" Command="{Binding ViewProfileCommand}" FontSize="20" Background="White" BorderThickness="0"/>
+					</StackPanel>
+				</Grid>
 			</Border>
 
 			<Grid Grid.Row="1" Margin="5,10,10,10">
@@ -83,8 +101,8 @@
 						</Grid>
 
 						<StackPanel VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="0,20,0,0">
-							<TextBlock Text="Total Books" FontSize="16" FontWeight="SemiBold" Foreground="#0C4A6E"/>
-							<TextBlock Text="Active titles in library" FontSize="12" Foreground="#64748B" Margin="0,2,0,0"/>
+							<TextBlock Text="{DynamicResource Str_TotalBooks}" FontSize="16" FontWeight="SemiBold" Foreground="#0C4A6E"/>
+							<TextBlock Text="{DynamicResource Str_Activetitlesinlibrary}" FontSize="12" Foreground="#64748B" Margin="0,2,0,0"/>
 						</StackPanel>
 					</Grid>
 				</Border>
@@ -97,13 +115,13 @@
 						</Grid>
 
 						<StackPanel VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="0,20,0,0">
-							<TextBlock Text="Low stock" FontSize="16" FontWeight="SemiBold" Foreground="#7F1D1D"/>
-							<TextBlock Text="Requires attention" FontSize="12" Foreground="#64748B" Margin="0,2,0,0"/>
+							<TextBlock Text="{DynamicResource Str_Lowstock}" FontSize="16" FontWeight="SemiBold" Foreground="#7F1D1D"/>
+							<TextBlock Text="{DynamicResource Str_Requiresattention}" FontSize="12" Foreground="#64748B" Margin="0,2,0,0"/>
 						</StackPanel>
 					</Grid>
 				</Border>
 
-				<Border Grid.Column="2" Background="#EEF2FF" Padding="20" CornerRadius="12" Margin="0,0,15,0" BorderThickness="0">
+				<Border Grid.Column="2" Background="#EEF2FF" Padding="20" CornerRadius="12" BorderThickness="0">
 					<Grid>
 						<Grid VerticalAlignment="Top" HorizontalAlignment="Right">
 							<Ellipse Width="45" Height="45" Fill="#C7D2FE"/>
@@ -111,176 +129,89 @@
 						</Grid>
 
 						<StackPanel VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="0,20,0,0">
-							<TextBlock Text="Inventory" FontSize="16" FontWeight="SemiBold" Foreground="#1E293B"/>
-							<TextBlock Text="All copies in library" FontSize="12" Foreground="#6366F1" Margin="0,2,0,0"/>
+							<TextBlock Text="{DynamicResource Str_Inventory}" FontSize="16" FontWeight="SemiBold" Foreground="#1E293B"/>
+							<TextBlock Text="{DynamicResource Str_Allcopiesinlibrary}" FontSize="12" Foreground="#6366F1" Margin="0,2,0,0"/>
 						</StackPanel>
 					</Grid>
 				</Border>
 			</Grid>
+			
+			<!-- Promotions -->
+			<Border Grid.Row="2" Background="White" BorderThickness="0" CornerRadius="12" Margin="0,0,15,0">
+				<Grid Margin="20,20,20,0">
+					<Grid.RowDefinitions>
+						<RowDefinition Height="Auto" />
+						<!-- Header -->
+						<RowDefinition Height="*"    />
+						<!-- Content -->
+						<RowDefinition Height="Auto" />
+						<!-- Footer/Action  -->
+					</Grid.RowDefinitions>
 
-			<Grid Grid.Row="2" Margin="5,10,10,10">
-				<Grid.ColumnDefinitions>
-					<ColumnDefinition Width="*" />
-					<ColumnDefinition Width="*" />
-				</Grid.ColumnDefinitions>
+					<TextBlock Grid.Row="0" Text="{DynamicResource Str_ActivePromotions}" FontSize="16" FontWeight="SemiBold" Foreground="Black" Margin="0,0,0,15"/>
 
-				<Grid.RowDefinitions>
-					<RowDefinition Height="*" />
-				</Grid.RowDefinitions>
+					<ItemsControl Grid.Row="1" ItemsSource="{Binding Promotions}">
+						<ItemsControl.ItemTemplate>
+							<DataTemplate>
 
-				<!-- Promotions -->
-				<Border Grid.Column="0" Background="White" BorderThickness="0" CornerRadius="12" Margin="0,0,15,0">
-					<Grid Margin="20,20,20,0">
-						<Grid.RowDefinitions>
-							<RowDefinition Height="Auto" />
-							<!-- Header -->
-							<RowDefinition Height="*"    />
-							<!-- Content -->
-							<RowDefinition Height="Auto" />
-							<!-- Footer/Action  -->
-						</Grid.RowDefinitions>
+								<StackPanel>
+									<Grid Margin="0,12">
+										<Grid.ColumnDefinitions>
+											<ColumnDefinition Width="*" />
+											<ColumnDefinition Width="Auto" />
+											<ColumnDefinition Width="Auto" />
+										</Grid.ColumnDefinitions>
 
-						<TextBlock Grid.Row="0" Text="Active Promotions" FontSize="16" FontWeight="SemiBold" Foreground="Black" Margin="0,0,0,15"/>
+										<StackPanel Grid.Column="0" VerticalAlignment="Center">
+											<TextBlock Text="{Binding PromotionName}" FontSize="16" FontWeight="SemiBold" Foreground="#1C1C1E"/>
+										</StackPanel>
 
-						<ItemsControl Grid.Row="1" ItemsSource="{Binding Promotions}">
-							<ItemsControl.ItemTemplate>
-								<DataTemplate>
-
-									<StackPanel>
-										<Grid Margin="0,12">
-											<Grid.ColumnDefinitions>
-												<ColumnDefinition Width="*" />
-												<ColumnDefinition Width="Auto" />
-												<ColumnDefinition Width="Auto" />
-											</Grid.ColumnDefinitions>
-
-											<StackPanel Grid.Column="0" VerticalAlignment="Center">
-												<TextBlock Text="{Binding PromotionName}" FontSize="16" FontWeight="SemiBold" Foreground="#1C1C1E"/>
+										<Border Grid.Column="1" Background="#F2F2F7" CornerRadius="6" Padding="10,6" Margin="30,0" VerticalAlignment="Center">
+											<StackPanel Orientation="Horizontal">
+												<TextBlock Text="📅" Margin="0,0,8,0" FontSize="12" VerticalAlignment="Center"/>
+												<TextBlock Text="{Binding StartDate, StringFormat={}{0:MMM dd}}" FontSize="13" Foreground="#3A3A3C" FontWeight="Medium"/>
+												<TextBlock Text=" – " FontSize="13" Foreground="#8E8E93"/>
+												<TextBlock Text="{Binding EndDate, StringFormat={}{0:MMM dd, yyyy}}" FontSize="13" Foreground="#3A3A3C" FontWeight="Medium"/>
 											</StackPanel>
+										</Border>
 
-											<Border Grid.Column="1" Background="#F2F2F7" CornerRadius="6" Padding="10,6" Margin="30,0" VerticalAlignment="Center">
-												<StackPanel Orientation="Horizontal">
-													<TextBlock Text="📅" Margin="0,0,8,0" FontSize="12" VerticalAlignment="Center"/>
-													<TextBlock Text="{Binding StartDate, StringFormat={}{0:MMM dd}}" FontSize="13" Foreground="#3A3A3C" FontWeight="Medium"/>
-													<TextBlock Text=" – " FontSize="13" Foreground="#8E8E93"/>
-													<TextBlock Text="{Binding EndDate, StringFormat={}{0:MMM dd, yyyy}}" FontSize="13" Foreground="#3A3A3C" FontWeight="Medium"/>
-												</StackPanel>
-											</Border>
+										<Border Grid.Column="2" Background="#E8F5E9" Padding="12,6" CornerRadius="8" VerticalAlignment="Center">
+											<TextBlock Text="{Binding Discount, StringFormat={}{0}% OFF}" Foreground="#2E7D32" FontWeight="Bold" FontSize="14"/>
+										</Border>
+									</Grid>
 
-											<Border Grid.Column="2" Background="#E8F5E9" Padding="12,6" CornerRadius="8" VerticalAlignment="Center">
-												<TextBlock Text="{Binding Discount, StringFormat={}{0}% OFF}" Foreground="#2E7D32" FontWeight="Bold" FontSize="14"/>
-											</Border>
-										</Grid>
+									<Rectangle Height="1" Fill="#F0F0F0" Margin="0,5,0,0"/>
+								</StackPanel>
 
-										<Rectangle Height="1" Fill="#F0F0F0" Margin="0,5,0,0"/>
-									</StackPanel>
+							</DataTemplate>
+						</ItemsControl.ItemTemplate>
+					</ItemsControl>
 
-								</DataTemplate>
-							</ItemsControl.ItemTemplate>
-						</ItemsControl>
+					<Border Grid.Row="2" Background="#F8F9FA" BorderBrush="#E0E0E0" BorderThickness="0,1,0,0" Margin="-20,20,-20,0" Padding="20,12" CornerRadius="0,0,12,12">
+						<Button Content="{DynamicResource Str_ViewAll}" Command="{Binding ManagePromotionCommand}" HorizontalAlignment="Right" Foreground="White" Background="Tomato" Padding="15,6" BorderThickness="0">
+							<Button.Resources>
+								<Style TargetType="Button">
+									<Setter Property="Template">
+										<Setter.Value>
+											<ControlTemplate TargetType="Button">
+												<Border x:Name="viewPromo" Background="{TemplateBinding Background}" CornerRadius="12" Padding="{TemplateBinding Padding}">
+													<ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+												</Border>
 
-						<Border Grid.Row="2" Background="#F8F9FA" BorderBrush="#E0E0E0" BorderThickness="0,1,0,0" Margin="-20,20,-20,0" Padding="20,12" CornerRadius="0,0,12,12">
-							<Button Content="View All" Command="{Binding ViewPromotionCommand}" HorizontalAlignment="Right" Foreground="White" Background="Tomato" Padding="15,6" BorderThickness="0">
-								<Button.Resources>
-									<Style TargetType="Button">
-										<Setter Property="Template">
-											<Setter.Value>
-												<ControlTemplate TargetType="Button">
-													<Border x:Name="viewPromo" Background="{TemplateBinding Background}" CornerRadius="12" Padding="{TemplateBinding Padding}">
-														<ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-													</Border>
-
-													<ControlTemplate.Triggers>
-														<Trigger Property="IsMouseOver" Value="True">
-															<Setter TargetName="viewPromo" Property="Background" Value="Orange"/>
-														</Trigger>
-													</ControlTemplate.Triggers>
-												</ControlTemplate>
-											</Setter.Value>
-										</Setter>
-									</Style>
-								</Button.Resources>
-							</Button>
-						</Border>
-					</Grid>
-				</Border>
-
-				<!-- Bseller -->
-				<Border Grid.Column="1" Background="White" CornerRadius="12" BorderThickness="1" BorderBrush="#F0F0F0">
-					<Grid Margin="20">
-						<Grid.RowDefinitions>
-							<RowDefinition Height="Auto" />
-							<RowDefinition Height="*" />
-							<RowDefinition Height="Auto" />
-						</Grid.RowDefinitions>
-
-						<!-- Header with Auto-Date Label -->
-						<Grid Grid.Row="0" Margin="0,0,0,15">
-							<StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
-								<TextBlock Text="Best Sellers" FontSize="16" FontWeight="SemiBold" Foreground="#1C1C1E"/>
-							</StackPanel>
-
-							<!-- This shows "May 2026" automatically -->
-							<TextBlock Text="{Binding Date, StringFormat={}{0:MMMM yyyy}}" HorizontalAlignment="Right" Foreground="#8E8E93" FontSize="12" VerticalAlignment="Center"/>
-						</Grid>
-
-						<ItemsControl Grid.Row="1" ItemsSource="{Binding HomeBestSellers}" MaxHeight="250">
-							<!-- Using a simple filter or Take(3) in your VM is best -->
-							<ItemsControl.ItemTemplate>
-								<DataTemplate>
-									<StackPanel>
-										<Grid Margin="0,8">
-											<Grid.ColumnDefinitions>
-												<ColumnDefinition Width="30" />
-												<!-- Rank Number -->
-												<ColumnDefinition Width="*" />
-												<!-- Title -->
-												<ColumnDefinition Width="Auto" />
-												<!-- Qty -->
-											</Grid.ColumnDefinitions>
-
-											<TextBlock Text="•" Foreground="Goldenrod" FontWeight="Bold" FontSize="18" VerticalAlignment="Center"/>
-
-											<StackPanel Grid.Column="1" VerticalAlignment="Center">
-												<TextBlock Text="{Binding Title}" FontSize="14" FontWeight="Medium" Foreground="#1C1C1E" TextTrimming="CharacterEllipsis"/>
-												<TextBlock Text="{Binding ISBN}" FontSize="11" Foreground="#8E8E93"/>
-											</StackPanel>
-
-											<Border Grid.Column="2" Background="#FFF9C4" Padding="8,4" CornerRadius="6">
-												<TextBlock Text="{Binding Quantity, StringFormat={}{0} sold}" FontSize="11" FontWeight="Bold" Foreground="#F57F17"/>
-											</Border>
-										</Grid>
-										<Rectangle Height="1" Fill="#F8F8F8"/>
-									</StackPanel>
-								</DataTemplate>
-							</ItemsControl.ItemTemplate>
-						</ItemsControl>
-
-						<Border Grid.Row="2" Background="#F8F9FA" Margin="-20,15,-20,-20" Padding="20,12" CornerRadius="0,0,12,12">
-							<Button Content="View All" Command="{Binding ViewBestSellerCommand}" HorizontalAlignment="Right" Foreground="White" Background="#4338CA" Padding="15,6" BorderThickness="0">
-								<Button.Resources>
-									<Style TargetType="Button">
-										<Setter Property="Template">
-											<Setter.Value>
-												<ControlTemplate TargetType="Button">
-													<Border x:Name="bseller" Background="{TemplateBinding Background}" CornerRadius="12">
-														<ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Margin="{TemplateBinding Padding}"/>
-													</Border>
-													<ControlTemplate.Triggers>
-														<Trigger Property="IsMouseOver" Value="True">
-															<Setter TargetName="bseller" Property="Background" Value="#3730A3"/>
-														</Trigger>
-													</ControlTemplate.Triggers>
-												</ControlTemplate>
-											</Setter.Value>
-										</Setter>
-									</Style>
-								</Button.Resources>
-							</Button>
-						</Border>
-					</Grid>
-				</Border>
-			</Grid>
+												<ControlTemplate.Triggers>
+													<Trigger Property="IsMouseOver" Value="True">
+														<Setter TargetName="viewPromo" Property="Background" Value="Orange"/>
+													</Trigger>
+												</ControlTemplate.Triggers>
+											</ControlTemplate>
+										</Setter.Value>
+									</Setter>
+								</Style>
+							</Button.Resources>
+						</Button>
+					</Border>
+				</Grid>
+			</Border>
 
 			<Border Grid.Row="3" VerticalAlignment="Stretch" Background="White" Padding="15" CornerRadius="16" Margin="5,10,10,15">
 				<Grid>
@@ -289,7 +220,7 @@
 						<RowDefinition Height="*"/>
 					</Grid.RowDefinitions>
 
-					<TextBlock Grid.Row="0" Text="New Added Books" FontWeight="SemiBold" FontSize="16" Margin="10,5,0,5" Foreground="#222"/>
+					<TextBlock Grid.Row="0" Text="{DynamicResource Str_NewAddedBooks}" FontWeight="SemiBold" FontSize="16" Margin="10,5,0,5" Foreground="#222"/>
 
 					<ItemsControl Grid.Row="1" ItemsSource="{Binding NewBooks}">
 						<ItemsControl.ItemsPanel>

@@ -37,6 +37,10 @@ namespace QL_Nha_sach.Pages
             this.DataContext = _vm;
 
             _vm.LoginSucceeded += OnLoginSucceeded;
+            vm.NavigateRequested += page =>
+            {
+                NavigationService.Navigate(page);
+            };
         }
 
         private void OnLoginSucceeded(User user)

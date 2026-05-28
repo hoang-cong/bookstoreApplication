@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using QL_Nha_sach.ViewModels;
+﻿using QL_Nha_sach.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,17 +11,16 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
 
 namespace QL_Nha_sach.Pages
 {
     /// <summary>
-    /// Interaction logic for InvoiceDetailPage.xaml
+    /// Interaction logic for EditPromotionWindow.xaml
     /// </summary>
-    public partial class InvoiceDetailPage : Page
+    public partial class EditPromotionWindow : Window
     {
-        public InvoiceDetailPage(InvoiceDetailViewModel vm)
+        public EditPromotionWindow(EditPromotionViewModel vm)
         {
             InitializeComponent();
             this.DataContext = vm;
@@ -30,7 +28,7 @@ namespace QL_Nha_sach.Pages
 
         private void ExitButton_Click(object sender, RoutedEventArgs e)
         {
-            NavigationService?.GoBack();
+            this.Close();
         }
     }
 }

@@ -11,17 +11,16 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
 
 namespace QL_Nha_sach.Pages
 {
     /// <summary>
-    /// Interaction logic for SalesReportPage.xaml
+    /// Interaction logic for AddUserWindow.xaml
     /// </summary>
-    public partial class SalesReportPage : Page
+    public partial class AddUserWindow : Window
     {
-        public SalesReportPage(SalesReportViewModel vm)
+        public AddUserWindow(AddUserViewModel vm)
         {
             InitializeComponent();
             this.DataContext = vm;
@@ -29,7 +28,7 @@ namespace QL_Nha_sach.Pages
 
         private void ExitButton_Click(object sender, RoutedEventArgs e)
         {
-            NavigationService?.GoBack();
+            this.Close();
         }
     }
 }

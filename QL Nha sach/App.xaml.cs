@@ -49,15 +49,12 @@ namespace QL_Nha_sach
                     //services.AddTransient<InvoiceDetailViewModel>();
                     services.AddTransient<InvoiceListViewModel>();
                     services.AddTransient<InvoiceViewModel>();
-                    services.AddTransient<TransactionListViewModel>();
                     services.AddTransient<UserManagementViewModel>();
                     services.AddTransient<AddUserViewModel>();
                     //services.AddTransient<EditUserViewModel>();
 
                     services.AddTransient<AddBookPage>();
-                    services.AddTransient<AddPromotionPage>();
                     services.AddTransient<BookManagementPage>();
-                    //services.AddTransient<EditPromotionPage>();
                     services.AddTransient<LoginPage>();
                     services.AddTransient<ManagerHomePage>();
                     services.AddTransient<StaffHomePage>();
@@ -66,10 +63,7 @@ namespace QL_Nha_sach
                     services.AddTransient<ImportListPage>();
                     //services.AddTransient<InvoiceDetailPage>();
                     services.AddTransient<InvoiceListPage>();
-                    services.AddTransient<TransactionListPage>();
                     services.AddTransient<UserManagementPage>();
-                    services.AddTransient<AddUserPage>();
-                    //services.AddTransient<EditUserPage>();
 
                     //services.AddTransient<EditBookWindow>();
                     services.AddTransient<LookupWindow>();

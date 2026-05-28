@@ -71,7 +71,7 @@
 			<TabItem Header="SALES PERFORMANCE">
 				<Border Background="White" CornerRadius="12" Padding="20" BorderBrush="#E5E7EB" BorderThickness="1">
 					
-						<Grid DataContext="{Binding SalesReport}">
+						<Grid>
 							<Grid.RowDefinitions>
 								<RowDefinition Height="Auto"/>
 								<RowDefinition Height="*"/>
@@ -105,7 +105,7 @@
 			<!-- Tab 2: Inventory -->
 			<TabItem Header="INVENTORY HEALTH">
 				<Border Background="White" CornerRadius="12" Padding="20" BorderBrush="#E5E7EB" BorderThickness="1">
-					<Grid DataContext="{Binding InventoryReport}">
+					<Grid>
 						<Grid.RowDefinitions>
 							<RowDefinition Height="Auto"/>
 							<!-- KPI Cards -->
@@ -152,6 +152,7 @@
 						<DataGrid Grid.Row="2" ItemsSource="{Binding LowStockBooks}" AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True"
 								  HeadersVisibility="Column" GridLinesVisibility="Horizontal" HorizontalGridLinesBrush="#F3F4F6" BorderThickness="0">
 							<DataGrid.Columns>
+								<DataGridTextColumn Header="ISBN" FontSize="16" Binding="{Binding ISBN}" Width="150" />
 								<DataGridTextColumn Header="Book Title" FontSize="16" Binding="{Binding Title}" Width="*"/>
 
 								<!-- Highlighted Stock Column -->

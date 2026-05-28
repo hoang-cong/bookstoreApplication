@@ -27,10 +27,6 @@ namespace QL_Nha_sach.Pages
             InitializeComponent();
             this.DataContext = vm;
 
-            vm.NavigateRequested += page =>
-            {
-                NavigationService.Navigate(page);
-            };
         }
         private void ExitButton_Click(object sender, RoutedEventArgs e)
         {

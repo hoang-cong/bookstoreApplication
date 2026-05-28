@@ -13,6 +13,8 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/Controls/SharedStyles.xaml"/>
             </ResourceDictionary.MergedDictionaries>
+
+			<BooleanToVisibilityConverter x:Key="BoolToVisConverter" />
         </ResourceDictionary>
     </Page.Resources>
 
@@ -27,8 +29,8 @@
         </Grid.RowDefinitions>
 
 		<StackPanel Margin="30,10,0,0">
-			<TextBlock Text="Promotions Management" FontSize="30" FontWeight="Bold" Foreground="#1A1A1A"/>
-			<TextBlock Text="Manage active and upcoming bookstore discounts" Foreground="#8E8E93" FontSize="20"/>
+			<TextBlock Text="{DynamicResource Str_PromotionsManagement}" FontSize="30" FontWeight="Bold" Foreground="#1A1A1A"/>
+			<TextBlock Text="{DynamicResource Str_Manageactiveandupcomingbookstorediscounts}" Foreground="#8E8E93" FontSize="20"/>
 		</StackPanel>
         <Button Content="✖" HorizontalAlignment="Right" VerticalAlignment="Top" Style="{StaticResource ExitButton}" Click="ExitButton_Click"/>
 
@@ -63,16 +65,31 @@
 
 							<StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="20,0">
 								<TextBlock Text="{Binding PromotionName}" FontSize="20" FontWeight="SemiBold" Foreground="#1C1C1E"/>
-								<TextBlock Text="{Binding PromotionId, StringFormat=Promotion ID: {0}}" FontSize="20" Foreground="#8E8E93"/>
+								<TextBlock FontSize="20" Foreground="#8E8E93">
+									<Run Text="{DynamicResource Str_PromotionID}" />
+									<Run Text=" " />
+									<Run Text="{Binding PromotionId}" />
+								</TextBlock>
 							</StackPanel>
 
 							<StackPanel Grid.Column="2" VerticalAlignment="Center" Margin="0,0,30,0">
-								<TextBlock Text="{Binding StartDate, StringFormat=Start Date: {0}}" FontSize="16" Foreground="#3A3A3C"/>
-								<TextBlock Text="{Binding EndDate, StringFormat=End Date: {0}}" FontSize="16" Foreground="#FF3B30"/>
+								<TextBlock FontSize="16" Foreground="#3A3A3C">
+									<Run Text="{DynamicResource Str_StartDate}" />
+									<Run Text=" " />
+									<Run Text="{Binding StartDate}" />
+								</TextBlock>
+								<TextBlock FontSize="16" Foreground="#FF3B30">
+									<Run Text="{DynamicResource Str_EndDate}" />
+									<Run Text=" " />
+									<Run Text="{Binding EndDate}" />
+								</TextBlock>
 							</StackPanel>
 
 							<Border Grid.Column="3" Background="#E8F5E9" Padding="12,6" CornerRadius="15" VerticalAlignment="Center">
-								<TextBlock Text="{Binding Discount, StringFormat=Discount (%): {0}}" Foreground="#2E7D32" FontWeight="Bold" FontSize="16"/>
+								<TextBlock Foreground="#2E7D32" FontWeight="Bold" FontSize="16">
+									<Run Text="{DynamicResource Str_Discount}" />
+									<Run Text="{Binding Discount}" />
+								</TextBlock>
 							</Border>
 						</Grid>
 					</Border>
@@ -80,10 +97,10 @@
 			</ListBox.ItemTemplate>
 		</ListBox>
 
-		<StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="5" DockPanel.Dock="Bottom">
-			<Button Content="Add" Command="{Binding AddPromotionCommand}" Style="{StaticResource SaveButton}" Margin="5"/>
-			<Button Content="Edit" Command="{Binding EditPromotionCommand}" Style="{StaticResource EditButton}" Margin="5"/>
-			<Button Content="Delete" Command="{Binding DeletePromotionCommand}" Style="{StaticResource DeleteButton}" Margin="5"/>
+		<StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="5" DockPanel.Dock="Bottom" Visibility="{Binding IsManager, Converter={StaticResource BoolToVisConverter}}">
+			<Button Content="{DynamicResource Str_Add}" Command="{Binding AddPromotionCommand}" Style="{StaticResource SaveButton}" Margin="5"/>
+			<Button Content="{DynamicResource Str_Edit}" Command="{Binding EditPromotionCommand}" Style="{StaticResource EditButton}" Margin="5"/>
+			<Button Content="{DynamicResource Str_Delete}" Command="{Binding DeletePromotionCommand}" Style="{StaticResource DeleteButton}" Margin="5"/>
 		</StackPanel>
     </Grid>
 </Page>

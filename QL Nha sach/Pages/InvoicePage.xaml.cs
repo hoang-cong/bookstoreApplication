@@ -31,8 +31,7 @@ namespace QL_Nha_sach.Pages
 
         private void ExitButton_Click(object sender, RoutedEventArgs e)
         {
-            var staffHome = App.AppHost.Services.GetRequiredService<StaffHomePage>();
-            NavigationService?.Navigate(staffHome);
+            NavigationService?.GoBack();
         }
     }
 }

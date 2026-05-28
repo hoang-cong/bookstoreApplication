@@ -52,7 +52,7 @@ namespace QL_Nha_sach.ViewModels
 
             Details = new ObservableCollection<InvoiceDetail>(CurrentInvoice.InvoiceDetails);
 
-            TotalAmount = CurrentInvoice.InvoiceDetails.Sum(d => d.Quantity * d.UnitPrice);
+            TotalAmount = Details.Sum(d => d.SubTotal);
 
             VoidInvoiceCommand = new RelayCommand(ExecuteVoidInvoice, CanVoidInvoice);
         }
