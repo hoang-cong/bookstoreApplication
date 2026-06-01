@@ -124,7 +124,7 @@
 				<Border Grid.Column="2" Background="#EEF2FF" Padding="20" CornerRadius="12" BorderThickness="0">
 					<Grid>
 						<Grid VerticalAlignment="Top" HorizontalAlignment="Right">
-							<Ellipse Width="45" Height="45" Fill="#C7D2FE"/>
+							<Ellipse Width="70" Height="45" Fill="#C7D2FE"/>
 							<TextBlock Text="{Binding TotalBooksCount}" FontSize="20" FontWeight="Bold" Foreground="#4338CA" VerticalAlignment="Center" HorizontalAlignment="Center"/>
 						</Grid>
 

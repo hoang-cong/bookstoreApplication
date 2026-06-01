@@ -117,6 +117,12 @@ namespace QL_Nha_sach.ViewModels
                 ShowMessage("Please select a user to edit.", true);
                 return;
             }
+            if (SelectedUser.UserId == 1)
+            {
+                ShowMessage("Cannot edit this user, please go to profile settings instead", true);
+                return;
+            }
+
             var vm = new EditUserViewModel(_factory, SelectedUser.UserId);
             EditUserWindow window = new EditUserWindow(vm);
             if (Application.Current.MainWindow != null)

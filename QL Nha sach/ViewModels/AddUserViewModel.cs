@@ -45,41 +45,40 @@ namespace QL_Nha_sach.ViewModels
 
         private void SaveUser(object parameter)
         {
-            if (SelectedRole == null)
+            var passwordBox = parameter as PasswordBox;
+            string rawPassword = passwordBox?.Password ?? string.Empty;
+
+            if (SelectedRole == null || string.IsNullOrWhiteSpace(FullName) || string.IsNullOrWhiteSpace(Username))
             {
+                ShowMessage("Please enter all information", true);
                 return;
             }
-            var passwordBox = parameter as PasswordBox;
-            string Password = passwordBox?.Password ?? string.Empty;
+            if (rawPassword.Length < 6)
+            {
+                ShowMessage("Password must have at least 6 characters", true);
+                return;
+            }
 
             using var context = _factory.CreateDbContext();
-            var newUser = new User
-            {
-                FullName = FullName,
-                Username = Username,
-                Password = Password, // later replace with hashing
-                PhoneNumber = PhoneNumber,
-                EmailAddress = EmailAddress,
-                RoleId = SelectedRole.RoleId
-            };
-
-            bool exists = context.Users.Any(u => u.Username == newUser.Username);
+            
+            bool exists = context.Users.Any(u => u.Username == Username);
             if (exists)
             {
                 ShowMessage("User with this Username already exists!", true);
                 return;
             }
-            if (string.IsNullOrWhiteSpace(FullName) || string.IsNullOrWhiteSpace(Username) || string.IsNullOrWhiteSpace(Password))
+
+            string passwordHash = BCrypt.Net.BCrypt.EnhancedHashPassword(rawPassword, 12);
+            var newUser = new User
             {
-                ShowMessage("Please enter all information", true);
-                return;
-            }
-            if (Password.Length < 6)
-            {
-                ShowMessage("Password must have at least 6 character", true);
-                return;
-            }
-            newUser.Password = Password;
+                FullName = FullName,
+                Username = Username,
+                Password = passwordHash, // later replace with hashing
+                PhoneNumber = PhoneNumber,
+                EmailAddress = EmailAddress,
+                RoleId = SelectedRole.RoleId
+            };
+
             context.Users.Add(newUser);
             context.SaveChanges();
             ShowMessage("User added successfully!", false);

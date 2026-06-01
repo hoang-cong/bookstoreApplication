@@ -36,15 +36,15 @@ namespace QL_Nha_sach.ViewModels
         {
             // 1. Extract the password safely from the CommandParameter
             var passwordBox = parameter as PasswordBox;
-            string password = passwordBox?.Password ?? string.Empty;
+            string rawPassword = passwordBox?.Password ?? string.Empty;
 
             // 2. Basic Validation
-            if (string.IsNullOrWhiteSpace(Username) || string.IsNullOrWhiteSpace(password) || string.IsNullOrWhiteSpace(FullName))
+            if (string.IsNullOrWhiteSpace(Username) || string.IsNullOrWhiteSpace(FullName))
             {
                 ShowMessage("Please enter all information.", true);
                 return;
             }
-            if (password.Length < 6)
+            if (rawPassword.Length < 6)
             {
                 ShowMessage("Password must have at least 6 character.", true);
                 return;
@@ -63,10 +63,11 @@ namespace QL_Nha_sach.ViewModels
             try
             {
                 // 4. Create and save the new user
+                string passwordHash = BCrypt.Net.BCrypt.EnhancedHashPassword(rawPassword, 12);
                 var newUser = new User
                 {
                     Username = Username,
-                    Password = password, // Note: In production, hash this password!
+                    Password = passwordHash, // Note: In production, hash this password!
                     FullName = FullName,
                     PhoneNumber = PhoneNumber,
                     EmailAddress = EmailAddress,

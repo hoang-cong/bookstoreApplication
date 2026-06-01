@@ -39,8 +39,10 @@ namespace QL_Nha_sach.ViewModels
 
             if (!context.Users.Any())
             {
+                string defaultHash = BCrypt.Net.BCrypt.EnhancedHashPassword("123", 12);
+
                 context.Users.AddRange(
-                    new User { Username = "admin", Password = "123", FullName = "Admin User", PhoneNumber = "0912995866", EmailAddress = "admin@gmail.com", RoleId = 1 }
+                    new User { Username = "admin", Password = defaultHash, FullName = "Admin User", PhoneNumber = "0912995866", EmailAddress = "admin@gmail.com", RoleId = 1 }
                 );
                 context.SaveChanges();
             }
@@ -54,14 +56,15 @@ namespace QL_Nha_sach.ViewModels
             _session.Clear(); // wipe old session
 
             var passwordBox = parameter as PasswordBox;
-            string password = passwordBox?.Password ?? string.Empty;
+            string enteredPassword = passwordBox?.Password ?? string.Empty;
 
             using var context = _factory.CreateDbContext();
+            
             var user = context.Users
                 .Include(u => u.Role)
-                .FirstOrDefault(u => u.Username == Username && u.Password == password);
+                .FirstOrDefault(u => u.Username == Username);
 
-            if (user != null)
+            if (user != null && BCrypt.Net.BCrypt.EnhancedVerify(enteredPassword, user.Password))
             {
                 // Raise event so the View (LoginPage.xaml.cs) can handle navigation
                 LoginSucceeded?.Invoke(user);

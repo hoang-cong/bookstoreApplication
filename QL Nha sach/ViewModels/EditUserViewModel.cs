@@ -63,17 +63,24 @@ namespace QL_Nha_sach.ViewModels
         private void SaveUser(object parameter)
         {
             var passwordBox = parameter as PasswordBox;
-            string Password = passwordBox?.Password ?? string.Empty;
+            string rawPassword = passwordBox?.Password ?? string.Empty;
 
-            if (string.IsNullOrWhiteSpace(FullName))
+            if (string.IsNullOrWhiteSpace(FullName) || string.IsNullOrWhiteSpace(Username))
             {
-                ShowMessage("Full Name cannot be empty.", true);
+                ShowMessage("Full Name and Username cannot be empty.", true);
                 return;
             }
 
             using var context = _factory.CreateDbContext();
-            var user = context.Users.FirstOrDefault(u => u.UserId == UserId);
 
+            bool usernameTaken = context.Users.Any(u => u.Username == Username && u.UserId != UserId);
+            if (usernameTaken)
+            {
+                ShowMessage("User with this Username already exists!", true);
+                return;
+            }
+
+            var user = context.Users.FirstOrDefault(u => u.UserId == UserId);
             if (user != null)
             {
 
@@ -83,20 +90,14 @@ namespace QL_Nha_sach.ViewModels
                 user.EmailAddress = EmailAddress;
                 user.RoleId = SelectedRole?.RoleId ?? user.RoleId;
 
-                bool exists = context.Users.Any(u => u.Username == user.Username);
-                if (exists)
+                if (!string.IsNullOrWhiteSpace(rawPassword))
                 {
-                    ShowMessage("User with this Username already exists!", true);
-                    return;
-                }
-                if (!string.IsNullOrWhiteSpace(Password))
-                {
-                    if (Password.Length < 6)
+                    if (rawPassword.Length < 6)
                     {
-                        ShowMessage("Password must have at least 6 character", true);
+                        ShowMessage("Password must have at least 6 characters", true);
                         return;
                     }
-                    user.Password = Password;
+                    user.Password = BCrypt.Net.BCrypt.EnhancedHashPassword(rawPassword, 12);
                 }
 
                 context.SaveChanges();

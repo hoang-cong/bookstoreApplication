@@ -119,7 +119,7 @@ namespace QL_Nha_sach.ViewModels
                     ShowMessage($"Stock must be less than {regulation.MaxStock}.", true);
                     return;
                 }
-                if (SelectedBook.Stock > regulation.MinStock)
+                if (SelectedBook.Stock < regulation.MinStock)
                 {
                     ShowMessage($"Stock must be greater than {regulation.MinStock}.", true);
                     return;

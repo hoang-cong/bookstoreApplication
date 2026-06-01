@@ -41,7 +41,7 @@
 
 						<StackPanel Grid.Column="0">
 							<TextBlock Text="{DynamicResource Str_Username}" FontSize="12" FontWeight="SemiBold" Foreground="#7F8C8D" Margin="0,0,0,5"/>
-							<TextBox Text="{Binding Username}" Height="36" VerticalContentAlignment="Center" Padding="10,0" Background="#EDF2F7" Foreground="#4A5568" IsReadOnly="True" BorderThickness="1"/>
+							<TextBox Text="{Binding Username}" Height="36" VerticalContentAlignment="Center" Padding="10,0" Background="#EDF2F7" Foreground="#4A5568" BorderThickness="1"/>
 						</StackPanel>
 
 						<StackPanel Grid.Column="2">

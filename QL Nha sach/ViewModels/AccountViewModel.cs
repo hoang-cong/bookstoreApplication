@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using QL_Nha_sach.Data;
+using QL_Nha_sach.Models;
 using QL_Nha_sach.Services;
 using System;
 using System.Collections.Generic;
@@ -17,7 +18,8 @@ namespace QL_Nha_sach.ViewModels
         private readonly SessionManager _session;
 
         // Properties bound to the View fields
-        public string Username { get; set; } // Read-only in the UI
+        public int UserId { get; private set; }
+        public string Username { get; set; }
         public string FullName { get; set; }
         public string PhoneNumber { get; set; }
         public string EmailAddress { get; set; }
@@ -41,6 +43,7 @@ namespace QL_Nha_sach.ViewModels
 
             if (currentUser != null)
             {
+                UserId = currentUser.UserId;
                 Username = currentUser.Username;
                 FullName = currentUser.FullName;
                 PhoneNumber = currentUser.PhoneNumber;
@@ -55,19 +58,27 @@ namespace QL_Nha_sach.ViewModels
             var passwordBox = parameter as PasswordBox;
             string newPassword = passwordBox?.Password ?? string.Empty;
 
-            if (string.IsNullOrWhiteSpace(FullName))
+            if (string.IsNullOrWhiteSpace(FullName) || string.IsNullOrWhiteSpace(Username))
             {
-                ShowMessage("Full Name cannot be empty.", true);
+                ShowMessage("Full Name and Username cannot be empty.", true);
                 return;
             }
 
             using var context = _factory.CreateDbContext();
-            var dbUser = context.Users.FirstOrDefault(u => u.Username == Username);
+            
+            bool usernameTaken = context.Users.Any(u => u.Username == Username && u.UserId != UserId);
+            if (usernameTaken)
+            {
+                ShowMessage("User with this Username already exists!", true);
+                return;
+            }
 
+            var dbUser = context.Users.FirstOrDefault(u => u.UserId == UserId);
             if (dbUser != null)
             {
                 try
                 {
+                    dbUser.Username = Username;
                     dbUser.FullName = FullName;
                     dbUser.PhoneNumber = PhoneNumber;
                     dbUser.EmailAddress = EmailAddress;
@@ -79,14 +90,16 @@ namespace QL_Nha_sach.ViewModels
                             ShowMessage("Password must have at least 6 character", true);
                             return;
                         }
-                        dbUser.Password = newPassword; // Ideally hashed!
+                        dbUser.Password = BCrypt.Net.BCrypt.EnhancedHashPassword(newPassword, 12);
                     }
 
                     context.SaveChanges();
 
+                    _session.CurrentUser.Username = Username;
                     _session.CurrentUser.FullName = FullName;
                     _session.CurrentUser.PhoneNumber = PhoneNumber;
                     _session.CurrentUser.EmailAddress = EmailAddress;
+                    _session.CurrentUser.Password = dbUser.Password;
 
                     ShowMessage("Profile updated successfully!", false);
 
