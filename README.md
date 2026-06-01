@@ -28,7 +28,7 @@ Báo cáo tập trung phân tích và thiết kế hệ thống quản lý nhà 
 
 ## File báo cáo
 
-📥 <a href="📥 <a href="https://drive.google.com/file/d/1b9f7LvnYvGiLGUa0IFC1t7twSkLR1o3k/view?usp=drive_link" target="_blank">**Báo cáo đồ án (PDF)**</a>">**Báo cáo đồ án (PDF)**</a>
+📥 <a href="https://drive.google.com/file/d/1b9f7LvnYvGiLGUa0IFC1t7twSkLR1o3k/view?usp=drive_link" target="_blank">**Báo cáo đồ án (PDF)**</a>
 
 ## Frameworks
 - Microsoft.NET
