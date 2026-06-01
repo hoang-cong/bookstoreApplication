@@ -28,4 +28,4 @@ Báo cáo tập trung phân tích và thiết kế hệ thống quản lý nhà 
 
 ## File báo cáo
 
-📥 <a href="./SE104___Thesis.pdf" target="_blank" rel="noopener noreferrer">Báo cáo đồ án (PDF)</a>
+📥 <a href="./SE104___Thesis.pdf" download="Bao_Cao_Do_An_SE104.pdf">**Báo cáo đồ án (PDF)**</a>
