@@ -25,3 +25,7 @@ Báo cáo tập trung phân tích và thiết kế hệ thống quản lý nhà 
 - Thiết kế hệ thống
 - Thiết kế giao diện
 - Kết luận
+
+## File báo cáo
+
+📥 **[Tải về hoặc xem toàn bộ Báo cáo đồ án (PDF)](./SE104___Thesis.pdf)**
