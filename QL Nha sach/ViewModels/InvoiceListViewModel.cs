@@ -166,7 +166,7 @@ namespace QL_Nha_sach.ViewModels
                 {
                     if (books.TryGetValue(detail.BookId, out var book))
                     {
-                        book.Stock -= detail.Quantity;
+                        book.Stock += detail.Quantity;
                     }
                 }
                 context.SaveChanges();
