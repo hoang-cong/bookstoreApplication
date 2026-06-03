@@ -62,7 +62,10 @@ namespace QL_Nha_sach.ViewModels
             var details = context.InvoiceDetails
                 .Include(d => d.Book).ThenInclude(b => b.BookGenres).ThenInclude(bg => bg.Genre)
                 .Include(d => d.Invoice)
-                .Where(d => d.Invoice.InvoiceDate >= start && d.Invoice.InvoiceDate < end)
+                .Where(d => d.Invoice != null
+                    && !d.Invoice.IsVoided
+                    && d.Invoice.InvoiceDate >= start
+                    && d.Invoice.InvoiceDate < end)
                 .ToList();
 
             TotalQuantity = details.Sum(d => d.Quantity);

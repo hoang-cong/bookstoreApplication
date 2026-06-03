@@ -47,7 +47,10 @@ namespace QL_Nha_sach.ViewModels
             var topBooks = context.InvoiceDetails
                 .Include(d => d.Book)
                 .Include(d => d.Invoice)
-                .Where(d => d.Invoice.InvoiceDate >= start && d.Invoice.InvoiceDate < end)
+                .Where(d => d.Invoice != null
+                    && !d.Invoice.IsVoided
+                    && d.Invoice.InvoiceDate >= start
+                    && d.Invoice.InvoiceDate < end)
                 .GroupBy(d => d.Book)
                 .Select(g => new
                 {
