@@ -25,7 +25,7 @@
 
 				<Border Grid.Row="0" Background="#F8FAFC" CornerRadius="12,12,0,0" Padding="24,18" BorderBrush="#E2E8F0" BorderThickness="0,0,0,1">
 					<Grid>
-						<TextBlock Text="{DynamicResource Str_CreatePromotion}" FontSize="18" FontWeight="SemiBold" Foreground="#1E293B" VerticalAlignment="Center"/>
+						<TextBlock Text="{DynamicResource Str_UpdatePromotion}" FontSize="18" FontWeight="SemiBold" Foreground="#1E293B" VerticalAlignment="Center"/>
 						<Button Content="✖" HorizontalAlignment="Right" VerticalAlignment="Center" Style="{StaticResource ExitButton}" Click="ExitButton_Click"/>
 					</Grid>
 				</Border>

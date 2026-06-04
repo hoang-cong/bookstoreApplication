@@ -16,7 +16,7 @@
 		<Border Background="Black" Opacity="0.5"/>
 		
 		<Grid VerticalAlignment="Center" HorizontalAlignment="Center">
-			<Border Background="White" CornerRadius="12" Margin="40" Padding="32" Width="400">
+			<Border Background="White" CornerRadius="12" Margin="40" Padding="32" Width="500">
 				<StackPanel>
 					<TextBlock Text="{DynamicResource Str_EditBookDetails}" FontSize="24" FontWeight="Bold" Foreground="#111827" Margin="0,0,0,24"/>
 					<Button Content="✖" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,-15,-15,0" Click="ExitButton_Click" Style="{StaticResource ExitButton}"/>
